@@ -5,3 +5,8 @@ out
 *.local
 *.d.ts.map
 coverage
+
+# Environment files
+.env
+.env.*
+.env.local
