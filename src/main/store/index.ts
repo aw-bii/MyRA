@@ -22,13 +22,17 @@ export const ConvStore = {
   },
 
   searchMessages(query: string): Message[] {
-    const rows = getDb().prepare(`
-      SELECT m.* FROM messages m
-      JOIN messages_fts fts ON m.rowid = fts.rowid
-      WHERE messages_fts MATCH ?
-      ORDER BY rank LIMIT 50
-    `).all(query) as any[]
-    return rows.map(rowToMsg)
+    try {
+      const rows = getDb().prepare(`
+        SELECT m.* FROM messages m
+        JOIN messages_fts fts ON m.rowid = fts.rowid
+        WHERE messages_fts MATCH ?
+        ORDER BY rank LIMIT 50
+      `).all(query) as any[]
+      return rows.map(rowToMsg)
+    } catch {
+      return []
+    }
   },
 
   createMessage(msg: Omit<Message, 'id' | 'createdAt'>): Message {

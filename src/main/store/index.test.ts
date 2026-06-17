@@ -49,6 +49,15 @@ describe('ConvStore.searchMessages', () => {
   })
 })
 
+describe('ConvStore.searchMessages error handling', () => {
+  it('returns empty array for malformed FTS5 query', () => {
+    const conv = ConvStore.createConversation('Test', 'claude', null)
+    ConvStore.createMessage({ conversationId: conv.id, role: 'user', content: 'hello world', backend: 'claude' })
+    const results = ConvStore.searchMessages('"unclosed')
+    expect(results).toEqual([])
+  })
+})
+
 describe('ConvStore persona methods', () => {
   it('creates, lists, and marks default persona', () => {
     ConvStore.createPersona({ name: 'Coder', systemPrompt: 'You are a coder.', isDefault: false })
