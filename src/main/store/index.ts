@@ -65,7 +65,9 @@ export const ConvStore = {
     if (p.name !== undefined) db.prepare('UPDATE personas SET name = ? WHERE id = ?').run(p.name, id)
     if (p.systemPrompt !== undefined) db.prepare('UPDATE personas SET system_prompt = ? WHERE id = ?').run(p.systemPrompt, id)
     if (p.isDefault !== undefined) db.prepare('UPDATE personas SET is_default = ? WHERE id = ?').run(p.isDefault ? 1 : 0, id)
-    return ConvStore.listPersonas().find(x => x.id === id)!
+    const result = ConvStore.listPersonas().find(x => x.id === id)
+    if (!result) throw new Error(`Persona not found: ${id}`)
+    return result
   },
 
   deletePersona(id: string): void {

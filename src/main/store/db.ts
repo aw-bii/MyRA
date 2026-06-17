@@ -2,6 +2,7 @@ import Database from 'better-sqlite3'
 import path from 'path'
 import fs from 'fs'
 
+// Module-level singleton — not safe for parallel test workers; tests must call initDb() per suite
 let db: Database.Database
 
 export function initDb(dbPath: string): void {
