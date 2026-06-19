@@ -35,6 +35,14 @@ export class ClaudeAdapter implements BackendAdapter {
     })
   }
 
+  async checkAuth(): Promise<boolean> {
+    return new Promise(resolve => {
+      const p = spawn(getClaudeBinaryPath(), ['--version'], { stdio: 'pipe' })
+      p.on('close', code => resolve(code === 0))
+      p.on('error', () => resolve(false))
+    })
+  }
+
   async *send(message: string, persona?: string, attachments?: Attachment[]): AsyncIterable<MessageChunk> {
     const args = ['--output-format', 'stream-json', '--print']
     if (persona) args.push('--system-prompt', persona)

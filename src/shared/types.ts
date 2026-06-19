@@ -71,6 +71,7 @@ export interface PipelineChunk extends MessageChunk {
 export interface BackendAdapter {
   id: string
   isAvailable(): Promise<boolean>
+  checkAuth(): Promise<boolean>
   send(message: string, persona?: string, attachments?: Attachment[]): AsyncIterable<MessageChunk>
   abort(): void
 }

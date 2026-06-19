@@ -31,7 +31,7 @@ export const AdapterManager = {
         id: a.id,
         label: labelFor(a.id),
         available: await a.isAvailable(),
-        authenticated: await a.isAvailable(), // probe doubles as auth check for now
+        authenticated: await a.checkAuth(),
       }))
     )
   },

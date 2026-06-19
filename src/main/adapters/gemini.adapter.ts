@@ -14,6 +14,14 @@ export class GeminiAdapter implements BackendAdapter {
     })
   }
 
+  async checkAuth(): Promise<boolean> {
+    return new Promise(resolve => {
+      const p = spawn('gemini', ['auth', 'status'], { stdio: 'pipe' })
+      p.on('close', code => resolve(code === 0))
+      p.on('error', () => resolve(false))
+    })
+  }
+
   async *send(message: string, persona?: string, attachments?: Attachment[]): AsyncIterable<MessageChunk> {
     // NOTE: gemini CLI support for '--' end-of-flags is unconfirmed; applied defensively.
     const args = ['--format', 'json', '-p']
