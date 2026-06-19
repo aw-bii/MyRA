@@ -4,11 +4,15 @@ import * as child_process from 'child_process'
 import { EventEmitter } from 'events'
 import type { Attachment } from '../../shared/types'
 
-vi.mock('child_process')
+vi.mock('electron', () => ({ app: { isPackaged: false } }))
 vi.mock('fs', async (importOriginal) => {
   const actual = await importOriginal<typeof import('fs')>()
-  return { ...actual, default: { ...actual, existsSync: vi.fn(() => true) } }
+  return {
+    ...actual, default: { ...actual, existsSync: vi.fn((p: string) => !p.includes('claude-bin')) },
+    existsSync: vi.fn((p: string) => !p.includes('claude-bin')),
+  }
 })
+vi.mock('child_process')
 vi.mock('../attachments/service', () => ({
   AttachmentService: { getContent: vi.fn((a: any) => a.extractedText ?? '') },
 }))
@@ -66,7 +70,7 @@ describe('ClaudeAdapter attachment routing', () => {
     const adapter = new ClaudeAdapter()
     for await (const _ of adapter.send('hello', undefined, [validAttachment])) { /* drain */ }
     expect(child_process.spawn).toHaveBeenCalledWith(
-      'claude',
+      expect.any(String),
       expect.arrayContaining(['--file', '/tmp/doc.pdf']),
       expect.any(Object)
     )

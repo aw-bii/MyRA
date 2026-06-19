@@ -1,28 +1,27 @@
 import { describe, it, expect, vi } from 'vitest'
 import { probeBackend } from './probe'
-import * as child_process from 'child_process'
-import { EventEmitter } from 'events'
 
-vi.mock('child_process')
-
-function mockSpawn(exitCode: number) {
-  const proc = new EventEmitter() as any
-  proc.stdout = new EventEmitter()
-  proc.stderr = new EventEmitter()
-  vi.mocked(child_process.spawn).mockReturnValue(proc as any)
-  setTimeout(() => proc.emit('close', exitCode), 0)
-}
+vi.mock('../adapters/manager', () => ({
+  AdapterManager: {
+    get: vi.fn((id: string) => {
+      if (id === 'unknown') return undefined
+      return {
+        id,
+        isAvailable: vi.fn().mockResolvedValue(id === 'claude'),
+        checkAuth: vi.fn().mockResolvedValue(id === 'claude'),
+      }
+    }),
+  },
+}))
 
 describe('probeBackend', () => {
-  it('returns available=true for exit code 0', async () => {
-    mockSpawn(0)
+  it('returns available=true for backend that is available', async () => {
     const result = await probeBackend('claude')
     expect(result.available).toBe(true)
   })
 
-  it('returns available=false for non-zero exit code', async () => {
-    mockSpawn(1)
-    const result = await probeBackend('claude')
+  it('returns available=false for backend that is not available', async () => {
+    const result = await probeBackend('gemini')
     expect(result.available).toBe(false)
   })
 

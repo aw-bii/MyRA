@@ -5,6 +5,7 @@ vi.mock('./claude.adapter', () => ({
   ClaudeAdapter: class {
     id = 'claude'
     isAvailable = vi.fn().mockResolvedValue(true)
+    checkAuth = vi.fn().mockResolvedValue(true)
     send = vi.fn()
     abort = vi.fn()
   }
@@ -13,6 +14,7 @@ vi.mock('./gemini.adapter', () => ({
   GeminiAdapter: class {
     id = 'gemini'
     isAvailable = vi.fn().mockResolvedValue(false)
+    checkAuth = vi.fn().mockResolvedValue(false)
     send = vi.fn()
     abort = vi.fn()
   }
@@ -21,6 +23,7 @@ vi.mock('./opencode.adapter', () => ({
   OpencodeAdapter: class {
     id = 'opencode'
     isAvailable = vi.fn().mockResolvedValue(false)
+    checkAuth = vi.fn().mockResolvedValue(false)
     send = vi.fn()
     abort = vi.fn()
   }
