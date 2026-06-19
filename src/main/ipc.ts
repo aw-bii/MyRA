@@ -4,6 +4,7 @@ import { AdapterManager } from './adapters/manager'
 import { ConvStore } from './store'
 import { probeBackend } from './wizard/probe'
 import { installBackend } from './wizard/install'
+import { pipelineRunner } from './pipeline/runner'
 
 export const MAX_PROMPT_LENGTH = 100_000
 export const MAX_MESSAGE_LENGTH = 100_000
@@ -80,5 +81,75 @@ export function registerIpcHandlers(_win: BrowserWindow): void {
 
   ipcMain.handle(IPC.WIZARD_DONE, () => {
     // renderer handles its own localStorage
+  })
+
+  ipcMain.handle(IPC.PIPELINE_LIST, () => ConvStore.listPipelineTemplates())
+
+  ipcMain.handle(IPC.PIPELINE_SAVE, (_event, { id, name, steps }) => {
+    if (!name || typeof name !== 'string') throw new Error('Pipeline name is required')
+    if (!Array.isArray(steps) || steps.length < 2) throw new Error('Pipeline must have at least 2 steps')
+    return id
+      ? ConvStore.updatePipelineTemplate(id, name, steps)
+      : ConvStore.createPipelineTemplate(name, steps)
+  })
+
+  ipcMain.handle(IPC.PIPELINE_DELETE, (_event, { id }) => ConvStore.deletePipelineTemplate(id))
+
+  ipcMain.handle(IPC.PIPELINE_RUN, async (event, { conversationId, message, templateId }) => {
+    if (typeof message !== 'string' || message.length > MAX_MESSAGE_LENGTH) {
+      throw new Error(`Message exceeds maximum length of ${MAX_MESSAGE_LENGTH} characters`)
+    }
+
+    const template = ConvStore.getPipelineTemplate(templateId)
+    if (!template) throw new Error(`Pipeline template not found: ${templateId}`)
+    if (template.steps.length < 2) throw new Error('Pipeline must have at least 2 steps')
+
+    const personas = ConvStore.listPersonas()
+    const resolvedSteps = template.steps.map(step => ({
+      adapterId: step.backendId,
+      persona: step.personaId ? personas.find(p => p.id === step.personaId)?.systemPrompt : undefined,
+    }))
+
+    let conv = conversationId ? ConvStore.getConversation(conversationId) : undefined
+    if (!conv) {
+      conv = ConvStore.createPipelineConversation(message.slice(0, 60), templateId)
+    }
+
+    ConvStore.createMessage({
+      conversationId: conv.id,
+      role: 'user',
+      content: message,
+      backend: 'pipeline',
+      stepIndex: null,
+    })
+
+    const accumulators: string[] = new Array(resolvedSteps.length).fill('')
+
+    await pipelineRunner.run({
+      conversationId: conv.id,
+      userMessage: message,
+      steps: resolvedSteps,
+      onChunk: (chunk) => {
+        if (chunk.type === 'text') accumulators[chunk.stepIndex] += chunk.content
+        event.sender.send(IPC.PIPELINE_CHUNK, { ...chunk, conversationId: conv!.id })
+      },
+      onStepDone: (stepIndex) => {
+        ConvStore.createMessage({
+          conversationId: conv!.id,
+          role: 'assistant',
+          content: accumulators[stepIndex],
+          backend: resolvedSteps[stepIndex].adapterId,
+          stepIndex,
+        })
+        event.sender.send(IPC.PIPELINE_STEP_DONE, { conversationId: conv!.id, stepIndex })
+      },
+    })
+
+    event.sender.send(IPC.PIPELINE_DONE, { conversationId: conv!.id })
+    return conv.id
+  })
+
+  ipcMain.handle(IPC.PIPELINE_ABORT, (_event, { conversationId }) => {
+    pipelineRunner.abort(conversationId)
   })
 }
