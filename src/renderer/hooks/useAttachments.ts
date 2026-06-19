@@ -2,59 +2,75 @@ import { useState, useCallback } from 'react'
 import { ingestAttachments } from '../ipc'
 import type { Attachment } from '../../shared/types'
 
-const MAX_SIZE = 20 * 1024 * 1024
-
-const SUPPORTED_EXTS = new Set([
-  '.png', '.jpg', '.jpeg', '.gif', '.webp',
-  '.pdf', '.txt', '.md', '.csv', '.docx', '.xlsx',
+const SUPPORTED_TYPES = new Set([
+  'image/png', 'image/jpeg', 'image/gif', 'image/webp',
+  'application/pdf',
+  'text/plain', 'text/markdown', 'text/csv',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 ])
-
-interface PendingFile {
-  path: string
-  name: string
-  size: number
-}
+const MAX_SIZE = 20 * 1024 * 1024 // 20 MB
 
 export function useAttachments() {
-  const [pending, setPending] = useState<PendingFile[]>([])
+  const [pending, setPending] = useState<Attachment[]>([])
   const [errors, setErrors] = useState<string[]>([])
+  const [ingesting, setIngesting] = useState(false)
 
-  const addFiles = useCallback((filePaths: string[]) => {
+  // addFiles: validates files by MIME type and size (using fs.stat via electron dialog result),
+  // calls ingestAttachments for valid files, updates pending state with returned Attachment[],
+  // adds error messages for invalid files.
+  // NOTE: file size and MIME type are available via the File API in the renderer —
+  // but we only have filePaths (strings), not File objects.
+  // Use a simple heuristic: accept all files and let the service reject them.
+  // Instead, validate using the path extension to infer MIME and skip size check
+  // (the service enforces both — this is a UX pre-filter only).
+  const addFiles = useCallback(async (filePaths: string[], messageId: string): Promise<Attachment[]> => {
+    const validPaths: string[] = []
     const newErrors: string[] = []
-    const valid: PendingFile[] = []
 
     for (const fp of filePaths) {
       const name = fp.split(/[\\/]/).pop() ?? fp
-      const ext = ('.' + name.split('.').pop()).toLowerCase()
-
-      // Size check requires IPC — we rely on the renderer File API size for drag-drop
-      // or skip size check here (service.ts enforces 20 MB on ingest)
-      if (!SUPPORTED_EXTS.has(ext)) {
-        newErrors.push(`Unsupported file type: ${name}`)
+      const ext = name.split('.').pop()?.toLowerCase() ?? ''
+      const mimeGuess = extToMime(ext)
+      if (!mimeGuess) {
+        newErrors.push(`${name}: Unsupported file type`)
         continue
       }
-      valid.push({ path: fp, name, size: 0 })
+      validPaths.push(fp)
     }
 
     if (newErrors.length) setErrors(prev => [...prev, ...newErrors])
-    setPending(prev => [...prev, ...valid])
+    if (!validPaths.length) return []
+
+    setIngesting(true)
+    try {
+      const ingested = await ingestAttachments(validPaths, messageId)
+      setPending(prev => [...prev, ...ingested])
+      return ingested
+    } finally {
+      setIngesting(false)
+    }
   }, [])
 
-  const removeFile = useCallback((filePath: string) => {
-    setPending(prev => prev.filter(f => f.path !== filePath))
+  const removeFile = useCallback((id: string) => {
+    setPending(prev => prev.filter(a => a.id !== id))
   }, [])
-
-  const ingest = useCallback(async (messageId: string): Promise<Attachment[]> => {
-    if (pending.length === 0) return []
-    const paths = pending.map(f => f.path)
-    const result = await ingestAttachments(paths, messageId)
-    return result
-  }, [pending])
 
   const clear = useCallback(() => {
     setPending([])
     setErrors([])
   }, [])
 
-  return { pending, addFiles, removeFile, ingest, clear, errors }
+  return { pending, errors, ingesting, addFiles, removeFile, clear }
+}
+
+function extToMime(ext: string): string | null {
+  const map: Record<string, string> = {
+    png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp',
+    pdf: 'application/pdf',
+    txt: 'text/plain', md: 'text/markdown', csv: 'text/csv',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  }
+  return map[ext] ?? null
 }
