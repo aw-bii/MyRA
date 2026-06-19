@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell } from 'electron'
 import path from 'path'
 import { initDb, getDb } from './store/db'
 import { registerIpcHandlers } from './ipc'
+import { initUpdater } from './updater'
 
 function loadWindowState(): { x?: number; y?: number; width: number; height: number; maximized: boolean } {
   try {
@@ -83,6 +84,9 @@ app.whenReady().then(() => {
 
   const win = createWindow()
   registerIpcHandlers(win)
+  if (app.isPackaged) {
+    initUpdater(win)
+  }
 })
 
 app.on('window-all-closed', () => {

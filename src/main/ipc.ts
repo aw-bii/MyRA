@@ -6,6 +6,7 @@ import { probeBackend } from './wizard/probe'
 import { installBackend } from './wizard/install'
 import { pipelineRunner } from './pipeline/runner'
 import { AttachmentService } from './attachments/service'
+import { downloadUpdate, quitAndInstall } from './updater'
 
 export const MAX_PROMPT_LENGTH = 100_000
 export const MAX_MESSAGE_LENGTH = 100_000
@@ -182,4 +183,7 @@ export function registerIpcHandlers(_win: BrowserWindow): void {
   ipcMain.handle(IPC.ATTACHMENT_DATA_URL, (_event, { storedPath }) => {
     return AttachmentService.getDataUrl(storedPath)
   })
+
+  ipcMain.handle(IPC.UPDATE_DOWNLOAD, () => downloadUpdate())
+  ipcMain.handle(IPC.UPDATE_INSTALL, () => quitAndInstall())
 }

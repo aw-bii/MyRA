@@ -11,4 +11,10 @@ export default {
   win: { target: 'nsis', icon: 'resources/icon.ico' },
   mac: { target: 'dmg', icon: 'resources/icon.icns', category: 'public.app-category.productivity' },
   nsis: { oneClick: false, allowToChangeInstallationDirectory: true },
+  publish: {
+    provider: 'github',
+    owner: 'bii',
+    repo: 'agent-harness',
+    releaseType: 'release',
+  },
 } satisfies Configuration

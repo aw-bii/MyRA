@@ -30,6 +30,8 @@ export const IPC = {
   APP_VERSION:     'app:version',
   CONV_DELETE:     'conv:delete',
   CONV_RENAME:     'conv:rename',
+  UPDATE_DOWNLOAD: 'update:download',
+  UPDATE_INSTALL:  'update:install',
 } as const
 
 export type IpcChannels = typeof IPC
@@ -61,6 +63,8 @@ export interface IpcInvokeMap {
   [IPC.APP_VERSION]: void
   [IPC.CONV_DELETE]: { conversationId: string }
   [IPC.CONV_RENAME]: { conversationId: string; title: string }
+  [IPC.UPDATE_DOWNLOAD]: void
+  [IPC.UPDATE_INSTALL]:  void
 }
 
 export interface IpcPushMap {
@@ -69,4 +73,9 @@ export interface IpcPushMap {
   [IPC.PIPELINE_CHUNK]:     import('./types').PipelineChunk & { conversationId: string }
   [IPC.PIPELINE_STEP_DONE]: { conversationId: string; stepIndex: number }
   [IPC.PIPELINE_DONE]:      { conversationId: string }
+  [IPC.UPDATE_STATUS]:      string
+  [IPC.UPDATE_AVAILABLE]:   { version: string; releaseNotes: string }
+  [IPC.UPDATE_PROGRESS]:    number
+  [IPC.UPDATE_ERROR]:       string
+  [IPC.UPDATE_DOWNLOADED]:  void
 }
