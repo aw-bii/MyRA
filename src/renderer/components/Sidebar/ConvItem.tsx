@@ -7,6 +7,8 @@ interface Props {
 }
 
 export function ConvItem({ conversation, active, onClick }: Props) {
+  const isPipeline = conversation.pipelineTemplateId !== null
+
   return (
     <button
       onClick={onClick}
@@ -14,9 +16,16 @@ export function ConvItem({ conversation, active, onClick }: Props) {
         active ? 'bg-gray-200 dark:bg-gray-700' : ''
       }`}
     >
-      <div className="font-medium truncate">{conversation.title}</div>
+      <div className="font-medium truncate flex items-center gap-1">
+        {isPipeline && (
+          <svg className="w-3 h-3 flex-shrink-0 text-blue-500" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M4 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-5-1h2v2H7V7zm0-4h2v2H7V3z" />
+          </svg>
+        )}
+        <span className="truncate">{conversation.title}</span>
+      </div>
       <div className="text-xs text-gray-400 flex gap-2">
-        <span>{conversation.backend}</span>
+        <span>{isPipeline ? 'pipeline' : conversation.backend}</span>
         <span>{new Date(conversation.updatedAt).toLocaleDateString()}</span>
       </div>
     </button>
