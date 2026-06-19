@@ -75,6 +75,12 @@ describe("installBackend", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toMatch(/Permission denied/i);
+    // Regression guard: shell:true must not be present for any backend
+    expect(child_process.spawn).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.objectContaining({ shell: true }),
+    );
   });
 
   it("returns generic error message for non-permission failure", async () => {
@@ -86,5 +92,11 @@ describe("installBackend", () => {
 
     expect(result.success).toBe(false);
     expect(result.error).toMatch(/Install failed with exit code 1/);
+    // Regression guard: shell:true must not be present for any backend
+    expect(child_process.spawn).not.toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.objectContaining({ shell: true }),
+    );
   });
 });

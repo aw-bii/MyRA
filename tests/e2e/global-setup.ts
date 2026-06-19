@@ -11,8 +11,18 @@ function getElectronPath(): string {
   return path.join(PROJECT_ROOT, "node_modules", "electron", "dist", exeName);
 }
 
-async function waitForCDP(url: string, retries = 40, delayMs = 500): Promise<void> {
+async function waitForCDP(
+  url: string,
+  child: ReturnType<typeof spawn>,
+  retries = 40,
+  delayMs = 500,
+): Promise<void> {
   for (let i = 0; i < retries; i++) {
+    if (child.exitCode !== null) {
+      throw new Error(
+        `Electron process exited before CDP became ready (exit code: ${child.exitCode})`,
+      );
+    }
     try {
       const res = await fetch(url);
       if (res.ok) return;
@@ -50,7 +60,7 @@ export default async function globalSetup() {
 
   const child = spawn(electronExe, ["."], {
     env,
-    stdio: "pipe",
+    stdio: ["pipe", "ignore", "pipe"],
     cwd: PROJECT_ROOT,
     detached: false,
   });
@@ -60,6 +70,6 @@ export default async function globalSetup() {
 
   child.stderr?.on("data", (d) => process.stderr.write("[electron-setup] " + d));
 
-  await waitForCDP("http://localhost:9222/json/version");
+  await waitForCDP("http://localhost:9222/json/version", child);
   process.stderr.write("[global-setup] Electron CDP ready\n");
 }
