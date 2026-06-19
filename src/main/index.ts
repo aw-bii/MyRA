@@ -1,8 +1,16 @@
 import { app, BrowserWindow, shell } from "electron";
 import path from "path";
+import os from "os";
 import { initDb, getDb } from "./store/db";
 import { registerIpcHandlers } from "./ipc";
 import { initUpdater } from "./updater";
+
+// Must run before app.whenReady() — redirects SQLite to a temp dir so each
+// E2E test run starts with a clean database, and opens CDP port for Playwright
+if (process.env.E2E_TEST === "1") {
+  app.setPath("userData", path.join(os.tmpdir(), "bii-e2e-test"));
+  app.commandLine.appendSwitch("remote-debugging-port", "9222");
+}
 
 function loadWindowState(): {
   x?: number;

@@ -4,8 +4,7 @@
   "description": "BII Agent Harness - Native Electron desktop chat app wrapping Claude Code, Gemini CLI, and Opencode CLI",
   "main": "./out/main/index.js",
   "author": "Bertelsmann India Investment",
-  "license": "UNLICENSED",
-  "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "electron-vite dev",
     "prebuild": "node scripts/generate-icons.mjs",
@@ -33,6 +32,7 @@
     "@electron-toolkit/eslint-config-prettier": "^2.0.0",
     "@electron-toolkit/eslint-config-ts": "^2.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
+    "@playwright/test": "^1.61.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/better-sqlite3": "^7.6.8",

@@ -1,6 +1,7 @@
 import { ClaudeAdapter } from "./claude.adapter";
 import { GeminiAdapter } from "./gemini.adapter";
 import { OpencodeAdapter } from "./opencode.adapter";
+import { TestAdapter } from "./test.adapter";
 import type { BackendAdapter, BackendInfo } from "../../shared/types";
 
 const registry: BackendAdapter[] = [
@@ -8,6 +9,10 @@ const registry: BackendAdapter[] = [
   new GeminiAdapter(),
   new OpencodeAdapter(),
 ];
+
+if (process.env.E2E_TEST === "1") {
+  registry.push(new TestAdapter());
+}
 
 let activeId = "claude";
 
