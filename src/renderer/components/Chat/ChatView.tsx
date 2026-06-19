@@ -2,7 +2,7 @@ import { useMessages } from '../../hooks/useMessages'
 import { usePipelineMessages } from '../../hooks/usePipelineMessages'
 import { MessageList } from './MessageList'
 import { InputBar } from './InputBar'
-import type { PipelineTemplate } from '../../../../shared/types'
+import type { Attachment, PipelineTemplate } from '../../../../shared/types'
 
 interface Props {
   conversationId: string | null
@@ -35,8 +35,8 @@ export function ChatView({ conversationId, backend, personaId, pipelineTemplate,
 function SingleChatView({ conversationId, backend, personaId, onNewConversation }: Omit<Props, 'pipelineTemplate'>) {
   const { messages, streaming, send, abort } = useMessages(conversationId)
 
-  const handleSend = async (message: string) => {
-    const newId = await send(message, backend, personaId)
+  const handleSend = async (message: string, _attachments: Attachment[], messageId: string) => {
+    const newId = await send(message, backend, personaId, messageId)
     if (!conversationId && newId) onNewConversation(newId)
   }
 
@@ -63,7 +63,7 @@ function PipelineChatView({ conversationId, template, onNewConversation }: {
   const { stepMessages, streamingStepIndex, activeTabIndex, setActiveTabIndex, send, abort } = usePipelineMessages(conversationId, template)
   const streaming = streamingStepIndex !== null
 
-  const handleSend = async (message: string) => {
+  const handleSend = async (message: string, _attachments: Attachment[], _messageId: string) => {
     const newId = await send(message)
     if (!conversationId && newId) onNewConversation(newId)
   }

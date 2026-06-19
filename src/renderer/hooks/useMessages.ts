@@ -32,11 +32,11 @@ export function useMessages(conversationId: string | null) {
     return () => { offChunk(); offDone() }
   }, [])
 
-  const send = useCallback(async (message: string, backend: string, personaId?: string) => {
+  const send = useCallback(async (message: string, backend: string, personaId?: string, messageId?: string) => {
     setStreaming(true)
     streamingContent.current = ''
     const userMsg: Message = {
-      id: crypto.randomUUID(),
+      id: messageId ?? crypto.randomUUID(),
       conversationId: conversationId ?? '',
       role: 'user', content: message, backend, stepIndex: null, createdAt: Date.now(),
     }
@@ -46,7 +46,7 @@ export function useMessages(conversationId: string | null) {
       role: 'assistant', content: '', backend, stepIndex: null, createdAt: Date.now(),
     }
     setMessages(prev => [...prev, userMsg, assistantPlaceholder])
-    const newConvId = await sendChat({ conversationId, message, backend, personaId })
+    const newConvId = await sendChat({ conversationId, message, backend, personaId, messageId })
     currentConvId.current = newConvId
     return newConvId
   }, [conversationId])
