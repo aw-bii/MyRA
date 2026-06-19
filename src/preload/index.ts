@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { IPC } from '../shared/ipc'
 
 const ALLOWED_CHANNELS = new Set([...Object.values(IPC), 'wizard:install:line'])
@@ -13,5 +13,8 @@ contextBridge.exposeInMainWorld('ipc', {
     const wrapped = (_event: unknown, ...args: unknown[]) => listener(...args)
     ipcRenderer.on(channel, wrapped)
     return () => ipcRenderer.removeListener(channel, wrapped)
+  },
+  getPathForFile(file: File): string {
+    return webUtils.getPathForFile(file)
   },
 })

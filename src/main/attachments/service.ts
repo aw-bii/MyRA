@@ -104,6 +104,17 @@ export const AttachmentService = {
     return attachment.extractedText ?? `[${attachment.originalName}]`
   },
 
+  getDataUrl(storedPath: string): string {
+    const ext = path.extname(storedPath).toLowerCase()
+    const mimeMap: Record<string, string> = {
+      '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+      '.gif': 'image/gif', '.webp': 'image/webp',
+    }
+    const mimeType = mimeMap[ext] ?? 'application/octet-stream'
+    const buf = fs.readFileSync(storedPath)
+    return `data:${mimeType};base64,${buf.toString('base64')}`
+  },
+
   listForMessage(messageId: string): Attachment[] {
     return ConvStore.getAttachmentsForMessage(messageId)
   },

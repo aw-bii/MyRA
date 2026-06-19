@@ -8,6 +8,7 @@ declare global {
     ipc: {
       invoke(channel: string, ...args: unknown[]): Promise<unknown>
       on(channel: string, listener: (...args: unknown[]) => void): () => void
+      getPathForFile(file: File): string
     }
   }
 }
@@ -93,4 +94,7 @@ export async function ingestAttachments(filePaths: string[], messageId: string):
 }
 export async function listAttachments(messageId: string): Promise<import('../shared/types').Attachment[]> {
   return window.ipc.invoke(IPC.ATTACHMENT_LIST, { messageId }) as Promise<import('../shared/types').Attachment[]>
+}
+export async function getAttachmentDataUrl(storedPath: string): Promise<string> {
+  return window.ipc.invoke(IPC.ATTACHMENT_DATA_URL, { storedPath }) as Promise<string>
 }

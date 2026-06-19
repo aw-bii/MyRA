@@ -1,4 +1,6 @@
+import { useState, useEffect } from 'react'
 import type { Attachment } from '../../../../shared/types'
+import { getAttachmentDataUrl } from '../../ipc'
 
 interface Props {
   attachments: Attachment[]
@@ -10,6 +12,23 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
+function ImageAttachment({ att }: { att: Attachment }) {
+  const [dataUrl, setDataUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    getAttachmentDataUrl(att.storedPath).then(setDataUrl).catch(() => setDataUrl(null))
+  }, [att.storedPath])
+
+  if (!dataUrl) return null
+  return (
+    <img
+      src={dataUrl}
+      alt={att.originalName}
+      className="max-w-[200px] rounded-lg object-cover"
+    />
+  )
+}
+
 export function AttachmentRow({ attachments }: Props) {
   if (attachments.length === 0) return null
 
@@ -17,13 +36,7 @@ export function AttachmentRow({ attachments }: Props) {
     <div className="flex flex-wrap gap-2 mt-2">
       {attachments.map(att => (
         <div key={att.id} className="flex flex-col gap-1">
-          {att.mimeType.startsWith('image/') && (
-            <img
-              src={`file://${att.storedPath}`}
-              alt={att.originalName}
-              className="max-w-[200px] rounded-lg object-cover"
-            />
-          )}
+          {att.mimeType.startsWith('image/') && <ImageAttachment att={att} />}
           <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
             <svg className="w-3 h-3" viewBox="0 0 16 16" fill="currentColor">
               <path d="M4 0h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H4z" />

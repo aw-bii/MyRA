@@ -23,6 +23,7 @@ export const IPC = {
   PIPELINE_ABORT:      'pipeline:abort',
   ATTACHMENT_INGEST:   'attachment:ingest',
   ATTACHMENT_LIST:     'attachment:list',
+  ATTACHMENT_DATA_URL: 'attachment:dataurl',
 } as const
 
 export type IpcChannels = typeof IPC
@@ -45,8 +46,9 @@ export interface IpcInvokeMap {
   [IPC.PIPELINE_DELETE]:   { id: string }
   [IPC.PIPELINE_RUN]:      { conversationId: string | null; message: string; templateId: string }
   [IPC.PIPELINE_ABORT]:    { conversationId: string }
-  [IPC.ATTACHMENT_INGEST]: { filePaths: string[]; messageId: string }
-  [IPC.ATTACHMENT_LIST]:   { messageId: string }
+  [IPC.ATTACHMENT_INGEST]:   { filePaths: string[]; messageId: string }
+  [IPC.ATTACHMENT_LIST]:     { messageId: string }
+  [IPC.ATTACHMENT_DATA_URL]: { storedPath: string }
 }
 
 export interface IpcPushMap {

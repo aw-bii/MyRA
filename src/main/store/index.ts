@@ -35,9 +35,9 @@ export const ConvStore = {
     }
   },
 
-  createMessage(msg: Omit<Message, 'id' | 'createdAt'>): Message {
+  createMessage(msg: Omit<Message, 'createdAt'> & { id?: string }): Message {
     const db = getDb()
-    const id = crypto.randomUUID()
+    const id = msg.id ?? crypto.randomUUID()
     const now = Date.now()
     db.prepare(`INSERT INTO messages (id, conversation_id, role, content, backend, step_index, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?)`)

@@ -35,7 +35,7 @@ export function registerIpcHandlers(_win: BrowserWindow): void {
       conv = ConvStore.createConversation(message.slice(0, 60), adapter.id, persona?.id ?? null)
     }
 
-    ConvStore.createMessage({ conversationId: conv.id, role: 'user', content: message, backend: adapter.id, stepIndex: null })
+    ConvStore.createMessage({ id: pregenMessageId, conversationId: conv.id, role: 'user', content: message, backend: adapter.id, stepIndex: null })
 
     const attachments = pregenMessageId ? AttachmentService.listForMessage(pregenMessageId) : []
 
@@ -162,5 +162,9 @@ export function registerIpcHandlers(_win: BrowserWindow): void {
 
   ipcMain.handle(IPC.ATTACHMENT_LIST, (_event, { messageId }) => {
     return AttachmentService.listForMessage(messageId)
+  })
+
+  ipcMain.handle(IPC.ATTACHMENT_DATA_URL, (_event, { storedPath }) => {
+    return AttachmentService.getDataUrl(storedPath)
   })
 }

@@ -40,7 +40,7 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
 
   const onDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    const paths = Array.from(e.dataTransfer.files).map((f: any) => f.path as string).filter(Boolean)
+    const paths = Array.from(e.dataTransfer.files).map(f => window.ipc.getPathForFile(f)).filter(Boolean) as string[]
     handleFiles(paths)
   }, [handleFiles])
 
@@ -48,7 +48,7 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? [])
-    const paths = files.map((f: any) => f.path as string).filter(Boolean)
+    const paths = files.map(f => window.ipc.getPathForFile(f)).filter(Boolean) as string[]
     handleFiles(paths)
     e.target.value = ''
   }
