@@ -8,6 +8,7 @@
   "private": true,
   "scripts": {
     "dev": "electron-vite dev",
+    "prebuild": "node scripts/generate-icons.mjs",
     "build": "electron-vite build",
     "dist": "npm run build && electron-builder",
     "lint": "eslint . --ext .ts,.tsx",
