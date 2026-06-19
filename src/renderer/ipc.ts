@@ -87,3 +87,10 @@ export function onPipelineStepDone(cb: (payload: { conversationId: string; stepI
 export function onPipelineDone(cb: (payload: { conversationId: string }) => void) {
   return window.ipc.on(IPC.PIPELINE_DONE, cb as any)
 }
+
+export async function ingestAttachments(filePaths: string[], messageId: string): Promise<import('../shared/types').Attachment[]> {
+  return window.ipc.invoke(IPC.ATTACHMENT_INGEST, { filePaths, messageId }) as Promise<import('../shared/types').Attachment[]>
+}
+export async function listAttachments(messageId: string): Promise<import('../shared/types').Attachment[]> {
+  return window.ipc.invoke(IPC.ATTACHMENT_LIST, { messageId }) as Promise<import('../shared/types').Attachment[]>
+}
