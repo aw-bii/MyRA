@@ -1,21 +1,26 @@
 import fs from 'fs'
 import path from 'path'
+import { app } from 'electron'
 import { spawn, ChildProcess } from 'child_process'
 import type { BackendAdapter, MessageChunk, Attachment } from '../../shared/types'
 import { AttachmentService } from '../attachments/service'
 
+let _binaryPath: string | null = null
+
 function getClaudeBinaryPath(): string {
+  if (_binaryPath) return _binaryPath
+  const binaryName = process.platform === 'win32' ? 'claude.exe' : 'claude'
+  const bundledPath = app.isPackaged
+    ? path.join(process.resourcesPath!, 'claude-bin', binaryName)
+    : path.join(__dirname, '..', '..', '..', 'resources', 'claude-bin', binaryName)
   try {
-    const { app } = require('electron') as typeof import('electron')
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const fs = require('fs')
-    const binaryName = process.platform === 'win32' ? 'claude.exe' : 'claude'
-    const bundledPath = app.isPackaged
-      ? path.join(process.resourcesPath!, 'claude-bin', binaryName)
-      : path.join(__dirname, '..', '..', '..', 'resources', 'claude-bin', binaryName)
-    if (fs.existsSync(bundledPath)) return bundledPath
-  } catch { /* fallback to PATH */ }
-  return 'claude'
+    if (fs.existsSync(bundledPath)) {
+      _binaryPath = bundledPath
+      return _binaryPath
+    }
+  } catch { /* fallback */ }
+  _binaryPath = 'claude'
+  return _binaryPath
 }
 
 export class ClaudeAdapter implements BackendAdapter {

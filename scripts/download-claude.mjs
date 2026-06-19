@@ -1,10 +1,11 @@
 import { execSync } from 'child_process'
-import { existsSync, mkdirSync, copyFileSync } from 'fs'
+import { existsSync, mkdirSync, copyFileSync, rmSync } from 'fs'
 import { platform } from 'os'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const BINARY_NAME = platform() === 'win32' ? 'claude.exe' : 'claude'
 const resourcesDir = join(__dirname, '..', 'resources', 'claude-bin')
 
 function ensureDir(p) {
@@ -18,7 +19,7 @@ async function main() {
   try {
     const claudePath = execSync(whichCmd, { encoding: 'utf8' }).trim().split('\n')[0]
     console.log(`Found Claude at: ${claudePath}`)
-    const dest = join(resourcesDir, platform() === 'win32' ? 'claude.exe' : 'claude')
+    const dest = join(resourcesDir, BINARY_NAME)
     copyFileSync(claudePath, dest)
     if (platform() !== 'win32') {
       execSync(`chmod +x "${dest}"`)
@@ -30,17 +31,16 @@ async function main() {
     ensureDir(tmpDir)
     execSync(`npm init -y`, { cwd: tmpDir, stdio: 'pipe' })
     execSync(`npm install @anthropic-ai/claude-code`, { cwd: tmpDir, stdio: 'pipe' })
-    const binaryName = platform() === 'win32' ? 'claude.exe' : 'claude'
-    const nodeModulesBin = join(tmpDir, 'node_modules', '.bin', binaryName)
+    const nodeModulesBin = join(tmpDir, 'node_modules', '.bin', BINARY_NAME)
     if (existsSync(nodeModulesBin)) {
-      copyFileSync(nodeModulesBin, join(resourcesDir, binaryName))
+      copyFileSync(nodeModulesBin, join(resourcesDir, BINARY_NAME))
       console.log(`Claude binary downloaded and bundled to: ${resourcesDir}`)
     } else {
       console.error('Could not find downloaded Claude binary')
       process.exit(1)
     }
     // Cleanup
-    execSync(`rm -rf "${tmpDir}"`)
+    rmSync(tmpDir, { recursive: true, force: true })
   }
 }
 
