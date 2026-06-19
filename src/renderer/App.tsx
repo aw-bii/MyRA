@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { SetupWizard } from './components/Wizard/SetupWizard'
 import { Sidebar } from './components/Sidebar/Sidebar'
 import { ChatView } from './components/Chat/ChatView'
@@ -34,10 +34,28 @@ function App() {
     return templates.find(t => t.id === templateId) ?? selectedTemplate ?? undefined
   })()
 
-  const handleNew = () => {
+  const searchInputRef = useRef<HTMLInputElement | null>(null)
+
+  const handleNew = useCallback(() => {
     setActiveConvId(null)
     setActiveConvMeta(null)
-  }
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const mod = e.metaKey || e.ctrlKey
+      if (mod && e.key === 'n') {
+        e.preventDefault()
+        handleNew()
+      }
+      if (mod && e.key === 'f') {
+        e.preventDefault()
+        searchInputRef.current?.focus()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleNew])
 
   if (!wizardDone) {
     return <SetupWizard onComplete={() => setWizardDone(true)} />
@@ -49,6 +67,7 @@ function App() {
         activeId={activeConvId}
         onSelect={id => setActiveConvId(id)}
         onNew={handleNew}
+        searchInputRef={searchInputRef}
       />
 
       <div className="flex flex-col flex-1 min-w-0">

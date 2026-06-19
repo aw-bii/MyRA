@@ -31,7 +31,13 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
   }
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() }
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      submit()
+    } else if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault()
+      submit()
+    }
   }
 
   const handleFiles = useCallback((paths: string[]) => {

@@ -5,9 +5,10 @@ import { ConvItem } from './ConvItem'
 interface Props {
   activeId: string | null
   onSelect: (id: string) => void
+  searchInputRef?: React.RefObject<HTMLInputElement | null>
 }
 
-export function ConvList({ activeId, onSelect }: Props) {
+export function ConvList({ activeId, onSelect, searchInputRef }: Props) {
   const { conversations, search } = useConversations()
   const [query, setQuery] = useState('')
   const [searchResults, setSearchResults] = useState<{ conversationId: string }[] | null>(null)
@@ -30,6 +31,9 @@ export function ConvList({ activeId, onSelect }: Props) {
         placeholder="Search..."
         value={query}
         onChange={e => handleSearch(e.target.value)}
+        ref={(el: HTMLInputElement | null) => {
+          if (searchInputRef) searchInputRef.current = el
+        }}
       />
       {displayed.map(conv => (
         <ConvItem
