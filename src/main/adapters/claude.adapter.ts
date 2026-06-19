@@ -1,7 +1,22 @@
 import fs from 'fs'
+import path from 'path'
 import { spawn, ChildProcess } from 'child_process'
 import type { BackendAdapter, MessageChunk, Attachment } from '../../shared/types'
 import { AttachmentService } from '../attachments/service'
+
+function getClaudeBinaryPath(): string {
+  try {
+    const { app } = require('electron') as typeof import('electron')
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const fs = require('fs')
+    const binaryName = process.platform === 'win32' ? 'claude.exe' : 'claude'
+    const bundledPath = app.isPackaged
+      ? path.join(process.resourcesPath!, 'claude-bin', binaryName)
+      : path.join(__dirname, '..', '..', '..', 'resources', 'claude-bin', binaryName)
+    if (fs.existsSync(bundledPath)) return bundledPath
+  } catch { /* fallback to PATH */ }
+  return 'claude'
+}
 
 export class ClaudeAdapter implements BackendAdapter {
   id = 'claude'
@@ -9,7 +24,7 @@ export class ClaudeAdapter implements BackendAdapter {
 
   async isAvailable(): Promise<boolean> {
     return new Promise(resolve => {
-      const p = spawn('claude', ['--version'], { stdio: 'pipe' })
+      const p = spawn(getClaudeBinaryPath(), ['--version'], { stdio: 'pipe' })
       p.on('close', code => resolve(code === 0))
       p.on('error', () => resolve(false))
     })
@@ -43,7 +58,7 @@ export class ClaudeAdapter implements BackendAdapter {
     let resolve: (() => void) | null = null
     let done = false
 
-    this.proc = spawn('claude', args, { stdio: 'pipe' })
+    this.proc = spawn(getClaudeBinaryPath(), args, { stdio: 'pipe' })
 
     this.proc.stdout!.on('data', (buf: Buffer) => {
       for (const line of buf.toString().split('\n').filter(Boolean)) {
