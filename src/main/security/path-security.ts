@@ -9,7 +9,10 @@ interface SafePathResult {
 const TRAVERSAL_PATTERNS = [
   /\.\.(\/|\\)/,
   /%2e%2e/i,
+  /%2f/i,
   /%5c/i,
+  /%252e%252e/i,
+  /%252f/i,
   /\u2025/,
   /\u2025\u2025/,
   /\.\.\u2215/,

@@ -32,6 +32,18 @@ describe("PathSecurity", () => {
       );
     });
 
+    it("detects URL-encoded forward slash %2f traversal", () => {
+      expect(PathSecurity.isPathTraversal("..%2fetc%2fpasswd")).toBe(true);
+    });
+
+    it("detects double-encoded %252e%252e traversal", () => {
+      expect(PathSecurity.isPathTraversal("%252e%252e%252fetc%2fpasswd")).toBe(true);
+    });
+
+    it("detects mixed %2F uppercase traversal", () => {
+      expect(PathSecurity.isPathTraversal("..%2Fetc/passwd")).toBe(true);
+    });
+
     it("allows safe relative paths", () => {
       expect(PathSecurity.isPathTraversal("data/file.txt")).toBe(false);
     });
