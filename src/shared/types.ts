@@ -111,3 +111,10 @@ export interface SecurityRespondPayload {
   eventType: SecurityEvent["type"];
   approved: boolean;
 }
+
+export interface SearchResult {
+  message: Message;
+  conversationTitle: string;
+  snippet: string;
+  rank: number;
+}

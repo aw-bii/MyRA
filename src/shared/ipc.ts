@@ -114,3 +114,7 @@ export interface IpcPushMap {
   [IPC.UPDATE_DOWNLOADED]: void;
   [IPC.SECURITY_EVENT]: import("./types").SecurityEvent;
 }
+
+export interface IpcReturnMap {
+  [IPC.CONV_SEARCH]: import("./types").SearchResult[];
+}
