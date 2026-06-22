@@ -146,3 +146,33 @@ export interface CronJobLog {
   conversationId: string | null;
   error: string | null;
 }
+
+export interface McpServerConfig {
+  id: string;
+  name: string;
+  command: string;
+  args: string[];
+  env?: Record<string, string>;
+  enabled: boolean;
+  tools: McpTool[];
+  lastSeen: number | null;
+}
+
+export interface McpTool {
+  name: string;
+  description: string;
+  inputSchema: Record<string, unknown>;
+  serverId: string;
+}
+
+export interface McpToolCallRequest {
+  serverId: string;
+  toolName: string;
+  arguments: Record<string, unknown>;
+}
+
+export interface McpToolCallResult {
+  success: boolean;
+  content: string;
+  error?: string;
+}

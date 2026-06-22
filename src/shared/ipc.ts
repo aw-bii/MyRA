@@ -46,6 +46,13 @@ export const IPC = {
   CRON_TOGGLE: "cron:toggle",
   CRON_LOGS: "cron:logs",
   CRON_RUN_NOW: "cron:run-now",
+
+  MCP_LIST_SERVERS: "mcp:list-servers",
+  MCP_ADD_SERVER: "mcp:add-server",
+  MCP_REMOVE_SERVER: "mcp:remove-server",
+  MCP_TOGGLE_SERVER: "mcp:toggle-server",
+  MCP_LIST_TOOLS: "mcp:list-tools",
+  MCP_CALL_TOOL: "mcp:call-tool",
 } as const;
 
 export type IpcChannels = typeof IPC;
@@ -111,6 +118,13 @@ export interface IpcInvokeMap {
   [IPC.CRON_TOGGLE]: { id: string };
   [IPC.CRON_LOGS]: { cronJobId: string };
   [IPC.CRON_RUN_NOW]: { id: string };
+
+  [IPC.MCP_LIST_SERVERS]: void;
+  [IPC.MCP_ADD_SERVER]: { name: string; command: string; args: string[]; env?: Record<string, string> };
+  [IPC.MCP_REMOVE_SERVER]: { id: string };
+  [IPC.MCP_TOGGLE_SERVER]: { id: string };
+  [IPC.MCP_LIST_TOOLS]: void;
+  [IPC.MCP_CALL_TOOL]: import("./types").McpToolCallRequest;
 }
 
 export interface IpcPushMap {
