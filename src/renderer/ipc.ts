@@ -16,6 +16,7 @@ import type {
   McpServerConfig,
   McpTool,
   McpToolCallResult,
+  PluginInfo,
 } from "../shared/types";
 
 // window.ipc is injected by preload/index.ts via contextBridge
@@ -244,4 +245,14 @@ export async function listMcpTools(): Promise<McpTool[]> {
 }
 export async function callMcpTool(request: import("../shared/types").McpToolCallRequest): Promise<McpToolCallResult> {
   return window.ipc.invoke(IPC.MCP_CALL_TOOL, request) as Promise<McpToolCallResult>;
+}
+
+export async function listPlugins(): Promise<PluginInfo[]> {
+  return window.ipc.invoke(IPC.PLUGIN_LIST) as Promise<PluginInfo[]>;
+}
+export async function togglePlugin(id: string): Promise<void> {
+  await window.ipc.invoke(IPC.PLUGIN_TOGGLE, { id });
+}
+export async function reloadPlugins(): Promise<void> {
+  await window.ipc.invoke(IPC.PLUGIN_RELOAD);
 }

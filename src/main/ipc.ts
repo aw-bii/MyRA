@@ -10,6 +10,8 @@ import { downloadUpdate, quitAndInstall } from "./updater";
 import { CronStore } from "./scheduler/cron-store";
 import { CronEngine } from "./scheduler/cron-engine";
 import { McpClientManager } from "./mcp/mcp-client-manager";
+import { PluginManager } from "./plugins/plugin-manager";
+import path from "path";
 
 export const MAX_PROMPT_LENGTH = 100_000;
 export const MAX_MESSAGE_LENGTH = 100_000;
@@ -349,4 +351,14 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   });
   ipcMain.handle(IPC.MCP_LIST_TOOLS, () => McpClientManager.getTools());
   ipcMain.handle(IPC.MCP_CALL_TOOL, (_event, request) => McpClientManager.callTool(request));
+
+  ipcMain.handle(IPC.PLUGIN_LIST, () => PluginManager.list());
+  ipcMain.handle(IPC.PLUGIN_TOGGLE, (_event, { id }) => {
+    PluginManager.toggle(id);
+    return PluginManager.list();
+  });
+  ipcMain.handle(IPC.PLUGIN_RELOAD, async () => {
+    const pluginDir = path.join(app.getPath("userData"), "plugins");
+    await PluginManager.reload(pluginDir);
+  });
 }

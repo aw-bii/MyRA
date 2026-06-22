@@ -6,6 +6,8 @@ import { registerIpcHandlers } from "./ipc";
 import { initUpdater } from "./updater";
 import { CronEngine } from "./scheduler/cron-engine";
 import { McpClientManager } from "./mcp/mcp-client-manager";
+import { PluginManager } from "./plugins/plugin-manager";
+import { existsSync } from "fs";
 
 // Must run before app.whenReady() — redirects SQLite to a temp dir so each
 // E2E test run starts with a clean database, and opens CDP port for Playwright
@@ -116,6 +118,10 @@ app.whenReady().then(() => {
   const win = createWindow();
   registerIpcHandlers(win);
   CronEngine.start();
+  const pluginDir = path.join(app.getPath("userData"), "plugins");
+  if (existsSync(pluginDir)) {
+    PluginManager.discover(pluginDir);
+  }
   if (app.isPackaged) {
     initUpdater(win);
   }
