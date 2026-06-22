@@ -65,7 +65,7 @@ export default {
   },
   plugins: [
     typography,
-    function ({ addVariant }: { addVariant: Function }) {
+    function ({ addVariant }: { addVariant: (name: string, definition: string) => void }) {
       addVariant("hoverable", "@media (hover: hover) and (pointer: fine)");
     },
   ],

@@ -13,7 +13,7 @@ type WorkerFixtures = {
   window: Page;
 };
 
-export const test = base.extend<{}, WorkerFixtures>({
+export const test = base.extend<Record<string, never>, WorkerFixtures>({
   app: [
     async ({}, use) => {
       const browser = await chromium.connectOverCDP("http://localhost:9222");

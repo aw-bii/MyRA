@@ -13,16 +13,16 @@ function makeMockProcess(exitCode: number, stderrOutput = "") {
     on: vi.fn(),
   };
 
-  mockProc.stdout.on.mockImplementation((_event: string, _cb: Function) => {});
+  mockProc.stdout.on.mockImplementation((_event: string, _cb: (data: Buffer) => void) => {});
 
-  mockProc.stderr.on.mockImplementation((_event: string, cb: Function) => {
+  mockProc.stderr.on.mockImplementation((_event: string, cb: (data: Buffer) => void) => {
     if (stderrOutput) {
       // emit stderr data synchronously so it is captured before close fires
       cb(Buffer.from(stderrOutput));
     }
   });
 
-  mockProc.on.mockImplementation((event: string, cb: Function) => {
+  mockProc.on.mockImplementation((event: string, cb: (code?: number) => void) => {
     if (event === "close") setTimeout(() => cb(exitCode), 0);
     if (event === "error") { /* never fires in these tests */ }
   });
