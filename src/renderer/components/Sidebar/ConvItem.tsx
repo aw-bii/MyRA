@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Trash, ArrowsSplit } from "@phosphor-icons/react";
 import type { Conversation } from "../../../shared/types";
 
 interface Props {
@@ -54,19 +55,13 @@ export function ConvItem({
           setEditValue(conversation.title);
           setEditing(true);
         }}
-        className={`flex-1 text-left px-3 py-2 rounded-lg text-sm truncate hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors ${
+        className={`flex-1 text-left px-3 py-2 rounded-lg text-sm truncate hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 transition-colors transition-transform duration-100 ease-press active:scale-95 ${
           active ? "bg-gray-200 dark:bg-gray-700" : ""
         }`}
       >
         <div className="font-medium truncate flex items-center gap-1">
           {isPipeline && (
-            <svg
-              className="w-3 h-3 flex-shrink-0 text-blue-500"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-            >
-              <path d="M4 2a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm8-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm0 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-5-1h2v2H7V7zm0-4h2v2H7V3z" />
-            </svg>
+            <ArrowsSplit size={12} className="flex-shrink-0 text-blue-500" />
           )}
           <span className="truncate">{conversation.title}</span>
         </div>
@@ -80,17 +75,11 @@ export function ConvItem({
           e.stopPropagation();
           onDelete(conversation.id);
         }}
-        className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-500 transition-opacity"
+        className="opacity-0 hoverable:group-hover:opacity-100 p-1 text-gray-400 hoverable:hover:text-red-500 transition-opacity transition-transform duration-100 ease-press active:scale-95"
         aria-label="Delete conversation"
         title="Delete"
       >
-        <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-          <path
-            fillRule="evenodd"
-            d="M9 2a1 1 0 0 0-.894.553L7.382 4H4a1 1 0 0 0 0 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V6a1 1 0 1 0 0-2h-3.382l-.724-1.447A1 1 0 0 0 11 2H9zM7 8a1 1 0 0 1 2 0v6a1 1 0 1 1-2 0V8zm5-1a1 1 0 0 0-1 1v6a1 1 0 1 0 2 0V8a1 1 0 0 0-1-1z"
-            clipRule="evenodd"
-          />
-        </svg>
+        <Trash size={16} />
       </button>
     </div>
   );

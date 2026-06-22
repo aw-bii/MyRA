@@ -1,4 +1,5 @@
 import { useState, useRef, KeyboardEvent, DragEvent, useCallback } from "react";
+import { Paperclip } from "@phosphor-icons/react";
 import { AttachmentChip } from "./AttachmentChip";
 import { useAttachments } from "../../hooks/useAttachments";
 import type { Attachment } from "../../../shared/types";
@@ -125,16 +126,10 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={isDisabled}
-          className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 disabled:opacity-40"
+          className="p-2 text-gray-400 hoverable:hover:text-gray-600 dark:hoverable:hover:text-gray-300 disabled:opacity-40"
           aria-label="Attach file"
         >
-          <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-            <path
-              fillRule="evenodd"
-              d="M8 4a3 3 0 0 0-3 3v4.5a4.5 4.5 0 0 0 9 0V7a1 1 0 1 1 2 0v4.5a6.5 6.5 0 1 1-13 0V7a5 5 0 0 1 10 0v4.5a2.5 2.5 0 1 1-5 0V7a1 1 0 0 1 2 0v4.5a.5.5 0 0 0 1 0V7a3 3 0 0 0-3-3z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <Paperclip size={20} />
         </button>
 
         <textarea
@@ -150,7 +145,7 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
         {streaming ? (
           <button
             onClick={onAbort}
-            className="px-4 py-3 rounded-xl bg-red-500 text-white text-sm hover:bg-red-600"
+            className="px-4 py-3 rounded-xl bg-red-500 text-white text-sm hoverable:hover:bg-red-600 transition-transform duration-100 ease-press active:scale-95"
           >
             Stop
           </button>
@@ -158,7 +153,7 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
           <button
             onClick={submit}
             disabled={!value.trim() || isDisabled}
-            className="px-4 py-3 rounded-xl bg-blue-600 text-white text-sm hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-3 rounded-xl bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 disabled:opacity-50 transition-transform duration-100 ease-press active:scale-95"
           >
             {ingesting ? "…" : "Send"}
           </button>

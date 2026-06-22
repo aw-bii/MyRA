@@ -19,6 +19,7 @@
     "postinstall": "node scripts/download-claude.mjs"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
     "better-sqlite3": "^12.11.1",
     "electron-updater": "^6.8.9",
     "mammoth": "^1.12.0",
