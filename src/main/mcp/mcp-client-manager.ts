@@ -30,6 +30,24 @@ interface ServerEntry {
 
 const servers = new Map<string, ServerEntry>();
 
+const BLOCKED_ENV_KEYS = new Set([
+  "PATH",
+  "LD_PRELOAD",
+  "LD_LIBRARY_PATH",
+  "DYLD_INSERT_LIBRARIES",
+  "DYLD_LIBRARY_PATH",
+  "NODE_OPTIONS",
+  "NODE_PATH",
+]);
+
+export function stripDangerousEnvKeys(
+  env: Record<string, string>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(env).filter(([k]) => !BLOCKED_ENV_KEYS.has(k)),
+  );
+}
+
 function createServerId(name: string): string {
   return (
     name
@@ -128,8 +146,11 @@ export const McpClientManager = {
     if (server.process) return;
 
     return new Promise<void>((resolve, reject) => {
+      const safeEnv = server.config.env
+        ? stripDangerousEnvKeys(server.config.env)
+        : {};
       const proc = spawn(server.config.command, server.config.args, {
-        env: { ...process.env, ...server.config.env },
+        env: { ...process.env, ...safeEnv },
         stdio: ["pipe", "pipe", "pipe"],
       });
       server.process = proc;

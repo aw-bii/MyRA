@@ -3,7 +3,7 @@ import path from "path";
 import os from "os";
 import crypto from "crypto";
 import fs from "fs";
-import { McpClientManager } from "./mcp-client-manager";
+import { McpClientManager, stripDangerousEnvKeys } from "./mcp-client-manager";
 
 const ECHO_SERVER_JS = path.join(
   os.tmpdir(),
@@ -28,6 +28,35 @@ rl.on("line", (line) => {
 });
 `,
 );
+
+describe("stripDangerousEnvKeys", () => {
+  it("removes PATH override", () => {
+    const result = stripDangerousEnvKeys({ PATH: "/evil", MY_VAR: "ok" });
+    expect(result.PATH).toBeUndefined();
+    expect(result.MY_VAR).toBe("ok");
+  });
+
+  it("removes LD_PRELOAD", () => {
+    const result = stripDangerousEnvKeys({ LD_PRELOAD: "/evil.so" });
+    expect(result.LD_PRELOAD).toBeUndefined();
+  });
+
+  it("removes DYLD_INSERT_LIBRARIES", () => {
+    const result = stripDangerousEnvKeys({ DYLD_INSERT_LIBRARIES: "/evil.dylib" });
+    expect(result.DYLD_INSERT_LIBRARIES).toBeUndefined();
+  });
+
+  it("removes LD_LIBRARY_PATH and NODE_OPTIONS", () => {
+    const result = stripDangerousEnvKeys({ LD_LIBRARY_PATH: "/evil", NODE_OPTIONS: "--inspect" });
+    expect(result.LD_LIBRARY_PATH).toBeUndefined();
+    expect(result.NODE_OPTIONS).toBeUndefined();
+  });
+
+  it("passes through safe env keys", () => {
+    const result = stripDangerousEnvKeys({ MY_TOKEN: "abc", API_URL: "https://x.com" });
+    expect(result).toEqual({ MY_TOKEN: "abc", API_URL: "https://x.com" });
+  });
+});
 
 describe("McpClientManager", () => {
   afterAll(() => {
