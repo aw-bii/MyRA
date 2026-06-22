@@ -3,6 +3,7 @@ import type { IpcInvokeMap } from "../shared/ipc";
 import type {
   Conversation,
   Message,
+  SearchResult,
   Persona,
   BackendInfo,
   MessageChunk,
@@ -54,8 +55,8 @@ export async function getConversation(
 ): Promise<{ conversation: Conversation; messages: Message[] }> {
   return window.ipc.invoke(IPC.CONV_GET, { conversationId }) as Promise<any>;
 }
-export async function searchConversations(query: string): Promise<Message[]> {
-  return window.ipc.invoke(IPC.CONV_SEARCH, { query }) as Promise<Message[]>;
+export async function searchConversations(query: string): Promise<SearchResult[]> {
+  return window.ipc.invoke(IPC.CONV_SEARCH, { query }) as Promise<SearchResult[]>;
 }
 export async function listPersonas(): Promise<Persona[]> {
   return window.ipc.invoke(IPC.PERSONA_LIST) as Promise<Persona[]>;

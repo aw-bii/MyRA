@@ -6,7 +6,9 @@ import type {
   PipelineTemplate,
   PipelineStep,
   Attachment,
+  SearchResult,
 } from "../../shared/types";
+import { searchMessages as searchMessagesFn } from "./search";
 
 export const ConvStore = {
   createConversation(
@@ -48,22 +50,8 @@ export const ConvStore = {
     return rows.map(rowToConv);
   },
 
-  searchMessages(query: string): Message[] {
-    try {
-      const rows = getDb()
-        .prepare(
-          `
-        SELECT m.* FROM messages m
-        JOIN messages_fts fts ON m.rowid = fts.rowid
-        WHERE messages_fts MATCH ?
-        ORDER BY rank LIMIT 50
-      `,
-        )
-        .all(query) as any[];
-      return rows.map(rowToMsg);
-    } catch {
-      return [];
-    }
+  searchMessages(query: string): SearchResult[] {
+    return searchMessagesFn(query);
   },
 
   createMessage(msg: Omit<Message, "createdAt"> & { id?: string }): Message {

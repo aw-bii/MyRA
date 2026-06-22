@@ -60,7 +60,7 @@ describe("ConvStore.searchMessages", () => {
     });
     const results = ConvStore.searchMessages("pineapple");
     expect(results).toHaveLength(1);
-    expect(results[0].content).toBe("pineapple juice");
+    expect(results[0].message.content).toBe("pineapple juice");
   });
 });
 
