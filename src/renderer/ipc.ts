@@ -11,6 +11,8 @@ import type {
   PipelineChunk,
   SecurityEvent,
   SecurityRespondPayload,
+  CronJob,
+  CronJobLog,
 } from "../shared/types";
 
 // window.ipc is injected by preload/index.ts via contextBridge
@@ -198,4 +200,26 @@ export async function respondSecurity(
   payload: SecurityRespondPayload,
 ): Promise<void> {
   await window.ipc.invoke(IPC.SECURITY_RESPOND, payload);
+}
+
+export async function getCronJobs(): Promise<CronJob[]> {
+  return window.ipc.invoke(IPC.CRON_LIST) as Promise<CronJob[]>;
+}
+export async function createCronJob(input: { name: string; cronExpression: string; prompt: string; backend: string }): Promise<CronJob> {
+  return window.ipc.invoke(IPC.CRON_CREATE, input) as Promise<CronJob>;
+}
+export async function updateCronJob(id: string, changes: Partial<{ name: string; cronExpression: string; prompt: string; backend: string }>): Promise<CronJob> {
+  return window.ipc.invoke(IPC.CRON_UPDATE, { id, ...changes }) as Promise<CronJob>;
+}
+export async function deleteCronJob(id: string): Promise<void> {
+  await window.ipc.invoke(IPC.CRON_DELETE, { id });
+}
+export async function toggleCronJob(id: string): Promise<CronJob> {
+  return window.ipc.invoke(IPC.CRON_TOGGLE, { id }) as Promise<CronJob>;
+}
+export async function getCronJobLogs(cronJobId: string): Promise<CronJobLog[]> {
+  return window.ipc.invoke(IPC.CRON_LOGS, { cronJobId }) as Promise<CronJobLog[]>;
+}
+export async function runCronJobNow(id: string): Promise<void> {
+  await window.ipc.invoke(IPC.CRON_RUN_NOW, { id });
 }

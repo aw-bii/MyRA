@@ -4,6 +4,7 @@ import os from "os";
 import { initDb, getDb } from "./store/db";
 import { registerIpcHandlers } from "./ipc";
 import { initUpdater } from "./updater";
+import { CronEngine } from "./scheduler/cron-engine";
 
 // Must run before app.whenReady() — redirects SQLite to a temp dir so each
 // E2E test run starts with a clean database, and opens CDP port for Playwright
@@ -113,6 +114,7 @@ app.whenReady().then(() => {
 
   const win = createWindow();
   registerIpcHandlers(win);
+  CronEngine.start();
   if (app.isPackaged) {
     initUpdater(win);
   }

@@ -7,6 +7,8 @@ import { installBackend } from "./wizard/install";
 import { pipelineRunner } from "./pipeline/runner";
 import { AttachmentService } from "./attachments/service";
 import { downloadUpdate, quitAndInstall } from "./updater";
+import { CronStore } from "./scheduler/cron-store";
+import { CronEngine } from "./scheduler/cron-engine";
 
 export const MAX_PROMPT_LENGTH = 100_000;
 export const MAX_MESSAGE_LENGTH = 100_000;
@@ -298,4 +300,37 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   ipcMain.handle(IPC.UPDATE_DOWNLOAD, () => downloadUpdate());
   ipcMain.handle(IPC.UPDATE_INSTALL, () => quitAndInstall());
+
+  ipcMain.handle(IPC.CRON_LIST, () => CronStore.list());
+  ipcMain.handle(IPC.CRON_CREATE, (_event, input) => {
+    const job = CronStore.create(input);
+    if (job.status === "active") CronEngine.scheduleJob(job);
+    return job;
+  });
+  ipcMain.handle(IPC.CRON_UPDATE, (_event, { id, ...changes }) => {
+    CronStore.update(id, changes);
+    const job = CronStore.get(id);
+    if (job) {
+      CronEngine.unscheduleJob(id);
+      if (job.status === "active") CronEngine.scheduleJob(job);
+    }
+    return job;
+  });
+  ipcMain.handle(IPC.CRON_DELETE, (_event, { id }) => {
+    CronEngine.unscheduleJob(id);
+    CronStore.delete(id);
+  });
+  ipcMain.handle(IPC.CRON_TOGGLE, (_event, { id }) => {
+    CronStore.toggle(id);
+    const job = CronStore.get(id);
+    if (job) {
+      CronEngine.unscheduleJob(id);
+      if (job.status === "active") CronEngine.scheduleJob(job);
+    }
+    return job;
+  });
+  ipcMain.handle(IPC.CRON_LOGS, (_event, { cronJobId }) => CronStore.getLogs(cronJobId));
+  ipcMain.handle(IPC.CRON_RUN_NOW, async (_event, { id }) => {
+    await CronEngine.executeJob(id);
+  });
 }
