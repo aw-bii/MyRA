@@ -15,9 +15,14 @@ export default {
           "0%": { opacity: "0", transform: "translateY(8px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "bounce-dot": {
+          "0%, 60%, 100%": { transform: "translateY(0)" },
+          "30%": { transform: "translateY(-4px)" },
+        },
       },
       animation: {
         "fade-in-up": "fade-in-up 300ms cubic-bezier(0.23, 1, 0.32, 1) forwards",
+        "bounce-dot": "bounce-dot 1.4s ease-in-out infinite",
       },
       typography: {
         DEFAULT: {
