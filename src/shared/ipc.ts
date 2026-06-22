@@ -39,6 +39,13 @@ export const IPC = {
   UPDATE_PROGRESS: "update:progress",
   UPDATE_ERROR: "update:error",
   UPDATE_DOWNLOADED: "update:downloaded",
+  CRON_LIST: "cron:list",
+  CRON_CREATE: "cron:create",
+  CRON_UPDATE: "cron:update",
+  CRON_DELETE: "cron:delete",
+  CRON_TOGGLE: "cron:toggle",
+  CRON_LOGS: "cron:logs",
+  CRON_RUN_NOW: "cron:run-now",
 } as const;
 
 export type IpcChannels = typeof IPC;
@@ -97,6 +104,13 @@ export interface IpcInvokeMap {
   [IPC.CONV_RENAME]: { conversationId: string; title: string };
   [IPC.UPDATE_DOWNLOAD]: void;
   [IPC.UPDATE_INSTALL]: void;
+  [IPC.CRON_LIST]: void;
+  [IPC.CRON_CREATE]: { name: string; cronExpression: string; prompt: string; backend: string };
+  [IPC.CRON_UPDATE]: { id: string } & Partial<{ name: string; cronExpression: string; prompt: string; backend: string }>;
+  [IPC.CRON_DELETE]: { id: string };
+  [IPC.CRON_TOGGLE]: { id: string };
+  [IPC.CRON_LOGS]: { cronJobId: string };
+  [IPC.CRON_RUN_NOW]: { id: string };
 }
 
 export interface IpcPushMap {

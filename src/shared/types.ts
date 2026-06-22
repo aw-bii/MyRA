@@ -118,3 +118,31 @@ export interface SearchResult {
   snippet: string;
   rank: number;
 }
+
+export type CronJobStatus = "active" | "paused" | "error";
+
+export interface CronJob {
+  id: string;
+  name: string;
+  cronExpression: string;
+  prompt: string;
+  backend: string;
+  conversationId: string | null;
+  status: CronJobStatus;
+  lastRunAt: number | null;
+  nextRunAt: number | null;
+  createdAt: number;
+  updatedAt: number;
+  runCount: number;
+  lastError: string | null;
+}
+
+export interface CronJobLog {
+  id: string;
+  cronJobId: string;
+  startedAt: number;
+  finishedAt: number | null;
+  success: boolean;
+  conversationId: string | null;
+  error: string | null;
+}
