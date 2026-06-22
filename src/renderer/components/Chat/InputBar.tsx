@@ -143,22 +143,31 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
           placeholder="Message..."
           disabled={isDisabled}
         />
-        {streaming ? (
-          <button
-            onClick={onAbort}
-            className="px-4 py-3 rounded-xl bg-red-500 text-white text-sm hoverable:hover:bg-red-600 transition-transform duration-100 ease-press active:scale-95"
-          >
-            Stop
-          </button>
-        ) : (
+        <div className="relative">
+          {/* Send — always in layout; hidden when streaming */}
           <button
             onClick={submit}
-            disabled={!value.trim() || isDisabled}
-            className="px-4 py-3 rounded-xl bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 disabled:opacity-50 transition-transform duration-100 ease-press active:scale-95"
+            disabled={!value.trim() || isDisabled || streaming}
+            tabIndex={streaming ? -1 : 0}
+            aria-hidden={streaming}
+            className={`px-4 py-3 rounded-xl bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 disabled:opacity-50 transition-[opacity,transform] duration-[120ms] ease-out active:scale-95 ${
+              streaming ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100"
+            }`}
           >
             {ingesting ? "…" : "Send"}
           </button>
-        )}
+          {/* Stop — absolute overlay; shown when streaming */}
+          <button
+            onClick={onAbort}
+            tabIndex={streaming ? 0 : -1}
+            aria-hidden={!streaming}
+            className={`absolute inset-0 rounded-xl bg-red-500 text-white text-sm hoverable:hover:bg-red-600 transition-[opacity,transform] duration-[120ms] ease-out active:scale-95 ${
+              streaming ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-90 pointer-events-none"
+            }`}
+          >
+            Stop
+          </button>
+        </div>
       </div>
     </div>
   );
