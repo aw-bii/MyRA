@@ -87,10 +87,9 @@ describe("ConvItem", () => {
         onRename={() => {}}
       />,
     );
-    expect(screen.getByRole("button", { name: /Test conversation/i })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
+    expect(
+      screen.getByRole("button", { name: /Test conversation/i }),
+    ).toHaveAttribute("aria-current", "page");
   });
 
   it("shows full title in tooltip on truncated span", () => {
@@ -112,6 +111,10 @@ describe("ConvItem", () => {
         onRename={() => {}}
       />,
     );
-    expect(screen.getByTitle("A very long conversation title that will definitely truncate")).toBeInTheDocument();
+    expect(
+      screen.getByTitle(
+        "A very long conversation title that will definitely truncate",
+      ),
+    ).toBeInTheDocument();
   });
 });

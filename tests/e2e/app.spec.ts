@@ -38,9 +38,7 @@ test("chat flow — send a message and receive echo", async ({ window }) => {
   // The empty state is shown when mode=single and no active conversation.
   // Switch to Pipeline mode (exact: true avoids matching "Pipelines" button)
   // so that ChatView with InputBar renders even without an active conversation.
-  await window
-    .getByRole("button", { name: "Pipeline", exact: true })
-    .click();
+  await window.getByRole("button", { name: "Pipeline", exact: true }).click();
 
   // Verify ChatView is now visible (the mode toggle shows Single/Pipeline)
   await expect(window.getByPlaceholder("Message...")).toBeVisible({
@@ -74,9 +72,7 @@ test("chat flow — send a message and receive echo", async ({ window }) => {
 
   // Switch to Pipeline mode to make ChatView visible (single mode with
   // no active conversation shows an empty state instead of ChatView)
-  await window
-    .getByRole("button", { name: "Pipeline", exact: true })
-    .click();
+  await window.getByRole("button", { name: "Pipeline", exact: true }).click();
 
   const input = window.getByPlaceholder("Message...");
   await expect(input).toBeVisible({ timeout: 5_000 });

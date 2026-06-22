@@ -10,7 +10,13 @@ vi.mock("../../ipc", () => ({
   listMcpTools: vi.fn(),
 }));
 
-import { listMcpServers, addMcpServer, removeMcpServer, toggleMcpServer, listMcpTools } from "../../ipc";
+import {
+  listMcpServers,
+  addMcpServer,
+  removeMcpServer,
+  toggleMcpServer,
+  listMcpTools,
+} from "../../ipc";
 
 describe("McpPanel", () => {
   beforeEach(() => {
@@ -28,7 +34,15 @@ describe("McpPanel", () => {
 
   it("renders server list", async () => {
     vi.mocked(listMcpServers).mockResolvedValue([
-      { id: "fs", name: "Filesystem", command: "npx", args: ["-y", "server-fs", "/tmp"], enabled: true, tools: [], lastSeen: null },
+      {
+        id: "fs",
+        name: "Filesystem",
+        command: "npx",
+        args: ["-y", "server-fs", "/tmp"],
+        enabled: true,
+        tools: [],
+        lastSeen: null,
+      },
     ]);
     vi.mocked(listMcpTools).mockResolvedValue([]);
     render(<McpPanel />);
@@ -53,25 +67,48 @@ describe("McpPanel", () => {
     vi.mocked(listMcpServers).mockResolvedValue([]);
     vi.mocked(listMcpTools).mockResolvedValue([]);
     vi.mocked(addMcpServer).mockResolvedValue({
-      id: "test", name: "Test Server", command: "node", args: ["server.js"], enabled: true, tools: [], lastSeen: null,
+      id: "test",
+      name: "Test Server",
+      command: "node",
+      args: ["server.js"],
+      enabled: true,
+      tools: [],
+      lastSeen: null,
     });
     render(<McpPanel />);
     await waitFor(() => expect(screen.getByText("+ Add")).toBeTruthy());
     fireEvent.click(screen.getByText("+ Add"));
-    fireEvent.change(screen.getByPlaceholderText("Server name"), { target: { value: "Test Server" } });
-    fireEvent.change(screen.getByPlaceholderText("Command (e.g., npx)"), { target: { value: "node" } });
-    fireEvent.change(screen.getByPlaceholderText(/Arguments/i), { target: { value: "server.js" } });
+    fireEvent.change(screen.getByPlaceholderText("Server name"), {
+      target: { value: "Test Server" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Command (e.g., npx)"), {
+      target: { value: "node" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/Arguments/i), {
+      target: { value: "server.js" },
+    });
     fireEvent.click(screen.getByText("Add Server"));
     await waitFor(() => {
       expect(addMcpServer).toHaveBeenCalledWith({
-        name: "Test Server", command: "node", args: ["server.js"], env: {},
+        name: "Test Server",
+        command: "node",
+        args: ["server.js"],
+        env: {},
       });
     });
   });
 
   it("removes a server", async () => {
     vi.mocked(listMcpServers).mockResolvedValue([
-      { id: "s1", name: "Server", command: "node", args: ["s.js"], enabled: true, tools: [], lastSeen: null },
+      {
+        id: "s1",
+        name: "Server",
+        command: "node",
+        args: ["s.js"],
+        enabled: true,
+        tools: [],
+        lastSeen: null,
+      },
     ]);
     vi.mocked(listMcpTools).mockResolvedValue([]);
     render(<McpPanel />);
@@ -84,7 +121,15 @@ describe("McpPanel", () => {
 
   it("toggles a server", async () => {
     vi.mocked(listMcpServers).mockResolvedValue([
-      { id: "s1", name: "Server", command: "node", args: ["s.js"], enabled: true, tools: [], lastSeen: null },
+      {
+        id: "s1",
+        name: "Server",
+        command: "node",
+        args: ["s.js"],
+        enabled: true,
+        tools: [],
+        lastSeen: null,
+      },
     ]);
     vi.mocked(listMcpTools).mockResolvedValue([]);
     render(<McpPanel />);

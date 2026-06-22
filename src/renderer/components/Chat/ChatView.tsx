@@ -63,7 +63,11 @@ function SingleChatView({
         </div>
       )}
       {(messages.length > 0 || streaming) && (
-        <MessageList messages={messages} streaming={streaming} conversationId={conversationId} />
+        <MessageList
+          messages={messages}
+          streaming={streaming}
+          conversationId={conversationId}
+        />
       )}
       <InputBar onSend={handleSend} onAbort={abort} streaming={streaming} />
     </div>

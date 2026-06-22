@@ -19,7 +19,11 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const pending = new Map<string, PendingRequest>();
 
 export const WriteApproval = {
-  queue(filePath: string, content: string, timeoutMs = DEFAULT_TIMEOUT_MS): string {
+  queue(
+    filePath: string,
+    content: string,
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+  ): string {
     const id = crypto.randomUUID();
     let resolve: (result: ApprovalResult) => void;
     const promise = new Promise<ApprovalResult>((r) => {
@@ -34,7 +38,14 @@ export const WriteApproval = {
       }
     }, timeoutMs);
 
-    pending.set(id, { id, filePath, content, resolve: resolve!, promise, timer });
+    pending.set(id, {
+      id,
+      filePath,
+      content,
+      resolve: resolve!,
+      promise,
+      timer,
+    });
 
     return id;
   },
@@ -61,7 +72,9 @@ export const WriteApproval = {
 
   getPending(): Array<{ id: string; filePath: string; content: string }> {
     return Array.from(pending.values()).map(({ id, filePath, content }) => ({
-      id, filePath, content,
+      id,
+      filePath,
+      content,
     }));
   },
 

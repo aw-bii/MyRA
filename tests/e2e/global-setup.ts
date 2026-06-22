@@ -6,7 +6,12 @@ import os from "os";
 const PROJECT_ROOT = path.join(__dirname, "..", "..");
 
 function getElectronPath(): string {
-  const pathTxt = path.join(PROJECT_ROOT, "node_modules", "electron", "path.txt");
+  const pathTxt = path.join(
+    PROJECT_ROOT,
+    "node_modules",
+    "electron",
+    "path.txt",
+  );
   const exeName = fs.readFileSync(pathTxt, "utf8").trim();
   return path.join(PROJECT_ROOT, "node_modules", "electron", "dist", exeName);
 }
@@ -31,7 +36,9 @@ async function waitForCDP(
     }
     await new Promise((r) => setTimeout(r, delayMs));
   }
-  throw new Error(`CDP endpoint ${url} did not become ready after ${retries * delayMs}ms`);
+  throw new Error(
+    `CDP endpoint ${url} did not become ready after ${retries * delayMs}ms`,
+  );
 }
 
 export default async function globalSetup() {
@@ -68,7 +75,9 @@ export default async function globalSetup() {
   // Store the PID so global teardown can kill it
   process.env._E2E_ELECTRON_PID = String(child.pid);
 
-  child.stderr?.on("data", (d) => process.stderr.write("[electron-setup] " + d));
+  child.stderr?.on("data", (d) =>
+    process.stderr.write("[electron-setup] " + d),
+  );
 
   await waitForCDP("http://localhost:9222/json/version", child);
   process.stderr.write("[global-setup] Electron CDP ready\n");

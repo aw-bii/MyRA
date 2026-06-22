@@ -18,7 +18,11 @@ describe("CronEngine", () => {
   afterAll(() => {
     CronEngine.shutdown();
     closeDb();
-    try { fs.unlinkSync(dbPath); } catch { /* ok */ }
+    try {
+      fs.unlinkSync(dbPath);
+    } catch {
+      /* ok */
+    }
   });
 
   it("starts and stops without error", () => {
@@ -27,7 +31,12 @@ describe("CronEngine", () => {
   });
 
   it("starts with existing active jobs scheduled", () => {
-    CronStore.create({ name: "Auto", cronExpression: "* * * * *", prompt: "hi", backend: "claude" });
+    CronStore.create({
+      name: "Auto",
+      cronExpression: "* * * * *",
+      prompt: "hi",
+      backend: "claude",
+    });
     expect(() => CronEngine.start()).not.toThrow();
     CronEngine.shutdown();
   });

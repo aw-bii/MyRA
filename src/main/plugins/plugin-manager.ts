@@ -58,7 +58,11 @@ export const PluginManager = {
           lastLoadedAt: Date.now(),
           lastError: null,
         };
-        plugins.set(id, { info, descriptor: desc, dir: path.join(pluginDir, entry.name) });
+        plugins.set(id, {
+          info,
+          descriptor: desc,
+          dir: path.join(pluginDir, entry.name),
+        });
         registerHooks(id, info.hooks);
       } catch {
         // Skip malformed plugins
@@ -72,7 +76,9 @@ export const PluginManager = {
 
   getHooksFor(hook: PluginHook): PluginInfo[] {
     const ids = hookRegistry.get(hook) || [];
-    return ids.map((id) => plugins.get(id)?.info).filter(Boolean) as PluginInfo[];
+    return ids
+      .map((id) => plugins.get(id)?.info)
+      .filter(Boolean) as PluginInfo[];
   },
 
   toggle(id: string) {
@@ -84,13 +90,31 @@ export const PluginManager = {
     } else {
       for (const hook of plugin.info.hooks) {
         const existing = hookRegistry.get(hook) || [];
-        hookRegistry.set(hook, existing.filter((pid) => pid !== id));
+        hookRegistry.set(
+          hook,
+          existing.filter((pid) => pid !== id),
+        );
       }
     }
   },
 
-  async executeHook(hook: PluginHook, event: PluginEvent): Promise<Array<{ pluginId: string; success: boolean; data?: unknown; error?: string }>> {
-    const results: Array<{ pluginId: string; success: boolean; data?: unknown; error?: string }> = [];
+  async executeHook(
+    hook: PluginHook,
+    event: PluginEvent,
+  ): Promise<
+    Array<{
+      pluginId: string;
+      success: boolean;
+      data?: unknown;
+      error?: string;
+    }>
+  > {
+    const results: Array<{
+      pluginId: string;
+      success: boolean;
+      data?: unknown;
+      error?: string;
+    }> = [];
     const ids = hookRegistry.get(hook) || [];
     for (const pluginId of ids) {
       const plugin = plugins.get(pluginId);
@@ -117,8 +141,12 @@ export const PluginManager = {
       let stdout = "";
       let stderr = "";
 
-      proc.stdout?.on("data", (chunk: Buffer) => { stdout += chunk.toString(); });
-      proc.stderr?.on("data", (chunk: Buffer) => { stderr += chunk.toString(); });
+      proc.stdout?.on("data", (chunk: Buffer) => {
+        stdout += chunk.toString();
+      });
+      proc.stderr?.on("data", (chunk: Buffer) => {
+        stderr += chunk.toString();
+      });
 
       proc.on("close", (code) => {
         if (code === 0) {

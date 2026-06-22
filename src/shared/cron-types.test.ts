@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { IPC } from "./ipc";
-import type { CronJob, CronJobLog } from "./types";
+import type { CronJob } from "./types";
 
 describe("CronJob type", () => {
   it("can be constructed with required fields", () => {

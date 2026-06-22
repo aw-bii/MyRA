@@ -297,7 +297,10 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
               rows={3}
               value={editing.systemPrompt ?? ""}
               onChange={(e) =>
-                setEditing((prev) => ({ ...prev, systemPrompt: e.target.value }))
+                setEditing((prev) => ({
+                  ...prev,
+                  systemPrompt: e.target.value,
+                }))
               }
             />
           </div>

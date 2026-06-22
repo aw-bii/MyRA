@@ -1,12 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { IPC } from "./ipc";
-import type { McpServerConfig, McpTool, McpToolCallRequest, McpToolCallResult } from "./types";
+import type { McpServerConfig, McpTool } from "./types";
 
 describe("MCP types", () => {
   it("McpServerConfig can be constructed", () => {
     const cfg: McpServerConfig = {
-      id: "s1", name: "Filesystem", command: "npx", args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
-      enabled: true, tools: [], lastSeen: null,
+      id: "s1",
+      name: "Filesystem",
+      command: "npx",
+      args: ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"],
+      enabled: true,
+      tools: [],
+      lastSeen: null,
     };
     expect(cfg.name).toBe("Filesystem");
     expect(cfg.enabled).toBe(true);
@@ -14,7 +19,10 @@ describe("MCP types", () => {
 
   it("McpTool can be constructed", () => {
     const tool: McpTool = {
-      name: "read_file", description: "Read a file", inputSchema: {}, serverId: "s1",
+      name: "read_file",
+      description: "Read a file",
+      inputSchema: {},
+      serverId: "s1",
     };
     expect(tool.name).toBe("read_file");
   });

@@ -17,7 +17,9 @@ describe("PathSecurity", () => {
     });
 
     it("detects absolute path traversal on Windows", () => {
-      expect(PathSecurity.isPathTraversal("C:\\Windows\\system32\\config")).toBe(true);
+      expect(
+        PathSecurity.isPathTraversal("C:\\Windows\\system32\\config"),
+      ).toBe(true);
     });
 
     it("detects encoded traversal %2e%2e%2f", () => {
@@ -25,7 +27,9 @@ describe("PathSecurity", () => {
     });
 
     it("detects unicode normalization traversal", () => {
-      expect(PathSecurity.isPathTraversal("\u2025\u2025/etc/passwd")).toBe(true);
+      expect(PathSecurity.isPathTraversal("\u2025\u2025/etc/passwd")).toBe(
+        true,
+      );
     });
 
     it("allows safe relative paths", () => {
@@ -46,14 +50,13 @@ describe("PathSecurity", () => {
         allowedDirs,
       );
       expect(result.allowed).toBe(true);
-      expect(result.resolvedPath).toBe(path.resolve("/home/user/project/src/file.ts"));
+      expect(result.resolvedPath).toBe(
+        path.resolve("/home/user/project/src/file.ts"),
+      );
     });
 
     it("rejects path outside allowed directories", () => {
-      const result = PathSecurity.resolveSafePath(
-        "/etc/passwd",
-        allowedDirs,
-      );
+      const result = PathSecurity.resolveSafePath("/etc/passwd", allowedDirs);
       expect(result.allowed).toBe(false);
       expect(result.reason).toContain("outside allowed");
     });
@@ -65,7 +68,9 @@ describe("PathSecurity", () => {
         "/home/user/project",
       );
       expect(result.allowed).toBe(true);
-      expect(result.resolvedPath).toBe(path.resolve("/home/user/project/src/file.ts"));
+      expect(result.resolvedPath).toBe(
+        path.resolve("/home/user/project/src/file.ts"),
+      );
     });
   });
 });

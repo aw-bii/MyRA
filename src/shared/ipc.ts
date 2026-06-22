@@ -117,15 +117,30 @@ export interface IpcInvokeMap {
   [IPC.UPDATE_DOWNLOAD]: void;
   [IPC.UPDATE_INSTALL]: void;
   [IPC.CRON_LIST]: void;
-  [IPC.CRON_CREATE]: { name: string; cronExpression: string; prompt: string; backend: string };
-  [IPC.CRON_UPDATE]: { id: string } & Partial<{ name: string; cronExpression: string; prompt: string; backend: string }>;
+  [IPC.CRON_CREATE]: {
+    name: string;
+    cronExpression: string;
+    prompt: string;
+    backend: string;
+  };
+  [IPC.CRON_UPDATE]: { id: string } & Partial<{
+    name: string;
+    cronExpression: string;
+    prompt: string;
+    backend: string;
+  }>;
   [IPC.CRON_DELETE]: { id: string };
   [IPC.CRON_TOGGLE]: { id: string };
   [IPC.CRON_LOGS]: { cronJobId: string };
   [IPC.CRON_RUN_NOW]: { id: string };
 
   [IPC.MCP_LIST_SERVERS]: void;
-  [IPC.MCP_ADD_SERVER]: { name: string; command: string; args: string[]; env?: Record<string, string> };
+  [IPC.MCP_ADD_SERVER]: {
+    name: string;
+    command: string;
+    args: string[];
+    env?: Record<string, string>;
+  };
   [IPC.MCP_REMOVE_SERVER]: { id: string };
   [IPC.MCP_TOGGLE_SERVER]: { id: string };
   [IPC.MCP_LIST_TOOLS]: void;

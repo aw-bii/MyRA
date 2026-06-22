@@ -61,8 +61,12 @@ export async function getConversation(
 ): Promise<{ conversation: Conversation; messages: Message[] }> {
   return window.ipc.invoke(IPC.CONV_GET, { conversationId }) as Promise<any>;
 }
-export async function searchConversations(query: string): Promise<SearchResult[]> {
-  return window.ipc.invoke(IPC.CONV_SEARCH, { query }) as Promise<SearchResult[]>;
+export async function searchConversations(
+  query: string,
+): Promise<SearchResult[]> {
+  return window.ipc.invoke(IPC.CONV_SEARCH, { query }) as Promise<
+    SearchResult[]
+  >;
 }
 export async function listPersonas(): Promise<Persona[]> {
   return window.ipc.invoke(IPC.PERSONA_LIST) as Promise<Persona[]>;
@@ -209,11 +213,27 @@ export async function respondSecurity(
 export async function getCronJobs(): Promise<CronJob[]> {
   return window.ipc.invoke(IPC.CRON_LIST) as Promise<CronJob[]>;
 }
-export async function createCronJob(input: { name: string; cronExpression: string; prompt: string; backend: string }): Promise<CronJob> {
+export async function createCronJob(input: {
+  name: string;
+  cronExpression: string;
+  prompt: string;
+  backend: string;
+}): Promise<CronJob> {
   return window.ipc.invoke(IPC.CRON_CREATE, input) as Promise<CronJob>;
 }
-export async function updateCronJob(id: string, changes: Partial<{ name: string; cronExpression: string; prompt: string; backend: string }>): Promise<CronJob> {
-  return window.ipc.invoke(IPC.CRON_UPDATE, { id, ...changes }) as Promise<CronJob>;
+export async function updateCronJob(
+  id: string,
+  changes: Partial<{
+    name: string;
+    cronExpression: string;
+    prompt: string;
+    backend: string;
+  }>,
+): Promise<CronJob> {
+  return window.ipc.invoke(IPC.CRON_UPDATE, {
+    id,
+    ...changes,
+  }) as Promise<CronJob>;
 }
 export async function deleteCronJob(id: string): Promise<void> {
   await window.ipc.invoke(IPC.CRON_DELETE, { id });
@@ -222,7 +242,9 @@ export async function toggleCronJob(id: string): Promise<CronJob> {
   return window.ipc.invoke(IPC.CRON_TOGGLE, { id }) as Promise<CronJob>;
 }
 export async function getCronJobLogs(cronJobId: string): Promise<CronJobLog[]> {
-  return window.ipc.invoke(IPC.CRON_LOGS, { cronJobId }) as Promise<CronJobLog[]>;
+  return window.ipc.invoke(IPC.CRON_LOGS, { cronJobId }) as Promise<
+    CronJobLog[]
+  >;
 }
 export async function runCronJobNow(id: string): Promise<void> {
   await window.ipc.invoke(IPC.CRON_RUN_NOW, { id });
@@ -231,20 +253,37 @@ export async function runCronJobNow(id: string): Promise<void> {
 export async function listMcpServers(): Promise<McpServerConfig[]> {
   return window.ipc.invoke(IPC.MCP_LIST_SERVERS) as Promise<McpServerConfig[]>;
 }
-export async function addMcpServer(config: { name: string; command: string; args: string[]; env?: Record<string, string> }): Promise<McpServerConfig> {
-  return window.ipc.invoke(IPC.MCP_ADD_SERVER, config) as Promise<McpServerConfig>;
+export async function addMcpServer(config: {
+  name: string;
+  command: string;
+  args: string[];
+  env?: Record<string, string>;
+}): Promise<McpServerConfig> {
+  return window.ipc.invoke(
+    IPC.MCP_ADD_SERVER,
+    config,
+  ) as Promise<McpServerConfig>;
 }
 export async function removeMcpServer(id: string): Promise<void> {
   await window.ipc.invoke(IPC.MCP_REMOVE_SERVER, { id });
 }
-export async function toggleMcpServer(id: string): Promise<McpServerConfig | undefined> {
-  return window.ipc.invoke(IPC.MCP_TOGGLE_SERVER, { id }) as Promise<McpServerConfig | undefined>;
+export async function toggleMcpServer(
+  id: string,
+): Promise<McpServerConfig | undefined> {
+  return window.ipc.invoke(IPC.MCP_TOGGLE_SERVER, { id }) as Promise<
+    McpServerConfig | undefined
+  >;
 }
 export async function listMcpTools(): Promise<McpTool[]> {
   return window.ipc.invoke(IPC.MCP_LIST_TOOLS) as Promise<McpTool[]>;
 }
-export async function callMcpTool(request: import("../shared/types").McpToolCallRequest): Promise<McpToolCallResult> {
-  return window.ipc.invoke(IPC.MCP_CALL_TOOL, request) as Promise<McpToolCallResult>;
+export async function callMcpTool(
+  request: import("../shared/types").McpToolCallRequest,
+): Promise<McpToolCallResult> {
+  return window.ipc.invoke(
+    IPC.MCP_CALL_TOOL,
+    request,
+  ) as Promise<McpToolCallResult>;
 }
 
 export async function listPlugins(): Promise<PluginInfo[]> {

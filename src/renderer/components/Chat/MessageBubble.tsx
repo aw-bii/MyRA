@@ -38,9 +38,7 @@ export function MessageBubble({ message }: Props) {
         {attachments.length > 0 && <AttachmentRow attachments={attachments} />}
         <div
           className={`text-xs mt-1 ${
-            isUser
-              ? "text-blue-100"
-              : "text-gray-400 dark:text-gray-500"
+            isUser ? "text-blue-100" : "text-gray-400 dark:text-gray-500"
           }`}
         >
           {message.backend} · {new Date(message.createdAt).toLocaleTimeString()}

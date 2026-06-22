@@ -16,7 +16,11 @@ describe("CronStore", () => {
 
   afterAll(() => {
     closeDb();
-    try { fs.unlinkSync(dbPath); } catch { /* ok */ }
+    try {
+      fs.unlinkSync(dbPath);
+    } catch {
+      /* ok */
+    }
   });
 
   it("list returns empty initially", () => {
@@ -25,8 +29,10 @@ describe("CronStore", () => {
 
   it("creates a cron job", () => {
     const job = CronStore.create({
-      name: "Daily Report", cronExpression: "0 9 * * 1-5",
-      prompt: "Generate daily report", backend: "claude",
+      name: "Daily Report",
+      cronExpression: "0 9 * * 1-5",
+      prompt: "Generate daily report",
+      backend: "claude",
     });
     expect(job.name).toBe("Daily Report");
     expect(job.status).toBe("active");
@@ -58,11 +64,16 @@ describe("CronStore", () => {
 
   it("creates and reads logs", () => {
     const job = CronStore.create({
-      name: "Test", cronExpression: "* * * * *",
-      prompt: "test", backend: "claude",
+      name: "Test",
+      cronExpression: "* * * * *",
+      prompt: "test",
+      backend: "claude",
     });
     CronStore.addLog({
-      cronJobId: job.id, startedAt: Date.now(), success: true, conversationId: "conv1",
+      cronJobId: job.id,
+      startedAt: Date.now(),
+      success: true,
+      conversationId: "conv1",
     });
     const logs = CronStore.getLogs(job.id);
     expect(logs.length).toBe(1);

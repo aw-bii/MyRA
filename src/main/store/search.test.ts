@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { initDb, closeDb, getDb } from "./db";
 import { searchMessages } from "./search";
-import type { SearchResult } from "../../shared/types";
 import path from "path";
 import os from "os";
 import crypto from "crypto";
@@ -11,7 +10,10 @@ let dbPath: string;
 
 describe("searchMessages", () => {
   beforeAll(() => {
-    dbPath = path.join(os.tmpdir(), `test-search-enh-${crypto.randomUUID()}.db`);
+    dbPath = path.join(
+      os.tmpdir(),
+      `test-search-enh-${crypto.randomUUID()}.db`,
+    );
     initDb(dbPath);
     const db = getDb();
 
@@ -30,13 +32,34 @@ describe("searchMessages", () => {
     ).run("m1", "c1", "user", "Hello, how does this work?", "claude", 1001);
     db.prepare(
       "INSERT INTO messages (id, conversation_id, role, content, backend, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-    ).run("m2", "c1", "assistant", "Let me explain how the search feature works. It uses FTS5 for full-text search.", "claude", 1002);
+    ).run(
+      "m2",
+      "c1",
+      "assistant",
+      "Let me explain how the search feature works. It uses FTS5 for full-text search.",
+      "claude",
+      1002,
+    );
     db.prepare(
       "INSERT INTO messages (id, conversation_id, role, content, backend, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-    ).run("m3", "c2", "user", "What's the architecture of Project Alpha?", "gemini", 2001);
+    ).run(
+      "m3",
+      "c2",
+      "user",
+      "What's the architecture of Project Alpha?",
+      "gemini",
+      2001,
+    );
     db.prepare(
       "INSERT INTO messages (id, conversation_id, role, content, backend, created_at) VALUES (?, ?, ?, ?, ?, ?)",
-    ).run("m4", "c2", "assistant", "Project Alpha uses React and Node.js.", "gemini", 2002);
+    ).run(
+      "m4",
+      "c2",
+      "assistant",
+      "Project Alpha uses React and Node.js.",
+      "gemini",
+      2002,
+    );
     db.prepare(
       "INSERT INTO messages (id, conversation_id, role, content, backend, created_at) VALUES (?, ?, ?, ?, ?, ?)",
     ).run("m5", "c3", "user", "Just a test message", "claude", 3001);
@@ -47,7 +70,11 @@ describe("searchMessages", () => {
 
   afterAll(() => {
     closeDb();
-    try { fs.unlinkSync(dbPath); } catch { /* ok */ }
+    try {
+      fs.unlinkSync(dbPath);
+    } catch {
+      /* ok */
+    }
   });
 
   it("returns SearchResult[] for matching query", () => {

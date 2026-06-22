@@ -297,7 +297,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     return AttachmentService.getDataUrl(storedPath);
   });
 
-  ipcMain.handle(IPC.SECURITY_RESPOND, (_event, payload) => {
+  ipcMain.handle(IPC.SECURITY_RESPOND, (_event, _payload) => {
     // Security respond handler — placeholder for now, wired fully in Task 8
   });
 
@@ -332,14 +332,20 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     }
     return job;
   });
-  ipcMain.handle(IPC.CRON_LOGS, (_event, { cronJobId }) => CronStore.getLogs(cronJobId));
+  ipcMain.handle(IPC.CRON_LOGS, (_event, { cronJobId }) =>
+    CronStore.getLogs(cronJobId),
+  );
   ipcMain.handle(IPC.CRON_RUN_NOW, async (_event, { id }) => {
     await CronEngine.executeJob(id);
   });
 
   ipcMain.handle(IPC.MCP_LIST_SERVERS, () => McpClientManager.getServers());
-  ipcMain.handle(IPC.MCP_ADD_SERVER, (_event, config) => McpClientManager.addServer(config));
-  ipcMain.handle(IPC.MCP_REMOVE_SERVER, (_event, { id }) => McpClientManager.removeServer(id));
+  ipcMain.handle(IPC.MCP_ADD_SERVER, (_event, config) =>
+    McpClientManager.addServer(config),
+  );
+  ipcMain.handle(IPC.MCP_REMOVE_SERVER, (_event, { id }) =>
+    McpClientManager.removeServer(id),
+  );
   ipcMain.handle(IPC.MCP_TOGGLE_SERVER, (_event, { id }) => {
     const servers = McpClientManager.getServers();
     const s = servers.find((srv) => srv.id === id);
@@ -350,7 +356,9 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     return s;
   });
   ipcMain.handle(IPC.MCP_LIST_TOOLS, () => McpClientManager.getTools());
-  ipcMain.handle(IPC.MCP_CALL_TOOL, (_event, request) => McpClientManager.callTool(request));
+  ipcMain.handle(IPC.MCP_CALL_TOOL, (_event, request) =>
+    McpClientManager.callTool(request),
+  );
 
   ipcMain.handle(IPC.PLUGIN_LIST, () => PluginManager.list());
   ipcMain.handle(IPC.PLUGIN_TOGGLE, (_event, { id }) => {

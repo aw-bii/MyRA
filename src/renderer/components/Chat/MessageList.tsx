@@ -37,7 +37,10 @@ export function MessageList({ messages, streaming, conversationId }: Props) {
       {messages.map((msg) => {
         const isNew = !seenIdsRef.current.has(msg.id);
         return (
-          <div key={msg.id} className={isNew ? "animate-fade-in-up" : undefined}>
+          <div
+            key={msg.id}
+            className={isNew ? "animate-fade-in-up" : undefined}
+          >
             <MessageBubble message={msg} />
           </div>
         );
@@ -45,9 +48,18 @@ export function MessageList({ messages, streaming, conversationId }: Props) {
       {streaming && (
         <div className="flex justify-start mb-3">
           <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl px-4 py-3 flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce-dot" style={{ animationDelay: "0ms" }} />
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce-dot" style={{ animationDelay: "200ms" }} />
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce-dot" style={{ animationDelay: "400ms" }} />
+            <span
+              className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce-dot"
+              style={{ animationDelay: "0ms" }}
+            />
+            <span
+              className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce-dot"
+              style={{ animationDelay: "200ms" }}
+            />
+            <span
+              className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce-dot"
+              style={{ animationDelay: "400ms" }}
+            />
           </div>
         </div>
       )}

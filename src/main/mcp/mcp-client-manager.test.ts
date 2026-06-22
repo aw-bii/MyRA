@@ -5,8 +5,13 @@ import crypto from "crypto";
 import fs from "fs";
 import { McpClientManager } from "./mcp-client-manager";
 
-const ECHO_SERVER_JS = path.join(os.tmpdir(), `mcp-test-echo-${crypto.randomUUID()}.js`);
-fs.writeFileSync(ECHO_SERVER_JS, `
+const ECHO_SERVER_JS = path.join(
+  os.tmpdir(),
+  `mcp-test-echo-${crypto.randomUUID()}.js`,
+);
+fs.writeFileSync(
+  ECHO_SERVER_JS,
+  `
 const readline = require("readline");
 const rl = readline.createInterface({ input: process.stdin });
 rl.on("line", (line) => {
@@ -21,12 +26,17 @@ rl.on("line", (line) => {
     process.stdout.write(JSON.stringify({ jsonrpc: "2.0", id, result: { content: [{ type: "text", text }] } }) + "\\n");
   }
 });
-`);
+`,
+);
 
 describe("McpClientManager", () => {
   afterAll(() => {
     McpClientManager.shutdownAll();
-    try { fs.unlinkSync(ECHO_SERVER_JS); } catch { /* ok */ }
+    try {
+      fs.unlinkSync(ECHO_SERVER_JS);
+    } catch {
+      /* ok */
+    }
   });
 
   it("starts empty", () => {

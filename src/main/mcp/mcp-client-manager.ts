@@ -1,6 +1,11 @@
 import { spawn, ChildProcess } from "child_process";
 import { randomUUID } from "crypto";
-import type { McpServerConfig, McpTool, McpToolCallRequest, McpToolCallResult } from "../../shared/types";
+import type {
+  McpServerConfig,
+  McpTool,
+  McpToolCallRequest,
+  McpToolCallResult,
+} from "../../shared/types";
 
 interface JsonRpcMessage {
   jsonrpc: "2.0";
@@ -15,7 +20,10 @@ interface ServerEntry {
   config: McpServerConfig;
   process: ChildProcess | null;
   tools: McpTool[];
-  pending: Map<string | number, { resolve: (v: unknown) => void; reject: (e: Error) => void }>;
+  pending: Map<
+    string | number,
+    { resolve: (v: unknown) => void; reject: (e: Error) => void }
+  >;
   buffer: string;
   nextId: number;
 }
@@ -23,17 +31,29 @@ interface ServerEntry {
 const servers = new Map<string, ServerEntry>();
 
 function createServerId(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || randomUUID();
+  return (
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || randomUUID()
+  );
 }
 
-function sendMessage(serverId: string, msg: Omit<JsonRpcMessage, "jsonrpc"> & { id: string | number }) {
+function sendMessage(
+  serverId: string,
+  msg: Omit<JsonRpcMessage, "jsonrpc"> & { id: string | number },
+) {
   const server = servers.get(serverId);
-  if (!server?.process?.stdin) throw new Error(`Server ${serverId} not connected`);
+  if (!server?.process?.stdin)
+    throw new Error(`Server ${serverId} not connected`);
   const full: JsonRpcMessage = { jsonrpc: "2.0", ...msg };
   server.process.stdin.write(JSON.stringify(full) + "\n");
 }
 
-function waitForResponse(serverId: string, id: string | number): Promise<unknown> {
+function waitForResponse(
+  serverId: string,
+  id: string | number,
+): Promise<unknown> {
   const server = servers.get(serverId);
   if (!server) return Promise.reject(new Error("Server not found"));
   return new Promise((resolve, reject) => {
@@ -58,7 +78,9 @@ function handleMessage(serverId: string, raw: string) {
       if (msg.error) reject(new Error(msg.error.message));
       else resolve(msg.result);
     }
-  } catch { /* malformed */ }
+  } catch {
+    /* malformed */
+  }
 }
 
 export const McpClientManager = {
@@ -66,7 +88,12 @@ export const McpClientManager = {
     return Array.from(servers.values()).map((s) => s.config);
   },
 
-  addServer(config: { name: string; command: string; args: string[]; env?: Record<string, string> }): McpServerConfig {
+  addServer(config: {
+    name: string;
+    command: string;
+    args: string[];
+    env?: Record<string, string>;
+  }): McpServerConfig {
     const id = createServerId(config.name);
     const now = Date.now();
     const serverConfig: McpServerConfig = {
@@ -79,7 +106,14 @@ export const McpClientManager = {
       tools: [],
       lastSeen: null,
     };
-    servers.set(serverConfig.id, { config: serverConfig, process: null, tools: [], pending: new Map(), buffer: "", nextId: 1 });
+    servers.set(serverConfig.id, {
+      config: serverConfig,
+      process: null,
+      tools: [],
+      pending: new Map(),
+      buffer: "",
+      nextId: 1,
+    });
     return serverConfig;
   },
 
@@ -116,7 +150,9 @@ export const McpClientManager = {
               resolve();
             }
             handleMessage(id, trimmed);
-          } catch { /* buffer more */ }
+          } catch {
+            /* buffer more */
+          }
         }
       });
 
@@ -128,10 +164,15 @@ export const McpClientManager = {
 
       proc.on("exit", (code) => {
         server.process = null;
-        if (!initResolved) reject(new Error(`Process exited with code ${code}`));
+        if (!initResolved)
+          reject(new Error(`Process exited with code ${code}`));
       });
 
-      sendMessage(id, { id: "init", method: "initialize", params: { protocolVersion: "0.1.0", capabilities: {} } });
+      sendMessage(id, {
+        id: "init",
+        method: "initialize",
+        params: { protocolVersion: "0.1.0", capabilities: {} },
+      });
 
       setTimeout(() => {
         if (!initResolved) reject(new Error("MCP initialize timed out"));
@@ -155,7 +196,13 @@ export const McpClientManager = {
     if (!server) throw new Error(`Server ${id} not found`);
     const msgId = server.nextId++;
     sendMessage(id, { id: msgId, method: "tools/list" });
-    const result = await waitForResponse(id, msgId) as { tools: Array<{ name: string; description: string; inputSchema: Record<string, unknown> }> };
+    const result = (await waitForResponse(id, msgId)) as {
+      tools: Array<{
+        name: string;
+        description: string;
+        inputSchema: Record<string, unknown>;
+      }>;
+    };
     server.tools = result.tools.map((t) => ({ ...t, serverId: id }));
     server.config.tools = server.tools;
     return server.tools;
@@ -163,7 +210,7 @@ export const McpClientManager = {
 
   getTools(): McpTool[] {
     const all: McpTool[] = [];
-    for (const [serverId, server] of servers) {
+    for (const [_serverId, server] of servers) {
       if (server.config.enabled) all.push(...server.tools);
     }
     return all;
@@ -171,19 +218,36 @@ export const McpClientManager = {
 
   async callTool(request: McpToolCallRequest): Promise<McpToolCallResult> {
     const server = servers.get(request.serverId);
-    if (!server) return { success: false, content: "", error: `Server ${request.serverId} not found` };
+    if (!server)
+      return {
+        success: false,
+        content: "",
+        error: `Server ${request.serverId} not found`,
+      };
     if (!server.process) {
       try {
         await this.connect(request.serverId);
       } catch (err: any) {
-        return { success: false, content: "", error: `Failed to connect: ${err.message}` };
+        return {
+          success: false,
+          content: "",
+          error: `Failed to connect: ${err.message}`,
+        };
       }
     }
     const msgId = server.nextId++;
     try {
-      sendMessage(request.serverId, { id: msgId, method: "tools/call", params: { name: request.toolName, arguments: request.arguments } });
-      const result = await waitForResponse(request.serverId, msgId) as { content: Array<{ type: string; text?: string }> };
-      const text = (result.content || []).map((c: any) => c.text || "").join("\n");
+      sendMessage(request.serverId, {
+        id: msgId,
+        method: "tools/call",
+        params: { name: request.toolName, arguments: request.arguments },
+      });
+      const result = (await waitForResponse(request.serverId, msgId)) as {
+        content: Array<{ type: string; text?: string }>;
+      };
+      const text = (result.content || [])
+        .map((c: any) => c.text || "")
+        .join("\n");
       return { success: true, content: text };
     } catch (err: any) {
       return { success: false, content: "", error: err.message };

@@ -151,7 +151,9 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
             tabIndex={streaming ? -1 : 0}
             aria-hidden={streaming}
             className={`px-4 py-3 rounded-xl bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 disabled:opacity-50 transition-[opacity,transform] duration-[120ms] ease-out active:scale-95 ${
-              streaming ? "opacity-0 scale-90 pointer-events-none" : "opacity-100 scale-100"
+              streaming
+                ? "opacity-0 scale-90 pointer-events-none"
+                : "opacity-100 scale-100"
             }`}
           >
             {ingesting ? "…" : "Send"}
@@ -162,7 +164,9 @@ export function InputBar({ onSend, onAbort, streaming, disabled }: Props) {
             tabIndex={streaming ? 0 : -1}
             aria-hidden={!streaming}
             className={`absolute inset-0 rounded-xl bg-red-500 text-white text-sm hoverable:hover:bg-red-600 transition-[opacity,transform] duration-[120ms] ease-out active:scale-95 ${
-              streaming ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-90 pointer-events-none"
+              streaming
+                ? "opacity-100 scale-100 pointer-events-auto"
+                : "opacity-0 scale-90 pointer-events-none"
             }`}
           >
             Stop

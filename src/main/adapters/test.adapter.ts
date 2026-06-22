@@ -1,4 +1,8 @@
-import type { BackendAdapter, MessageChunk, Attachment } from "../../shared/types";
+import type {
+  BackendAdapter,
+  MessageChunk,
+  Attachment,
+} from "../../shared/types";
 
 export class TestAdapter implements BackendAdapter {
   id = "test";

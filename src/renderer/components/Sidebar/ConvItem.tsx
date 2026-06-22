@@ -64,7 +64,9 @@ export function ConvItem({
           {isPipeline && (
             <ArrowsSplit size={12} className="flex-shrink-0 text-blue-500" />
           )}
-          <span className="truncate" title={conversation.title}>{conversation.title}</span>
+          <span className="truncate" title={conversation.title}>
+            {conversation.title}
+          </span>
         </div>
         <div className="text-xs text-gray-400 flex gap-2">
           <span>{isPipeline ? "pipeline" : conversation.backend}</span>

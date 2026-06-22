@@ -93,7 +93,10 @@ export interface Attachment {
 }
 
 export interface SecurityEvent {
-  type: "injection_detected" | "write_approval_needed" | "path_traversal_blocked";
+  type:
+    | "injection_detected"
+    | "write_approval_needed"
+    | "path_traversal_blocked";
   severity: "low" | "medium" | "high" | "critical";
   message: string;
   detail: string;
@@ -177,7 +180,12 @@ export interface McpToolCallResult {
   error?: string;
 }
 
-export type PluginHook = "beforePrompt" | "afterResponse" | "onConversationStart" | "onConversationEnd" | "onError";
+export type PluginHook =
+  | "beforePrompt"
+  | "afterResponse"
+  | "onConversationStart"
+  | "onConversationEnd"
+  | "onError";
 
 export interface PluginInfo {
   id: string;

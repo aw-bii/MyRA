@@ -1,4 +1,7 @@
-const DEFAULT_DIRS = [process.cwd(), process.env.HOME || process.env.USERPROFILE || ""].filter(Boolean) as string[];
+const DEFAULT_DIRS = [
+  process.cwd(),
+  process.env.HOME || process.env.USERPROFILE || "",
+].filter(Boolean) as string[];
 const DEFAULT_TIMEOUT_MS = 30_000;
 
 let allowedDirectories = new Set<string>(DEFAULT_DIRS);

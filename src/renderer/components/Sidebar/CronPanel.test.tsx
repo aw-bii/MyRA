@@ -11,7 +11,13 @@ vi.mock("../../ipc", () => ({
   runCronJobNow: vi.fn(),
 }));
 
-import { getCronJobs, createCronJob, toggleCronJob, deleteCronJob, getCronJobLogs } from "../../ipc";
+import {
+  getCronJobs,
+  createCronJob,
+  toggleCronJob,
+  deleteCronJob,
+  getCronJobLogs,
+} from "../../ipc";
 
 describe("CronPanel", () => {
   beforeEach(() => {
@@ -28,7 +34,21 @@ describe("CronPanel", () => {
 
   it("renders job list from store", async () => {
     vi.mocked(getCronJobs).mockResolvedValue([
-      { id: "j1", name: "Daily Report", cronExpression: "0 9 * * 1-5", prompt: "report", backend: "claude", conversationId: null, status: "active", lastRunAt: null, nextRunAt: null, createdAt: 1000, updatedAt: 1000, runCount: 0, lastError: null },
+      {
+        id: "j1",
+        name: "Daily Report",
+        cronExpression: "0 9 * * 1-5",
+        prompt: "report",
+        backend: "claude",
+        conversationId: null,
+        status: "active",
+        lastRunAt: null,
+        nextRunAt: null,
+        createdAt: 1000,
+        updatedAt: 1000,
+        runCount: 0,
+        lastError: null,
+      },
     ]);
     render(<CronPanel />);
     await waitFor(() => {
@@ -52,30 +72,77 @@ describe("CronPanel", () => {
   it("creates a job via IPC", async () => {
     vi.mocked(getCronJobs).mockResolvedValue([]);
     vi.mocked(createCronJob).mockResolvedValue({
-      id: "j2", name: "Test Job", cronExpression: "* * * * *", prompt: "test", backend: "claude", conversationId: null, status: "active", lastRunAt: null, nextRunAt: null, createdAt: 2000, updatedAt: 2000, runCount: 0, lastError: null,
+      id: "j2",
+      name: "Test Job",
+      cronExpression: "* * * * *",
+      prompt: "test",
+      backend: "claude",
+      conversationId: null,
+      status: "active",
+      lastRunAt: null,
+      nextRunAt: null,
+      createdAt: 2000,
+      updatedAt: 2000,
+      runCount: 0,
+      lastError: null,
     });
     render(<CronPanel />);
     await waitFor(() => {
       expect(screen.getByText("+ New")).toBeTruthy();
     });
     fireEvent.click(screen.getByText("+ New"));
-    fireEvent.change(screen.getByPlaceholderText("Name"), { target: { value: "Test Job" } });
-    fireEvent.change(screen.getByPlaceholderText(/Cron expression/i), { target: { value: "* * * * *" } });
-    fireEvent.change(screen.getAllByPlaceholderText(/Prompt/i)[0], { target: { value: "test" } });
+    fireEvent.change(screen.getByPlaceholderText("Name"), {
+      target: { value: "Test Job" },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/Cron expression/i), {
+      target: { value: "* * * * *" },
+    });
+    fireEvent.change(screen.getAllByPlaceholderText(/Prompt/i)[0], {
+      target: { value: "test" },
+    });
     fireEvent.click(screen.getByText("Create Job"));
     await waitFor(() => {
       expect(createCronJob).toHaveBeenCalledWith({
-        name: "Test Job", cronExpression: "* * * * *", prompt: "test", backend: "claude",
+        name: "Test Job",
+        cronExpression: "* * * * *",
+        prompt: "test",
+        backend: "claude",
       });
     });
   });
 
   it("toggles a job", async () => {
     vi.mocked(getCronJobs).mockResolvedValue([
-      { id: "j1", name: "Job", cronExpression: "* * * * *", prompt: "p", backend: "claude", conversationId: null, status: "active", lastRunAt: null, nextRunAt: null, createdAt: 1000, updatedAt: 1000, runCount: 0, lastError: null },
+      {
+        id: "j1",
+        name: "Job",
+        cronExpression: "* * * * *",
+        prompt: "p",
+        backend: "claude",
+        conversationId: null,
+        status: "active",
+        lastRunAt: null,
+        nextRunAt: null,
+        createdAt: 1000,
+        updatedAt: 1000,
+        runCount: 0,
+        lastError: null,
+      },
     ]);
     vi.mocked(toggleCronJob).mockResolvedValue({
-      id: "j1", name: "Job", cronExpression: "* * * * *", prompt: "p", backend: "claude", conversationId: null, status: "paused", lastRunAt: null, nextRunAt: null, createdAt: 1000, updatedAt: 2000, runCount: 0, lastError: null,
+      id: "j1",
+      name: "Job",
+      cronExpression: "* * * * *",
+      prompt: "p",
+      backend: "claude",
+      conversationId: null,
+      status: "paused",
+      lastRunAt: null,
+      nextRunAt: null,
+      createdAt: 1000,
+      updatedAt: 2000,
+      runCount: 0,
+      lastError: null,
     });
     render(<CronPanel />);
     await waitFor(() => {
@@ -89,7 +156,21 @@ describe("CronPanel", () => {
 
   it("deletes a job", async () => {
     vi.mocked(getCronJobs).mockResolvedValue([
-      { id: "j1", name: "Job", cronExpression: "* * * * *", prompt: "p", backend: "claude", conversationId: null, status: "active", lastRunAt: null, nextRunAt: null, createdAt: 1000, updatedAt: 1000, runCount: 0, lastError: null },
+      {
+        id: "j1",
+        name: "Job",
+        cronExpression: "* * * * *",
+        prompt: "p",
+        backend: "claude",
+        conversationId: null,
+        status: "active",
+        lastRunAt: null,
+        nextRunAt: null,
+        createdAt: 1000,
+        updatedAt: 1000,
+        runCount: 0,
+        lastError: null,
+      },
     ]);
     render(<CronPanel />);
     await waitFor(() => {
@@ -103,10 +184,32 @@ describe("CronPanel", () => {
 
   it("shows job logs when Logs clicked", async () => {
     vi.mocked(getCronJobs).mockResolvedValue([
-      { id: "j1", name: "Job", cronExpression: "* * * * *", prompt: "p", backend: "claude", conversationId: null, status: "active", lastRunAt: null, nextRunAt: null, createdAt: 1000, updatedAt: 1000, runCount: 0, lastError: null },
+      {
+        id: "j1",
+        name: "Job",
+        cronExpression: "* * * * *",
+        prompt: "p",
+        backend: "claude",
+        conversationId: null,
+        status: "active",
+        lastRunAt: null,
+        nextRunAt: null,
+        createdAt: 1000,
+        updatedAt: 1000,
+        runCount: 0,
+        lastError: null,
+      },
     ]);
     vi.mocked(getCronJobLogs).mockResolvedValue([
-      { id: "l1", cronJobId: "j1", startedAt: 5000, finishedAt: 6000, success: true, conversationId: "c1", error: null },
+      {
+        id: "l1",
+        cronJobId: "j1",
+        startedAt: 5000,
+        finishedAt: 6000,
+        success: true,
+        conversationId: "c1",
+        error: null,
+      },
     ]);
     render(<CronPanel />);
     await waitFor(() => {

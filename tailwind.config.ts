@@ -21,7 +21,8 @@ export default {
         },
       },
       animation: {
-        "fade-in-up": "fade-in-up 300ms cubic-bezier(0.23, 1, 0.32, 1) forwards",
+        "fade-in-up":
+          "fade-in-up 300ms cubic-bezier(0.23, 1, 0.32, 1) forwards",
         "bounce-dot": "bounce-dot 1.4s ease-in-out infinite",
       },
       typography: {
@@ -65,7 +66,11 @@ export default {
   },
   plugins: [
     typography,
-    function ({ addVariant }: { addVariant: (name: string, definition: string) => void }) {
+    function ({
+      addVariant,
+    }: {
+      addVariant: (name: string, definition: string) => void;
+    }) {
       addVariant("hoverable", "@media (hover: hover) and (pointer: fine)");
     },
   ],

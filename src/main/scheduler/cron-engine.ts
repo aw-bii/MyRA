@@ -43,7 +43,8 @@ export const CronEngine = {
     try {
       const { ConvStore } = require("../store");
       const adapterManager = require("../adapters/manager").AdapterManager;
-      const adapter = adapterManager.get(job.backend) ?? adapterManager.getActive();
+      const adapter =
+        adapterManager.get(job.backend) ?? adapterManager.getActive();
 
       const conv = ConvStore.createConversation(
         `Cron: ${job.name} @ ${new Date().toISOString()}`,
@@ -74,10 +75,20 @@ export const CronEngine = {
       });
 
       CronStore.recordRun(jobId, true);
-      CronStore.addLog({ cronJobId: jobId, startedAt, success: true, conversationId: conv.id });
+      CronStore.addLog({
+        cronJobId: jobId,
+        startedAt,
+        success: true,
+        conversationId: conv.id,
+      });
     } catch (err: any) {
       CronStore.recordRun(jobId, false, err.message);
-      CronStore.addLog({ cronJobId: jobId, startedAt, success: false, error: err.message });
+      CronStore.addLog({
+        cronJobId: jobId,
+        startedAt,
+        success: false,
+        error: err.message,
+      });
     }
   },
 
@@ -86,7 +97,7 @@ export const CronEngine = {
   },
 
   shutdown() {
-    for (const [id, task] of scheduledTasks) {
+    for (const [_id, task] of scheduledTasks) {
       task.stop();
     }
     scheduledTasks.clear();

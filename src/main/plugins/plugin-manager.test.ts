@@ -5,7 +5,10 @@ import crypto from "crypto";
 import fs from "fs";
 import { PluginManager } from "./plugin-manager";
 
-const PLUGIN_DIR = path.join(os.tmpdir(), `plugins-test-${crypto.randomUUID()}`);
+const PLUGIN_DIR = path.join(
+  os.tmpdir(),
+  `plugins-test-${crypto.randomUUID()}`,
+);
 
 describe("PluginManager", () => {
   let pluginDir: string;
@@ -17,22 +20,28 @@ describe("PluginManager", () => {
     const pluginSubdir = path.join(pluginDir, "echo-hook");
     fs.mkdirSync(pluginSubdir, { recursive: true });
 
-    fs.writeFileSync(path.join(pluginSubdir, "plugin.json"), JSON.stringify({
-      name: "Echo Hook",
-      command: "node",
-      args: ["echo-hook.js"],
-      hooks: ["beforePrompt", "afterResponse"],
-      version: "1.0.0",
-    }));
+    fs.writeFileSync(
+      path.join(pluginSubdir, "plugin.json"),
+      JSON.stringify({
+        name: "Echo Hook",
+        command: "node",
+        args: ["echo-hook.js"],
+        hooks: ["beforePrompt", "afterResponse"],
+        version: "1.0.0",
+      }),
+    );
 
-    fs.writeFileSync(path.join(pluginSubdir, "echo-hook.js"), `
+    fs.writeFileSync(
+      path.join(pluginSubdir, "echo-hook.js"),
+      `
 const readline = require("readline");
 const rl = readline.createInterface({ input: process.stdin });
 rl.on("line", (line) => {
   const event = JSON.parse(line);
   process.stdout.write(JSON.stringify({ ok: true, event: event.hook }) + "\\n");
 });
-`);
+`,
+    );
   });
 
   afterAll(() => {

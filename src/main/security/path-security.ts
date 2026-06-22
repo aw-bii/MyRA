@@ -42,8 +42,12 @@ export const PathSecurity = {
 
     for (const dir of allowedDirectories) {
       const normalizedDir = normalizeSlashes(path.resolve(dir));
-      if (normalized.startsWith(normalizedDir.endsWith("/") ? normalizedDir : normalizedDir + "/") ||
-          normalized === normalizedDir) {
+      if (
+        normalized.startsWith(
+          normalizedDir.endsWith("/") ? normalizedDir : normalizedDir + "/",
+        ) ||
+        normalized === normalizedDir
+      ) {
         return { allowed: true, resolvedPath: resolved };
       }
     }
