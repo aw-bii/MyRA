@@ -1,4 +1,5 @@
 import { ConvList } from "./ConvList";
+import { SearchPanel } from "../SearchPanel/SearchPanel";
 
 interface Props {
   activeId: string | null;
@@ -8,6 +9,8 @@ interface Props {
   onRename: (id: string, title: string) => void;
   searchInputRef?: React.MutableRefObject<HTMLInputElement | null>;
   refreshTrigger?: number;
+  searchMode: boolean;
+  onCloseSearch: () => void;
 }
 
 export function Sidebar({
@@ -18,6 +21,8 @@ export function Sidebar({
   onRename,
   searchInputRef,
   refreshTrigger,
+  searchMode,
+  onCloseSearch,
 }: Props) {
   return (
     <div className="w-64 flex flex-col h-full border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
@@ -31,14 +36,18 @@ export function Sidebar({
         </button>
       </div>
       <div className="flex-1 overflow-y-auto py-2 px-2">
-        <ConvList
-          activeId={activeId}
-          onSelect={onSelect}
-          onDelete={onDelete}
-          onRename={onRename}
-          searchInputRef={searchInputRef}
-          refreshTrigger={refreshTrigger}
-        />
+        {searchMode ? (
+          <SearchPanel onSelect={onSelect} onClose={onCloseSearch} />
+        ) : (
+          <ConvList
+            activeId={activeId}
+            onSelect={onSelect}
+            onDelete={onDelete}
+            onRename={onRename}
+            searchInputRef={searchInputRef}
+            refreshTrigger={refreshTrigger}
+          />
+        )}
       </div>
     </div>
   );

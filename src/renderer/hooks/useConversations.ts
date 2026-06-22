@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { listConversations, searchConversations } from "../ipc";
-import type { Conversation, Message } from "../../shared/types";
+import type { Conversation, SearchResult } from "../../shared/types";
 
 export function useConversations(refreshKey?: number) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -17,7 +17,7 @@ export function useConversations(refreshKey?: number) {
     refresh();
   }, [refresh, refreshKey]);
 
-  const search = useCallback(async (query: string): Promise<Message[]> => {
+  const search = useCallback(async (query: string): Promise<SearchResult[]> => {
     if (!query.trim()) return [];
     return searchConversations(query);
   }, []);

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { GearSix, ChatCircle } from "@phosphor-icons/react";
+import { GearSix, ChatCircle, MagnifyingGlass } from "@phosphor-icons/react";
 import { SetupWizard } from "./components/Wizard/SetupWizard";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { ChatView } from "./components/Chat/ChatView";
@@ -48,6 +48,7 @@ function App() {
   const [showPipelines, setShowPipelines] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { templates } = usePipelines();
+  const [searchMode, setSearchMode] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
 
@@ -108,7 +109,7 @@ function App() {
       }
       if (mod && e.key === "f") {
         e.preventDefault();
-        searchInputRef.current?.focus();
+        setSearchMode((v) => !v);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -135,6 +136,8 @@ function App() {
         onRename={handleRename}
         searchInputRef={searchInputRef}
         refreshTrigger={refreshTrigger}
+        searchMode={searchMode}
+        onCloseSearch={() => setSearchMode(false)}
       />
 
       <div className="flex flex-col flex-1 min-w-0">
@@ -182,6 +185,13 @@ function App() {
             </select>
           )}
 
+          <button
+            onClick={() => setSearchMode((v) => !v)}
+            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 ${searchMode ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            aria-label="Search"
+          >
+            <MagnifyingGlass size={16} />
+          </button>
           <button
             onClick={() => {
               setShowPersonas((v) => !v);
