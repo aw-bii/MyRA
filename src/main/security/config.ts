@@ -1,9 +1,8 @@
-let allowedDirectories = new Set<string>([
-  process.cwd(),
-  process.env.HOME || process.env.USERPROFILE || "",
-].filter(Boolean));
+const DEFAULT_DIRS = [process.cwd(), process.env.HOME || process.env.USERPROFILE || ""].filter(Boolean) as string[];
+const DEFAULT_TIMEOUT_MS = 30_000;
 
-let writeApprovalTimeoutMs = 30_000;
+let allowedDirectories = new Set<string>(DEFAULT_DIRS);
+let writeApprovalTimeoutMs = DEFAULT_TIMEOUT_MS;
 
 export const SecurityConfig = {
   getAllowedDirectories(): string[] {
@@ -27,11 +26,11 @@ export const SecurityConfig = {
   },
 
   setWriteApprovalTimeoutMs(ms: number): void {
-    writeApprovalTimeoutMs = ms;
+    writeApprovalTimeoutMs = ms > 0 ? ms : DEFAULT_TIMEOUT_MS;
   },
 
   reset(): void {
-    allowedDirectories = new Set([process.cwd(), process.env.HOME || process.env.USERPROFILE || ""].filter(Boolean));
-    writeApprovalTimeoutMs = 30_000;
+    allowedDirectories = new Set(DEFAULT_DIRS);
+    writeApprovalTimeoutMs = DEFAULT_TIMEOUT_MS;
   },
 };
