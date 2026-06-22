@@ -3,6 +3,30 @@ import { GeminiAdapter } from "./gemini.adapter";
 import { OpencodeAdapter } from "./opencode.adapter";
 import { TestAdapter } from "./test.adapter";
 import type { BackendAdapter, BackendInfo } from "../../shared/types";
+import { ThreatPatterns } from "../security";
+import type { SecurityEvent } from "../../shared/types";
+
+export async function* securityMiddleware(
+  source: AsyncIterable<import("../../shared/types").MessageChunk>,
+  backendId: string,
+  onEvent: (event: SecurityEvent) => void,
+): AsyncIterable<import("../../shared/types").MessageChunk> {
+  for await (const chunk of source) {
+    if (chunk.type === "text" && chunk.content) {
+      const threat = ThreatPatterns.classify(chunk.content);
+      if (threat) {
+        onEvent({
+          type: "injection_detected",
+          severity: threat.severity,
+          message: `Potential ${threat.category} detected`,
+          detail: `Matched pattern: "${threat.match}" at position ${threat.index}`,
+          source: backendId,
+        });
+      }
+    }
+    yield chunk;
+  }
+}
 
 const registry: BackendAdapter[] = [
   new ClaudeAdapter(),

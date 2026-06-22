@@ -1,6 +1,6 @@
 import { ipcMain, BrowserWindow, app } from "electron";
 import { IPC } from "../shared/ipc";
-import { AdapterManager } from "./adapters/manager";
+import { AdapterManager, securityMiddleware } from "./adapters/manager";
 import { ConvStore } from "./store";
 import { probeBackend } from "./wizard/probe";
 import { installBackend } from "./wizard/install";
@@ -79,11 +79,17 @@ export function registerIpcHandlers(_win: BrowserWindow): void {
         : [];
 
       let fullContent = "";
-      for await (const chunk of adapter.send(
-        message,
-        persona?.systemPrompt,
-        attachments,
-      )) {
+      const win = BrowserWindow.fromWebContents(event.sender);
+      const wrapped = securityMiddleware(
+        adapter.send(message, persona?.systemPrompt, attachments),
+        adapter.id,
+        (evt) => {
+          if (win) {
+            win.webContents.send(IPC.SECURITY_EVENT, evt);
+          }
+        },
+      );
+      for await (const chunk of wrapped) {
         if (chunk.type === "text") fullContent += chunk.content;
         event.sender.send(IPC.CHAT_CHUNK, {
           ...chunk,
@@ -283,6 +289,10 @@ export function registerIpcHandlers(_win: BrowserWindow): void {
 
   ipcMain.handle(IPC.ATTACHMENT_DATA_URL, (_event, { storedPath }) => {
     return AttachmentService.getDataUrl(storedPath);
+  });
+
+  ipcMain.handle(IPC.SECURITY_RESPOND, (_event, payload) => {
+    // Security respond handler — placeholder for now, wired fully in Task 8
   });
 
   ipcMain.handle(IPC.UPDATE_DOWNLOAD, () => downloadUpdate());
