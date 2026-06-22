@@ -6,13 +6,15 @@ export interface ThreatMatch {
   index: number;
 }
 
-interface PatternDef {
+export interface PatternDef {
   category: string;
   patterns: RegExp[];
   severity: ThreatMatch["severity"];
   weight: number;
 }
 
+// ORDER MATTERS: classify() returns the first match. Sort by severity descending
+// so higher-severity patterns are checked first.
 const PATTERNS: PatternDef[] = [
   {
     category: "prompt_injection",
