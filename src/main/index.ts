@@ -79,9 +79,16 @@ function createWindow(): BrowserWindow {
   win.on("maximize", debouncedSave);
   win.on("unmaximize", debouncedSave);
 
-  // Open external links in OS browser, not Electron
+  // Open external links in OS browser, not Electron — http/https only
   win.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+    try {
+      const { protocol } = new URL(url);
+      if (protocol === "https:" || protocol === "http:") {
+        shell.openExternal(url);
+      }
+    } catch {
+      // malformed URL — deny silently
+    }
     return { action: "deny" };
   });
 
