@@ -24,9 +24,10 @@ interface BackendStatus {
 interface Props {
   statuses: BackendStatus[];
   onComplete: () => void;
+  onBack: () => void;
 }
 
-export function WizardStep3({ statuses: initial, onComplete }: Props) {
+export function WizardStep3({ statuses: initial, onComplete, onBack }: Props) {
   const [statuses, setStatuses] = useState(initial);
 
   const recheck = async (id: string) => {
@@ -75,11 +76,22 @@ export function WizardStep3({ statuses: initial, onComplete }: Props) {
           </button>
         </div>
       ))}
+      {needsAuth.length > 0 && (
+        <p className="text-xs text-gray-400 dark:text-gray-500 text-center">
+          You can finish and sign in later from Settings.
+        </p>
+      )}
       <button
         onClick={onComplete}
         className="btn-lg bg-blue-600 text-white hoverable:hover:bg-blue-700"
       >
         Finish Setup
+      </button>
+      <button
+        onClick={onBack}
+        className="btn-md w-full text-gray-500 dark:text-gray-400 hoverable:hover:text-gray-700 dark:hoverable:hover:text-gray-200 transition-transform duration-100 ease-press active:scale-95"
+      >
+        Back
       </button>
     </div>
   );

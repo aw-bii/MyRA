@@ -24,6 +24,10 @@ export function SetupWizard({ onComplete }: Props) {
     setStep(2);
   };
   const handleStep2 = () => setStep(3);
+  const handleBack = (toStep: 1 | 2) => {
+    if (toStep === 1) setStatuses([]);
+    setStep(toStep);
+  };
   const handleComplete = async () => {
     await markWizardDone();
     localStorage.setItem("wizardDone", "1");
@@ -53,9 +57,19 @@ export function SetupWizard({ onComplete }: Props) {
           Step {step} of 3 — {STEP_LABELS[step]}
         </div>
         {step === 1 && <WizardStep1 onNext={handleStep1} />}
-        {step === 2 && <WizardStep2 missing={missing} onNext={handleStep2} />}
+        {step === 2 && (
+          <WizardStep2
+            missing={missing}
+            onNext={handleStep2}
+            onBack={() => handleBack(1)}
+          />
+        )}
         {step === 3 && (
-          <WizardStep3 statuses={statuses} onComplete={handleComplete} />
+          <WizardStep3
+            statuses={statuses}
+            onComplete={handleComplete}
+            onBack={() => handleBack(2)}
+          />
         )}
       </div>
     </div>

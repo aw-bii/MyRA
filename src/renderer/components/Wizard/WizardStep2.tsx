@@ -9,9 +9,10 @@ const LABELS: Record<string, string> = {
 interface Props {
   missing: string[];
   onNext: () => void;
+  onBack: () => void;
 }
 
-export function WizardStep2({ missing, onNext }: Props) {
+export function WizardStep2({ missing, onNext, onBack }: Props) {
   const [logs, setLogs] = useState<Record<string, string[]>>({});
   const [installing, setInstalling] = useState<Record<string, boolean>>({});
   const [done, setDone] = useState<Record<string, boolean>>({});
@@ -47,6 +48,12 @@ export function WizardStep2({ missing, onNext }: Props) {
         >
           Next
         </button>
+        <button
+          onClick={onBack}
+          className="btn-md w-full text-gray-500 dark:text-gray-400 hoverable:hover:text-gray-700 dark:hoverable:hover:text-gray-200 transition-transform duration-100 ease-press active:scale-95"
+        >
+          Back
+        </button>
       </div>
     );
   }
@@ -79,7 +86,7 @@ export function WizardStep2({ missing, onNext }: Props) {
             </button>
           </div>
           {(logs[id] ?? []).length > 0 && (
-            <pre className="text-xs bg-gray-900 text-green-400 rounded-lg p-2 max-h-24 overflow-y-auto">
+            <pre className="text-xs bg-gray-900 text-gray-300 rounded-lg p-2 max-h-24 overflow-y-auto">
               {logs[id].join("\n")}
             </pre>
           )}
@@ -90,6 +97,12 @@ export function WizardStep2({ missing, onNext }: Props) {
         className="btn-lg bg-blue-600 text-white hoverable:hover:bg-blue-700"
       >
         Continue
+      </button>
+      <button
+        onClick={onBack}
+        className="btn-md w-full text-gray-500 dark:text-gray-400 hoverable:hover:text-gray-700 dark:hoverable:hover:text-gray-200 transition-transform duration-100 ease-press active:scale-95"
+      >
+        Back
       </button>
     </div>
   );
