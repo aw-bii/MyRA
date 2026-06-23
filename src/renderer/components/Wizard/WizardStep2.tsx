@@ -35,7 +35,12 @@ export function WizardStep2({ missing, onNext }: Props) {
   if (missing.length === 0) {
     return (
       <div className="flex flex-col gap-6">
-        <h2 className="text-xl font-semibold">All backends available</h2>
+        <div>
+          <h2 className="text-sm font-semibold mb-1">All tools found</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Every AI tool was detected on your system.
+          </p>
+        </div>
         <button
           onClick={onNext}
           className="btn-lg bg-blue-600 text-white hoverable:hover:bg-blue-700"
@@ -49,11 +54,9 @@ export function WizardStep2({ missing, onNext }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-semibold mb-1">
-          Install optional backends
-        </h2>
-        <p className="text-sm text-gray-500">
-          These are optional. You can skip and add them later from Settings.
+        <h2 className="text-sm font-semibold mb-1">Install additional tools</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          These are optional. You can skip and install them from Settings later.
         </p>
       </div>
       {missing.map((id) => (

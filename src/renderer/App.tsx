@@ -266,12 +266,12 @@ function App() {
                   className="text-blue-600 dark:text-blue-300"
                 />
               </div>
-              <h2 className="text-lg font-semibold mb-2">
+              <h2 className="text-sm font-semibold mb-2">
                 Welcome to BII Agent Harness
               </h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-4">
-                Chat with Claude Code, Gemini CLI, and Opencode from one place.
-                Start a new conversation or pick one from the sidebar.
+              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">
+                Claude Code is built in and ready. Create a conversation, pick a
+                backend, and ask your question.
               </p>
               <button
                 onClick={handleNew}

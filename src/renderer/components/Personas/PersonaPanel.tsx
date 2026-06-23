@@ -225,8 +225,9 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
       </div>
 
       {userPersonas.length === 0 && (
-        <div className="text-center text-xs text-gray-400 py-4">
-          No custom personas yet. Create one to save a system prompt for reuse.
+        <div className="text-center text-xs text-gray-400 dark:text-gray-500 py-4 px-2">
+          No saved personas. Create one to give the AI standing instructions for
+          a recurring task — like a company researcher or analyst role.
         </div>
       )}
 

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { CheckCircle, MinusCircle } from "@phosphor-icons/react";
 import { probeBackend } from "../../ipc";
 
 const BACKENDS = [
@@ -16,6 +17,12 @@ interface BackendStatus {
 
 interface Props {
   onNext: (statuses: BackendStatus[]) => void;
+}
+
+function Spinner() {
+  return (
+    <div className="w-5 h-5 rounded-full border-2 border-gray-200 dark:border-gray-700 border-t-blue-600 animate-spin flex-shrink-0" />
+  );
 }
 
 export function WizardStep1({ onNext }: Props) {
@@ -42,9 +49,10 @@ export function WizardStep1({ onNext }: Props) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-xl font-semibold mb-1">Detecting AI backends</h2>
-        <p className="text-sm text-gray-500">
-          Checking which CLI tools are installed on your system.
+        <h2 className="text-sm font-semibold mb-1">Setting up your tools</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400">
+          Claude Code is built in and ready. Checking if you have any
+          additional AI tools installed.
         </p>
       </div>
       <div className="flex flex-col gap-3">
@@ -55,19 +63,33 @@ export function WizardStep1({ onNext }: Props) {
               key={b.id}
               className="flex items-center gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-xl"
             >
-              <div className="text-xl">
-                {s.loading ? "⏳" : s.available ? "✅" : "❌"}
+              <div className="flex-shrink-0">
+                {s.loading ? (
+                  <Spinner />
+                ) : s.available ? (
+                  <CheckCircle
+                    size={20}
+                    weight="fill"
+                    className="text-blue-600"
+                  />
+                ) : (
+                  <MinusCircle
+                    size={20}
+                    weight="regular"
+                    className="text-gray-300 dark:text-gray-600"
+                  />
+                )}
               </div>
               <div>
                 <div className="font-medium text-sm">{b.label}</div>
-                <div className="text-xs text-gray-400">
+                <div className="text-xs text-gray-400 dark:text-gray-500">
                   {b.bundled
-                    ? "Bundled — always available"
+                    ? "Included — always available"
                     : s.loading
                       ? "Checking..."
                       : s.available
-                        ? "Found"
-                        : "Not found"}
+                        ? "Found on your system"
+                        : "Not installed"}
                 </div>
               </div>
             </div>

@@ -32,16 +32,25 @@ export function SetupWizard({ onComplete }: Props) {
 
   const missing = statuses.filter((s) => !s.available).map((s) => s.id);
 
+  const STEP_LABELS: Record<number, string> = {
+    1: "Setting up your tools",
+    2: "Install additional tools",
+    3: "Sign in to your AI tools",
+  };
+
   return (
     <div className="min-h-[100dvh] flex items-center justify-center bg-gray-50 dark:bg-gray-950">
       <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
-        <div className="flex gap-1 mb-8">
+        <div className="flex gap-1 mb-2">
           {[1, 2, 3].map((n) => (
             <div
               key={n}
               className={`h-1 flex-1 rounded-full transition-colors duration-300 ease-press ${step >= n ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"}`}
             />
           ))}
+        </div>
+        <div className="text-xs text-gray-400 dark:text-gray-500 mb-8">
+          Step {step} of 3 — {STEP_LABELS[step]}
         </div>
         {step === 1 && <WizardStep1 onNext={handleStep1} />}
         {step === 2 && <WizardStep2 missing={missing} onNext={handleStep2} />}
