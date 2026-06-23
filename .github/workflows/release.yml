@@ -15,9 +15,11 @@ permissions:
 
 jobs:
   build:
+    # Target platforms: Windows and macOS only (Linux is out of scope for v1)
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -37,13 +39,23 @@ jobs:
       - name: Build and package
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Add these secrets in repo Settings → Secrets and variables → Actions:
+          # macOS notarization:
+          #   CSC_LINK           — base64-encoded .p12 Developer ID cert
+          #   CSC_KEY_PASSWORD   — cert password
+          #   APPLE_ID           — your Apple ID email
+          #   APPLE_APP_SPECIFIC_PASSWORD — app-specific password (appleid.apple.com)
+          #   APPLE_TEAM_ID      — 10-char team ID (developer.apple.com)
+          # Windows code signing:
+          #   WIN_CSC_LINK       — base64-encoded .p12 EV cert
+          #   WIN_CSC_KEY_PASSWORD — cert password
         run: npm run dist
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: installer-${{ matrix.os }}
-          path: dist/*.{exe,dmg,AppImage,deb,rpm,zip}
+          path: dist/*.{exe,dmg,zip}
           if-no-files-found: warn
 
   create-release:

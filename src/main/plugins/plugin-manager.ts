@@ -156,9 +156,7 @@ export const PluginManager = {
           !resolvedCommand.startsWith(plugin.dir + path.sep)
         ) {
           return reject(
-            new Error(
-              `Plugin command "${cmd}" escapes plugin directory`,
-            ),
+            new Error(`Plugin command "${cmd}" escapes plugin directory`),
           );
         }
         spawnCommand = resolvedCommand;

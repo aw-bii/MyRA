@@ -6,7 +6,11 @@ export default {
   directories: { output: "dist" },
   files: ["out/**/*"],
   extraResources: [{ from: "resources/claude-bin", to: "claude-bin" }],
-  win: { target: "nsis", icon: "resources/icon.ico" },
+  win: {
+    target: "nsis",
+    icon: "resources/icon.ico",
+    publisherName: "Bertelsmann India Investment",
+  },
   mac: {
     target: "dmg",
     icon: "resources/icon.icns",

@@ -295,3 +295,29 @@ export async function togglePlugin(id: string): Promise<void> {
 export async function reloadPlugins(): Promise<void> {
   await window.ipc.invoke(IPC.PLUGIN_RELOAD);
 }
+
+export async function downloadUpdate(): Promise<void> {
+  await window.ipc.invoke(IPC.UPDATE_DOWNLOAD);
+}
+
+export async function installUpdate(): Promise<void> {
+  await window.ipc.invoke(IPC.UPDATE_INSTALL);
+}
+
+export function onUpdateAvailable(
+  cb: (info: { version: string; releaseNotes: string }) => void,
+): () => void {
+  return window.ipc.on(IPC.UPDATE_AVAILABLE, cb as any);
+}
+
+export function onUpdateProgress(cb: (percent: number) => void): () => void {
+  return window.ipc.on(IPC.UPDATE_PROGRESS, cb as any);
+}
+
+export function onUpdateDownloaded(cb: () => void): () => void {
+  return window.ipc.on(IPC.UPDATE_DOWNLOADED, cb as any);
+}
+
+export function onUpdateError(cb: (message: string) => void): () => void {
+  return window.ipc.on(IPC.UPDATE_ERROR, cb as any);
+}

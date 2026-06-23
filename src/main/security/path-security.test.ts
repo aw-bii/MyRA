@@ -37,7 +37,9 @@ describe("PathSecurity", () => {
     });
 
     it("detects double-encoded %252e%252e traversal", () => {
-      expect(PathSecurity.isPathTraversal("%252e%252e%252fetc%2fpasswd")).toBe(true);
+      expect(PathSecurity.isPathTraversal("%252e%252e%252fetc%2fpasswd")).toBe(
+        true,
+      );
     });
 
     it("detects mixed %2F uppercase traversal", () => {

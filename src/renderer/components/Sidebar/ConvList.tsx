@@ -22,9 +22,9 @@ export function ConvList({
 }: Props) {
   const { conversations, search } = useConversations(refreshTrigger);
   const [query, setQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<
-    SearchResult[] | null
-  >(null);
+  const [searchResults, setSearchResults] = useState<SearchResult[] | null>(
+    null,
+  );
 
   const handleSearch = async (q: string) => {
     setQuery(q);

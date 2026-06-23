@@ -42,18 +42,26 @@ describe("stripDangerousEnvKeys", () => {
   });
 
   it("removes DYLD_INSERT_LIBRARIES", () => {
-    const result = stripDangerousEnvKeys({ DYLD_INSERT_LIBRARIES: "/evil.dylib" });
+    const result = stripDangerousEnvKeys({
+      DYLD_INSERT_LIBRARIES: "/evil.dylib",
+    });
     expect(result.DYLD_INSERT_LIBRARIES).toBeUndefined();
   });
 
   it("removes LD_LIBRARY_PATH and NODE_OPTIONS", () => {
-    const result = stripDangerousEnvKeys({ LD_LIBRARY_PATH: "/evil", NODE_OPTIONS: "--inspect" });
+    const result = stripDangerousEnvKeys({
+      LD_LIBRARY_PATH: "/evil",
+      NODE_OPTIONS: "--inspect",
+    });
     expect(result.LD_LIBRARY_PATH).toBeUndefined();
     expect(result.NODE_OPTIONS).toBeUndefined();
   });
 
   it("passes through safe env keys", () => {
-    const result = stripDangerousEnvKeys({ MY_TOKEN: "abc", API_URL: "https://x.com" });
+    const result = stripDangerousEnvKeys({
+      MY_TOKEN: "abc",
+      API_URL: "https://x.com",
+    });
     expect(result).toEqual({ MY_TOKEN: "abc", API_URL: "https://x.com" });
   });
 });

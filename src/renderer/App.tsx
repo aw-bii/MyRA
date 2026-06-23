@@ -8,6 +8,7 @@ import { PipelinePanel } from "./components/Pipelines/PipelinePanel";
 import { SettingsPanel } from "./components/Settings/SettingsPanel";
 import { BackendSwitcher } from "./components/BackendSwitcher";
 import { SecurityDialog } from "./components/SecurityDialog";
+import { UpdateBanner } from "./components/UpdateBanner";
 import { usePipelines } from "./hooks/usePipelines";
 import {
   getConversation,
@@ -159,6 +160,7 @@ function App() {
       />
 
       <div className="flex flex-col flex-1 min-w-0">
+        <UpdateBanner />
         {/* Toolbar */}
         <div className="flex items-center gap-3 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex-wrap">
           {/* Mode toggle */}
