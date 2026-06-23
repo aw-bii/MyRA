@@ -15,6 +15,7 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
   const [variableValues, setVariableValues] = useState<Record<string, string>>(
     {},
   );
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const templates = useMemo(
     () => personas.filter((p) => p.isTemplate),
@@ -258,16 +259,30 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
             >
               Edit
             </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                remove(p.id);
-              }}
-              className="text-xs text-red-400 hoverable:hover:text-red-600 px-1"
-              aria-label={`Delete persona ${p.name}`}
-            >
-              Delete
-            </button>
+            {confirmDeleteId === p.id ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  remove(p.id);
+                  setConfirmDeleteId(null);
+                }}
+                className="text-xs text-red-500 hoverable:hover:text-red-700 px-1 font-medium"
+                aria-label={`Confirm delete persona ${p.name}`}
+              >
+                Confirm?
+              </button>
+            ) : (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setConfirmDeleteId(p.id);
+                }}
+                className="text-xs text-red-400 hoverable:hover:text-red-600 px-1"
+                aria-label={`Delete persona ${p.name}`}
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
       ))}
