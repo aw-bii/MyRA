@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { GearSix, ChatCircle, MagnifyingGlass } from "@phosphor-icons/react";
+import { GearSix, MagnifyingGlass } from "@phosphor-icons/react";
 import { SetupWizard } from "./components/Wizard/SetupWizard";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { ChatView } from "./components/Chat/ChatView";
@@ -260,12 +260,6 @@ function App() {
         <div className="flex flex-1 min-h-0">
           {!activeConvId && mode === "single" ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-              <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center mb-4">
-                <ChatCircle
-                  size={32}
-                  className="text-blue-600 dark:text-blue-300"
-                />
-              </div>
               <h2 className="text-sm font-semibold mb-2">
                 Welcome to BII Agent Harness
               </h2>
@@ -275,9 +269,9 @@ function App() {
               </p>
               <button
                 onClick={handleNew}
-                className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 transition-transform duration-100 ease-press active:scale-95"
+                className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 transition-transform duration-100 ease-press active:scale-95"
               >
-                Start a conversation
+                New conversation
               </button>
             </div>
           ) : (
