@@ -4,7 +4,7 @@ Guidance for AI coding agents (Gemini CLI, Copilot, Opencode, etc.) working in t
 
 ## Project Summary
 
-**BII Agent Harness** — Electron desktop chat app wrapping local CLI AI backends (Claude Code, Gemini CLI, Opencode) with persistent conversation history and persona management.
+**MyRA** — Electron desktop chat app wrapping local CLI AI backends (Claude Code, Gemini CLI, Opencode) with persistent conversation history and persona management.
 
 Full design: `docs/superpowers/specs/2026-06-17-ai-agent-harness-design.md`
 

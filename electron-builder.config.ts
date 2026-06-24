@@ -1,8 +1,8 @@
 import type { Configuration } from "electron-builder";
 
 export default {
-  appId: "com.bii.agent-harness",
-  productName: "BII Agent Harness",
+  appId: "com.bii.myra",
+  productName: "MyRA",
   directories: { output: "dist" },
   files: ["out/**/*"],
   extraResources: [{ from: "resources/claude-bin", to: "claude-bin" }],
@@ -26,7 +26,7 @@ export default {
   publish: {
     provider: "github",
     owner: "aw-bii",
-    repo: "researcher",
+    repo: "myra",
     releaseType: "release",
   },
 } satisfies Configuration;

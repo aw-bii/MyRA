@@ -273,7 +273,7 @@ function App() {
           {!activeConvId && mode === "single" ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
               <h2 className="text-sm font-semibold mb-2">
-                Welcome to BII Agent Harness
+                Welcome to MyRA
               </h2>
               <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">
                 Claude Code is built in and ready. Create a conversation, pick a

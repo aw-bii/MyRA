@@ -1,10 +1,10 @@
 # MEMORY.md
 
-Running context for the BII Agent Harness project. Update this as decisions are made, patterns are established, or scope changes.
+Running context for the MyRA project. Update this as decisions are made, patterns are established, or scope changes.
 
 ## Project Identity
 
-**Name:** BII Agent Harness
+**Name:** MyRA
 **Type:** Native Electron desktop chat app (Windows + macOS)
 **Goal:** Hermes-Desktop-style AI chat, easier to set up for non-developers
 **Constraint:** Local-first, no gateways, no proxies, no servers

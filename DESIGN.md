@@ -1,5 +1,5 @@
 ---
-name: BII Agent Harness
+name: MyRA
 description: Unified AI CLI desktop interface for analysts and researchers at Bertelsmann India Investment
 colors:
   ink-blue: "#2563eb"
@@ -87,7 +87,7 @@ components:
     padding: "8px"
 ---
 
-# Design System: BII Agent Harness
+# Design System: MyRA
 
 ## 1. Overview
 
@@ -160,7 +160,7 @@ A near-monochrome palette anchored in gray with a single deliberate chromatic no
 
 ### Hierarchy
 
-- **Title** (semibold, 14px, line-height 1.4): Panel section headers ("Personas", sidebar app name "BII Agent Harness"). Appears once per panel at most. Never inside lists or message content.
+- **Title** (semibold, 14px, line-height 1.4): Panel section headers ("Personas", sidebar app name "MyRA"). Appears once per panel at most. Never inside lists or message content.
 - **Body** (regular, 14px, line-height 1.55): All message content, form labels, conversation list titles, button labels. The default voice of the interface.
 - **Label** (regular, 12px, line-height 1.3): Timestamps, backend names, tag labels, secondary button text, wizard step copy, metadata rows in interface elements. In long AI-generated content, the prose system's own leading takes precedence.
 

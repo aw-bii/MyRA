@@ -1,5 +1,5 @@
 # Technical Requirements Document
-**Project:** BII Agent Harness  
+**Project:** MyRA  
 **Date:** 2026-06-17  
 **Status:** Draft
 

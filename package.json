@@ -1,7 +1,7 @@
 {
-  "name": "bii-agent-harness",
+  "name": "myra",
   "version": "0.1.0",
-  "description": "BII Agent Harness - Native Electron desktop chat app wrapping Claude Code, Gemini CLI, and Opencode CLI",
+  "description": "MyRA - Native Electron desktop chat app wrapping Claude Code, Gemini CLI, and Opencode CLI",
   "main": "./out/main/index.js",
   "author": "Bertelsmann India Investment",
   "license": "MIT",

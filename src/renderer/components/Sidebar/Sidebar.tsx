@@ -36,7 +36,7 @@ export function Sidebar({
   return (
     <div className="w-64 flex flex-col h-full border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-        <span className="font-semibold text-sm">BII Agent Harness</span>
+        <span className="font-semibold text-sm">MyRA</span>
         <button
           onClick={onNew}
           className="btn-sm bg-blue-600 text-white hoverable:hover:bg-blue-700"

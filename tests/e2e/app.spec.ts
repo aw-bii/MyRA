@@ -28,9 +28,9 @@ test("wizard flow — complete all 3 steps", async ({ window }) => {
   await window.getByRole("button", { name: "Finish Setup" }).click();
 
   // Main app loaded — sidebar header visible (use exact match to avoid the
-  // "Welcome to BII Agent Harness" empty-state heading also matching)
+  // "Welcome to MyRA" empty-state heading also matching)
   await expect(
-    window.getByText("BII Agent Harness", { exact: true }).first(),
+    window.getByText("MyRA", { exact: true }).first(),
   ).toBeVisible({ timeout: 5_000 });
 });
 

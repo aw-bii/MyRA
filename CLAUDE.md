@@ -55,7 +55,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ---
 
-## Project: BII Agent Harness
+## Project: MyRA
 
 Full design spec: [docs/superpowers/specs/2026-06-17-ai-agent-harness-design.md](docs/superpowers/specs/2026-06-17-ai-agent-harness-design.md)
 

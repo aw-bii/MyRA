@@ -1,4 +1,4 @@
-# researcher
+# MyRA
 
 **A native desktop chat app that brings Claude Code, Gemini CLI, and Opencode behind one clean UI.**
 
@@ -15,7 +15,7 @@
 
 ## Overview
 
-BII Agent Harness is a desktop application that wraps local CLI-based AI tools — Claude Code, Gemini CLI, Opencode — behind a single persistent chat interface. Claude Code ships bundled, so it works out of the box with zero additional setup.
+MyRA is a desktop application that wraps local CLI-based AI tools — Claude Code, Gemini CLI, Opencode — behind a single persistent chat interface. Claude Code ships bundled, so it works out of the box with zero additional setup.
 
 - Chat interface backed by local CLI tools
 - Persistent conversation history with full-text search

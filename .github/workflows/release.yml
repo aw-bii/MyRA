@@ -72,13 +72,13 @@ jobs:
 
       - name: Generate release notes
         run: |
-          echo "## BII Agent Harness Release" > release-notes.md
+          echo "## MyRA Release" > release-notes.md
           echo "" >> release-notes.md
           echo "Download the installer for your platform below." >> release-notes.md
 
       - uses: softprops/action-gh-release@v2
         with:
-          name: BII Agent Harness ${{ github.ref_name }}
+          name: MyRA ${{ github.ref_name }}
           body_path: release-notes.md
           files: |
             *.exe

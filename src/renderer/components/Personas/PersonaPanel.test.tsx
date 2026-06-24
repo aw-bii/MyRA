@@ -7,8 +7,8 @@ vi.mock("../../hooks/usePersonas", () => ({
     personas: [
       {
         id: "p1",
-        name: "Researcher",
-        prompt: "You are a researcher.",
+        name: "Analyst",
+        prompt: "You are an analyst.",
         isTemplate: false,
         isDefault: false,
       },
@@ -30,7 +30,7 @@ describe("PersonaPanel delete confirmation", () => {
     ).toBeNull();
     fireEvent.click(
       screen.getByRole("button", {
-        name: /delete persona researcher/i,
+        name: /delete persona analyst/i,
       }),
     );
     expect(
@@ -44,7 +44,7 @@ describe("PersonaPanel delete confirmation", () => {
     render(<PersonaPanel activePersonaId={null} onSelect={vi.fn()} />);
     fireEvent.click(
       screen.getByRole("button", {
-        name: /delete persona researcher/i,
+        name: /delete persona analyst/i,
       }),
     );
     // remove should NOT have been called yet

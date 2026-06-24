@@ -65,7 +65,7 @@ export default async function globalSetup() {
   // - Local Storage: contains wizardDone flag set by app
   // We do NOT delete the entire directory since Electron writes DevToolsActivePort
   // to it during startup.
-  const e2eDataDir = path.join(os.tmpdir(), "bii-e2e-test");
+  const e2eDataDir = path.join(os.tmpdir(), "myra-e2e-test");
   const dbPath = path.join(e2eDataDir, "conversations.db");
   const dbShm = path.join(e2eDataDir, "conversations.db-shm");
   const dbWal = path.join(e2eDataDir, "conversations.db-wal");
