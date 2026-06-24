@@ -156,6 +156,7 @@ export const McpClientManager = {
   connect(id: string) {
     const server = servers.get(id);
     if (!server) throw new Error(`Server ${id} not found`);
+    if (!server.config.enabled) return Promise.reject(new Error(`Server ${id} is disabled`));
     if (server.process) return;
 
     return new Promise<void>((resolve, reject) => {
@@ -257,6 +258,12 @@ export const McpClientManager = {
         success: false,
         content: "",
         error: `Server ${request.serverId} not found`,
+      };
+    if (!server.config.enabled)
+      return {
+        success: false,
+        content: "",
+        error: `Server ${request.serverId} is disabled`,
       };
     if (!server.process) {
       try {

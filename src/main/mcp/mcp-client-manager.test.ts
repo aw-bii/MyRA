@@ -157,4 +157,41 @@ describe("McpClientManager", () => {
     McpClientManager.removeServer(servers4[0].id);
     expect(McpClientManager.getServers().length).toBe(0);
   });
+
+  describe("enabled check", () => {
+    let serverId: string;
+
+    beforeEach(() => {
+      const cfg = McpClientManager.addServer({
+        name: "disabled-server",
+        command: "node",
+        args: [ECHO_SERVER_JS],
+      });
+      serverId = cfg.id;
+      // disable it via toggleServer logic (set enabled=false directly on config)
+      const servers = McpClientManager.getServers();
+      const s = servers.find((sv) => sv.id === serverId)!;
+      s.enabled = false;
+    });
+
+    afterEach(() => {
+      McpClientManager.removeServer(serverId);
+    });
+
+    it("callTool returns error for disabled server without connecting", async () => {
+      const result = await McpClientManager.callTool({
+        serverId,
+        toolName: "echo",
+        arguments: { text: "hi" },
+      });
+      expect(result.success).toBe(false);
+      expect(result.error).toMatch(/disabled/i);
+    });
+
+    it("connect rejects for disabled server", async () => {
+      await expect(McpClientManager.connect(serverId)).rejects.toThrow(
+        /disabled/i,
+      );
+    });
+  });
 });
