@@ -1,15 +1,27 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Hoist mock variables so they are available when vi.mock factory is evaluated
-const { mockAbort, mockGet } = vi.hoisted(() => ({
+const { mockAbort, mockGet, mockSecurityMiddleware } = vi.hoisted(() => ({
   mockAbort: vi.fn(),
   mockGet: vi.fn(),
+  mockSecurityMiddleware: vi.fn(async function* (source: AsyncIterable<unknown>) {
+    yield* source as AsyncIterable<any>;
+  }),
 }));
 
 vi.mock("../adapters/manager", () => ({
   AdapterManager: {
     get: mockGet,
   },
+  securityMiddleware: mockSecurityMiddleware,
+}));
+
+vi.mock("electron", () => ({
+  BrowserWindow: { getAllWindows: vi.fn(() => []) },
+}));
+
+vi.mock("../../shared/ipc", () => ({
+  IPC: { SECURITY_EVENT: "security:event" },
 }));
 
 import { pipelineRunner } from "./runner";
@@ -138,5 +150,30 @@ describe("PipelineRunner", () => {
         onStepDone: vi.fn(),
       }),
     ).rejects.toThrow("Adapter not found: nonexistent");
+  });
+
+  it("wraps adapter.send with securityMiddleware", async () => {
+    mockGet.mockReturnValue({
+      id: "test-adapter",
+      send: async function* () {
+        yield { type: "text" as const, content: "safe text" };
+        yield { type: "done" as const };
+      },
+      abort: vi.fn(),
+    });
+
+    await pipelineRunner.run({
+      conversationId: "conv-6",
+      userMessage: "hello",
+      steps: [{ adapterId: "test-adapter" }],
+      onChunk: vi.fn(),
+      onStepDone: vi.fn(),
+    });
+
+    expect(mockSecurityMiddleware).toHaveBeenCalledWith(
+      expect.anything(),
+      "test-adapter",
+      expect.any(Function),
+    );
   });
 });

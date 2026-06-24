@@ -43,6 +43,9 @@ export const CronEngine = {
     try {
       const { ConvStore } = require("../store");
       const adapterManager = require("../adapters/manager").AdapterManager;
+      const securityMiddlewareFn = require("../adapters/manager").securityMiddleware;
+      const { BrowserWindow } = require("electron");
+      const { IPC } = require("../../shared/ipc");
       const adapter =
         adapterManager.get(job.backend) ?? adapterManager.getActive();
 
@@ -62,7 +65,14 @@ export const CronEngine = {
 
       let response = "";
       if (adapter) {
-        for await (const chunk of adapter.send(job.prompt)) {
+        const win = BrowserWindow.getAllWindows()[0] ?? null;
+        for await (const chunk of securityMiddlewareFn(
+          adapter.send(job.prompt),
+          adapter.id,
+          (evt: import("../../shared/types").SecurityEvent) => {
+            win?.webContents.send(IPC.SECURITY_EVENT, evt);
+          },
+        )) {
           if (chunk.type === "text") response += chunk.content;
         }
       }

@@ -1,4 +1,6 @@
-import { AdapterManager } from "../adapters/manager";
+import { AdapterManager, securityMiddleware } from "../adapters/manager";
+import { BrowserWindow } from "electron";
+import { IPC } from "../../shared/ipc";
 import type { PipelineChunk } from "../../shared/types";
 
 interface ResolvedStep {
@@ -33,7 +35,12 @@ export class PipelineRunner {
         let accumulated = "";
         let stepCompleted = false;
 
-        for await (const chunk of adapter.send(currentInput, step.persona)) {
+        const win = BrowserWindow.getAllWindows()[0] ?? null;
+        for await (const chunk of securityMiddleware(
+          adapter.send(currentInput, step.persona),
+          adapter.id,
+          (evt) => { win?.webContents.send(IPC.SECURITY_EVENT, evt); },
+        )) {
           if (aborted) {
             adapter.abort();
             break;
