@@ -37,8 +37,8 @@ export function Sidebar({
 }: Props) {
   return (
     <aside
-      className={`flex-shrink-0 flex flex-col h-full overflow-hidden transition-[width] duration-200 ease-press border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 ${
-        collapsed ? "w-0" : "w-64 lg:w-48"
+      className={`flex-shrink-0 flex flex-col h-full overflow-hidden transition-[width] duration-200 ease-press border-r border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-900 ${
+        collapsed ? "w-0" : "w-48 lg:w-64"
       }`}
       style={collapsed ? { minWidth: 0 } : undefined}
     >
