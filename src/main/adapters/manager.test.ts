@@ -1,4 +1,21 @@
 import { describe, it, expect, vi } from "vitest";
+
+vi.mock("electron", () => ({
+  safeStorage: {
+    isEncryptionAvailable: () => true,
+    encryptString: (s: string) => Buffer.from(s),
+    decryptString: (b: Buffer) => b.toString(),
+  },
+  app: { getVersion: () => "1.0.0" },
+}));
+vi.mock("../store", () => ({
+  ConvStore: {
+    getSetting: vi.fn(() => null),
+    getAllSettings: vi.fn(() => ({})),
+    setSetting: vi.fn(),
+  },
+}));
+
 import { AdapterManager } from "./manager";
 
 vi.mock("./claude.adapter", () => ({
@@ -24,6 +41,51 @@ vi.mock("./opencode.adapter", () => ({
     id = "opencode";
     isAvailable = vi.fn().mockResolvedValue(false);
     checkAuth = vi.fn().mockResolvedValue(false);
+    send = vi.fn();
+    abort = vi.fn();
+  },
+}));
+vi.mock("./openai.adapter", () => ({
+  OpenAIAdapter: class {
+    id = "openai";
+    isAvailable = vi.fn().mockResolvedValue(true);
+    checkAuth = vi.fn().mockResolvedValue(true);
+    send = vi.fn();
+    abort = vi.fn();
+  },
+}));
+vi.mock("./openrouter.adapter", () => ({
+  OpenRouterAdapter: class {
+    id = "openrouter";
+    isAvailable = vi.fn().mockResolvedValue(true);
+    checkAuth = vi.fn().mockResolvedValue(true);
+    send = vi.fn();
+    abort = vi.fn();
+  },
+}));
+vi.mock("./ollama.adapter", () => ({
+  OllamaAdapter: class {
+    id = "ollama";
+    isAvailable = vi.fn().mockResolvedValue(true);
+    checkAuth = vi.fn().mockResolvedValue(true);
+    send = vi.fn();
+    abort = vi.fn();
+  },
+}));
+vi.mock("./claude-api.adapter", () => ({
+  ClaudeApiAdapter: class {
+    id = "claude-api";
+    isAvailable = vi.fn().mockResolvedValue(true);
+    checkAuth = vi.fn().mockResolvedValue(true);
+    send = vi.fn();
+    abort = vi.fn();
+  },
+}));
+vi.mock("./gemini-api.adapter", () => ({
+  GeminiApiAdapter: class {
+    id = "gemini-api";
+    isAvailable = vi.fn().mockResolvedValue(true);
+    checkAuth = vi.fn().mockResolvedValue(true);
     send = vi.fn();
     abort = vi.fn();
   },

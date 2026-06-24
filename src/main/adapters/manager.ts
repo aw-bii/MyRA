@@ -2,6 +2,11 @@ import { ClaudeAdapter } from "./claude.adapter";
 import { GeminiAdapter } from "./gemini.adapter";
 import { OpencodeAdapter } from "./opencode.adapter";
 import { TestAdapter } from "./test.adapter";
+import { OpenAIAdapter } from "./openai.adapter";
+import { OpenRouterAdapter } from "./openrouter.adapter";
+import { OllamaAdapter } from "./ollama.adapter";
+import { ClaudeApiAdapter } from "./claude-api.adapter";
+import { GeminiApiAdapter } from "./gemini-api.adapter";
 import type { BackendAdapter, BackendInfo } from "../../shared/types";
 import { ThreatPatterns } from "../security";
 import type { SecurityEvent } from "../../shared/types";
@@ -32,6 +37,11 @@ const registry: BackendAdapter[] = [
   new ClaudeAdapter(),
   new GeminiAdapter(),
   new OpencodeAdapter(),
+  new OpenAIAdapter(),
+  new OpenRouterAdapter(),
+  new OllamaAdapter(),
+  new ClaudeApiAdapter(),
+  new GeminiApiAdapter(),
 ];
 
 if (process.env.E2E_TEST === "1") {
@@ -69,7 +79,15 @@ export const AdapterManager = {
 
 function labelFor(id: string): string {
   return (
-    { claude: "Claude Code", gemini: "Gemini CLI", opencode: "Opencode" }[id] ??
-    id
+    {
+      claude: "Claude Code",
+      gemini: "Gemini CLI",
+      opencode: "Opencode",
+      openai: "OpenAI",
+      openrouter: "OpenRouter",
+      ollama: "Ollama",
+      "claude-api": "Claude API",
+      "gemini-api": "Gemini API",
+    }[id] ?? id
   );
 }

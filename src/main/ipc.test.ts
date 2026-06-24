@@ -1,4 +1,21 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
+
+vi.mock("electron", () => ({
+  safeStorage: {
+    isEncryptionAvailable: () => true,
+    encryptString: (s: string) => Buffer.from(s),
+    decryptString: (b: Buffer) => b.toString(),
+  },
+  app: { getVersion: () => "1.0.0" },
+}));
+vi.mock("./store", () => ({
+  ConvStore: {
+    getSetting: vi.fn(() => null),
+    getAllSettings: vi.fn(() => ({})),
+    setSetting: vi.fn(),
+  },
+}));
+
 import { validatePersona, MAX_PROMPT_LENGTH } from "./ipc";
 
 describe("validatePersona", () => {
