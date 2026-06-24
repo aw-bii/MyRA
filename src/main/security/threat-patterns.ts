@@ -26,6 +26,15 @@ const PATTERNS: PatternDef[] = [
     ],
   },
   {
+    category: "instruction_override",
+    severity: "high",
+    weight: 8,
+    patterns: [
+      /forget\s+(your|all)\s+(rules|instructions|constraints|guidelines)/i,
+      /you\s+are\s+(now\s+)?(free|released)\s+from\s+(all\s+)?(constraints|rules|restrictions)/i,
+    ],
+  },
+  {
     category: "system_prompt_extraction",
     severity: "high",
     weight: 8,
@@ -73,9 +82,10 @@ const PATTERNS: PatternDef[] = [
 export const ThreatPatterns = {
   classify(input: string): ThreatMatch | null {
     if (!input) return null;
+    const normalized = input.toLowerCase();
     for (const def of PATTERNS) {
       for (const re of def.patterns) {
-        const match = input.match(re);
+        const match = normalized.match(re);
         if (match) {
           return {
             category: def.category,
@@ -92,10 +102,11 @@ export const ThreatPatterns = {
 
   score(input: string): number {
     if (!input) return 0;
+    const normalized = input.toLowerCase();
     let total = 0;
     for (const def of PATTERNS) {
       for (const re of def.patterns) {
-        const matches = input.match(re);
+        const matches = normalized.match(re);
         if (matches) {
           total += def.weight * matches.length;
         }
