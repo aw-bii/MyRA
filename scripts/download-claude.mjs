@@ -1,5 +1,6 @@
 import { execSync } from 'child_process'
-import { existsSync, mkdirSync, copyFileSync, rmSync, createHash, createReadStream } from 'fs'
+import { existsSync, mkdirSync, copyFileSync, rmSync, createReadStream } from 'fs'
+import { createHash } from 'node:crypto'
 import { platform } from 'os'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
