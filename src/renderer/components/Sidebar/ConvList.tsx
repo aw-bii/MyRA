@@ -46,7 +46,7 @@ export function ConvList({
     <div className="flex flex-col gap-1">
       <input
         className="mx-2 mb-2 px-3 py-1.5 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500"
-        placeholder="Search..."
+        placeholder="Search conversations..."
         value={query}
         onChange={(e) => handleSearch(e.target.value)}
         ref={(el: HTMLInputElement | null) => {

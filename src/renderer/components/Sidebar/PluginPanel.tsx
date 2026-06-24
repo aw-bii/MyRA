@@ -42,8 +42,8 @@ export function PluginPanel() {
       </div>
       <div className="flex-1 overflow-y-auto py-1">
         {plugins.length === 0 && (
-          <p className="text-xs text-gray-400 text-center py-4">
-            No plugins discovered
+          <p className="text-xs text-gray-400 text-center py-4 px-3 leading-relaxed">
+            No plugins found. Add plugins to the plugins directory and reload.
           </p>
         )}
         <ul className="space-y-1 px-1">

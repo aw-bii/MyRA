@@ -110,8 +110,8 @@ export function McpPanel() {
 
       <div className="flex-1 overflow-y-auto py-1">
         {servers.length === 0 && !showForm && (
-          <p className="text-xs text-gray-400 text-center py-4">
-            No MCP servers configured
+          <p className="text-xs text-gray-400 text-center py-4 px-3 leading-relaxed">
+            No servers configured. Add one to extend the AI with external tools.
           </p>
         )}
 

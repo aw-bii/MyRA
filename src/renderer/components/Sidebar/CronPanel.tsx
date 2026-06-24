@@ -118,8 +118,8 @@ export function CronPanel() {
 
       <div className="flex-1 overflow-y-auto py-1">
         {jobs.length === 0 && !showForm && (
-          <p className="text-xs text-gray-400 text-center py-4">
-            No scheduled jobs
+          <p className="text-xs text-gray-400 text-center py-4 px-3 leading-relaxed">
+            No scheduled jobs yet. Create one to automate recurring tasks.
           </p>
         )}
         <ul className="space-y-1 px-1">
@@ -150,25 +150,25 @@ export function CronPanel() {
               <div className="flex gap-1 mt-1.5 flex-wrap">
                 <button
                   onClick={() => handleToggle(job.id)}
-                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 hoverable:hover:bg-gray-200 dark:hoverable:hover:bg-gray-600 transition-colors"
+                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 hoverable:hover:bg-gray-200 dark:hoverable:hover:bg-gray-600 transition-[background-color,transform] duration-100 ease-press active:scale-95"
                 >
                   {job.status === "active" ? "Pause" : "Resume"}
                 </button>
                 <button
                   onClick={() => handleRunNow(job.id)}
-                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 hoverable:hover:bg-gray-200 dark:hoverable:hover:bg-gray-600 transition-colors"
+                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 hoverable:hover:bg-gray-200 dark:hoverable:hover:bg-gray-600 transition-[background-color,transform] duration-100 ease-press active:scale-95"
                 >
-                  Run Now
+                  Run now
                 </button>
                 <button
                   onClick={() => toggleLogs(job.id)}
-                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 hoverable:hover:bg-gray-200 dark:hoverable:hover:bg-gray-600 transition-colors"
+                  className="text-[10px] px-1.5 py-0.5 rounded bg-gray-100 dark:bg-gray-700 hoverable:hover:bg-gray-200 dark:hoverable:hover:bg-gray-600 transition-[background-color,transform] duration-100 ease-press active:scale-95"
                 >
                   Logs
                 </button>
                 <button
                   onClick={() => handleDelete(job.id)}
-                  className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 hoverable:hover:bg-red-200 dark:hoverable:hover:bg-red-800 transition-colors ml-auto"
+                  className="text-[10px] px-1.5 py-0.5 rounded bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300 hoverable:hover:bg-red-200 dark:hoverable:hover:bg-red-800 transition-[background-color,transform] duration-100 ease-press active:scale-95 ml-auto"
                 >
                   Delete
                 </button>
