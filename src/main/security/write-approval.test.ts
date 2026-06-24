@@ -70,4 +70,20 @@ describe("WriteApproval", () => {
       expect(WriteApproval.pendingCount()).toBe(0);
     });
   });
+
+  describe("pending queue limit", () => {
+    beforeEach(() => {
+      WriteApproval.reset();
+    });
+
+    it("throws when pending queue reaches MAX_PENDING (100)", () => {
+      for (let i = 0; i < 100; i++) {
+        WriteApproval.queue(`/tmp/file-${i}.txt`, `content-${i}`);
+      }
+      expect(() => WriteApproval.queue("/tmp/overflow.txt", "overflow")).toThrow(
+        /pending.*limit|limit.*pending|queue.*full/i,
+      );
+      WriteApproval.reset();
+    });
+  });
 });

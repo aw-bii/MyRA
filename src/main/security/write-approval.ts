@@ -16,6 +16,7 @@ export interface ApprovalResult {
 }
 
 const DEFAULT_TIMEOUT_MS = 30_000;
+const MAX_PENDING = 100;
 const pending = new Map<string, PendingRequest>();
 
 export const WriteApproval = {
@@ -24,6 +25,11 @@ export const WriteApproval = {
     content: string,
     timeoutMs = DEFAULT_TIMEOUT_MS,
   ): string {
+    if (pending.size >= MAX_PENDING) {
+      throw new Error(
+        `WriteApproval pending limit reached (${MAX_PENDING}). Deny or approve existing requests first.`,
+      );
+    }
     const id = crypto.randomUUID();
     let resolve: (result: ApprovalResult) => void;
     const promise = new Promise<ApprovalResult>((r) => {
