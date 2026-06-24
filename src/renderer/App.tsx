@@ -58,24 +58,19 @@ function App() {
   const [showPipelines, setShowPipelines] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { templates } = usePipelines();
-  const togglePanel = useCallback(
-    (panel: "personas" | "pipelines" | "settings") => {
-      const nextPersonas = panel === "personas" ? !showPersonas : false;
-      const nextPipelines = panel === "pipelines" ? !showPipelines : false;
-      const nextSettings = panel === "settings" ? !showSettings : false;
-      setShowPersonas(nextPersonas);
-      setShowPipelines(nextPipelines);
-      setShowSettings(nextSettings);
-    },
-    [showPersonas, showPipelines, showSettings],
-  );
+  const togglePanel = useCallback((panel: "personas" | "pipelines" | "settings") => {
+    const nextPersonas = panel === "personas" ? !showPersonas : false;
+    const nextPipelines = panel === "pipelines" ? !showPipelines : false;
+    const nextSettings = panel === "settings" ? !showSettings : false;
+    setShowPersonas(nextPersonas);
+    setShowPipelines(nextPipelines);
+    setShowSettings(nextSettings);
+  }, [showPersonas, showPipelines, showSettings]);
   const [searchMode, setSearchMode] = useState(false);
   const [showCron, setShowCron] = useState(false);
   const [showMCP, setShowMCP] = useState(false);
   const [showPlugins, setShowPlugins] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(
-    window.innerWidth < 1024,
-  );
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 1024);
   const [viewportLg, setViewportLg] = useState(window.innerWidth >= 1024);
 
   useEffect(() => {
@@ -168,9 +163,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    checkConnectivity()
-      .then((r) => setOnline(r.online))
-      .catch(() => setOnline(false));
+    checkConnectivity().then((r) => setOnline(r.online)).catch(() => setOnline(false));
   }, []);
 
   if (!wizardDone) {
@@ -224,10 +217,7 @@ function App() {
                 setShowMCP(false);
                 setShowPlugins(false);
               }}
-              onNew={() => {
-                handleNew();
-                setSidebarCollapsed(true);
-              }}
+              onNew={() => { handleNew(); setSidebarCollapsed(true); }}
               onDelete={handleDelete}
               onRename={handleRename}
               searchInputRef={searchInputRef}
@@ -250,10 +240,7 @@ function App() {
           </div>
         )}
         {/* Toolbar */}
-        <nav
-          aria-label="Toolbar"
-          className="flex items-center gap-2 px-4 py-2 border-b border-gray-200 dark:border-gray-700 overflow-x-auto flex-shrink-0"
-        >
+        <nav aria-label="Toolbar" className="flex items-center gap-2 px-4 py-2 border-b border-gray-200 dark:border-gray-700 overflow-x-auto flex-shrink-0">
           <button
             onClick={() => setSidebarCollapsed((v) => !v)}
             className="btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0"
@@ -285,16 +272,8 @@ function App() {
 
           {mode === "single" && !activeConvMeta?.pipelineTemplateId && (
             <>
-              <div className="flex-shrink-0">
-                <BackendSwitcher value={backend} onChange={setBackend} />
-              </div>
-              <div className="flex-shrink-0">
-                <ModelSelector
-                  provider={backend}
-                  value={model}
-                  onChange={setModel}
-                />
-              </div>
+              <div className="flex-shrink-0"><BackendSwitcher value={backend} onChange={setBackend} /></div>
+              <div className="flex-shrink-0"><ModelSelector provider={backend} value={model} onChange={setModel} /></div>
             </>
           )}
 
@@ -390,7 +369,9 @@ function App() {
         <main className="flex flex-1 min-h-0">
           {!activeConvId && mode === "single" ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-              <h2 className="text-sm font-semibold mb-2">Welcome to MyRA</h2>
+              <h2 className="text-sm font-semibold mb-2">
+                Welcome to MyRA
+              </h2>
               <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">
                 Claude Code is built in and ready. Create a conversation, pick a
                 backend, and ask your question.
@@ -406,8 +387,8 @@ function App() {
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
               <h2 className="text-sm font-semibold mb-2">Pipeline mode</h2>
               <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs">
-                Select a pipeline template from the toolbar above, then type
-                your first message to begin.
+                Select a pipeline template from the toolbar above, then type your
+                first message to begin.
               </p>
             </div>
           ) : (
@@ -427,10 +408,7 @@ function App() {
             className={`overflow-hidden transition-transform duration-200 ease-drawer ${
               showPersonas ? "translate-x-0" : "translate-x-full"
             } ${showPersonas ? "border-l border-gray-200 dark:border-gray-700" : ""}`}
-            style={{
-              pointerEvents: showPersonas ? "auto" : "none",
-              willChange: "width",
-            }}
+            style={{ pointerEvents: showPersonas ? "auto" : "none", willChange: "transform" }}
           >
             <div className="w-56 lg:w-64 overflow-y-auto h-full">
               <PersonaPanel
@@ -443,10 +421,7 @@ function App() {
             className={`overflow-hidden transition-transform duration-200 ease-drawer ${
               showPipelines ? "translate-x-0" : "translate-x-full"
             } ${showPipelines ? "border-l border-gray-200 dark:border-gray-700" : ""}`}
-            style={{
-              pointerEvents: showPipelines ? "auto" : "none",
-              willChange: "width",
-            }}
+            style={{ pointerEvents: showPipelines ? "auto" : "none", willChange: "transform" }}
           >
             <div className="w-56 lg:w-64 overflow-y-auto h-full">
               <PipelinePanel
@@ -462,10 +437,7 @@ function App() {
             className={`overflow-hidden transition-transform duration-200 ease-drawer ${
               showSettings ? "translate-x-0" : "translate-x-full"
             } ${showSettings ? "border-l border-gray-200 dark:border-gray-700" : ""}`}
-            style={{
-              pointerEvents: showSettings ? "auto" : "none",
-              willChange: "width",
-            }}
+            style={{ pointerEvents: showSettings ? "auto" : "none", willChange: "transform" }}
           >
             <SettingsPanel
               onClose={() => setShowSettings(false)}
