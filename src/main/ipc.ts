@@ -189,9 +189,9 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   ipcMain.handle(IPC.NET_GET_PROXY, () => {
     return {
-      httpProxy: process.env.HTTP_PROXY || process.env.http_proxy || "",
-      httpsProxy: process.env.HTTPS_PROXY || process.env.https_proxy || "",
-      noProxy: process.env.NO_PROXY || process.env.no_proxy || "",
+      httpProxy: ConvStore.getSetting("proxy_http") ?? "",
+      httpsProxy: ConvStore.getSetting("proxy_https") ?? "",
+      noProxy: ConvStore.getSetting("proxy_no") ?? "",
     };
   });
 

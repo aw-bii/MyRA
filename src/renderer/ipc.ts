@@ -337,7 +337,7 @@ export async function checkConnectivity(): Promise<{ online: boolean }> {
   return ipcInvoke<{ online: boolean }>(IPC.NET_CHECK);
 }
 export async function getProxySettings(): Promise<{ httpProxy: string; httpsProxy: string; noProxy: string }> {
-  return ipcInvoke(IPC.NET_GET_PROXY) as Promise<any>;
+  return ipcInvoke<{ httpProxy: string; httpsProxy: string; noProxy: string }>(IPC.NET_GET_PROXY);
 }
 export async function setProxySettings(settings: { httpProxy: string; httpsProxy: string; noProxy: string }): Promise<void> {
   await ipcInvoke(IPC.NET_SET_PROXY, settings);
