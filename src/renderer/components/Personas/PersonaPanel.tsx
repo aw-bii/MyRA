@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { usePersonas } from "../../hooks/usePersonas";
 import type { Persona } from "../../../shared/types";
 
@@ -16,6 +16,14 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
     {},
   );
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const editFormRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (editing) {
+      editFormRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [editing]);
 
   const templates = useMemo(
     () => personas.filter((p) => p.isTemplate),
@@ -248,6 +256,9 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
             {p.isDefault && (
               <div className="text-xs text-blue-500">default</div>
             )}
+            <div className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[140px]">
+              {p.systemPrompt || "No system prompt"}
+            </div>
           </div>
           <div className="flex gap-1">
             <button
@@ -289,7 +300,7 @@ export function PersonaPanel({ activePersonaId, onSelect }: Props) {
 
       {/* New/edit persona form */}
       {editing && !creatingFromTemplate && (
-        <div className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+        <div ref={editFormRef} className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
           <div className="flex flex-col gap-1">
             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Name
