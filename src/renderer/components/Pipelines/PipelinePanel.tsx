@@ -118,14 +118,24 @@ export function PipelinePanel({ activeTemplateId, onSelect }: Props) {
         templates.map((t) => (
           <div
             key={t.id}
-            className={`flex items-center justify-between p-2 rounded-lg cursor-pointer text-sm ${
+            className={`flex items-center justify-between p-2 rounded-lg text-sm ${
               activeTemplateId === t.id
                 ? "bg-blue-100 dark:bg-blue-900"
                 : "hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"
             }`}
-            onClick={() => onSelect(t)}
           >
-            <div>
+            <div
+              tabIndex={0}
+              role="button"
+              className="flex-1 cursor-pointer"
+              onClick={() => onSelect(t)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelect(t);
+                }
+              }}
+            >
               <div className="font-medium">{t.name}</div>
               <div className="text-xs text-gray-400">
                 {t.steps.length} steps
@@ -133,8 +143,7 @@ export function PipelinePanel({ activeTemplateId, onSelect }: Props) {
             </div>
             <div className="flex gap-1">
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() =>
                   setEditing({
                     id: t.id,
                     name: t.name,
@@ -143,17 +152,14 @@ export function PipelinePanel({ activeTemplateId, onSelect }: Props) {
                       backendId: s.backendId,
                       personaId: s.personaId,
                     })),
-                  });
-                }}
+                  })
+                }
                 className="text-xs text-gray-400 hoverable:hover:text-gray-700 px-1"
               >
                 Edit
               </button>
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  remove(t.id);
-                }}
+                onClick={() => remove(t.id)}
                 className="text-xs text-red-400 hoverable:hover:text-red-600 px-1"
                 aria-label={`Delete pipeline ${t.name}`}
               >

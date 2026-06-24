@@ -34,15 +34,25 @@ export function WizardStep1({ onNext }: Props) {
       loading: !b.bundled,
     })),
   );
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     BACKENDS.filter((b) => !b.bundled).forEach(async (b) => {
-      const result = await probeBackend(b.id);
-      setStatuses((prev) =>
-        prev.map((s) =>
-          s.id === b.id ? { ...s, ...result, loading: false } : s,
-        ),
-      );
+      try {
+        const result = await probeBackend(b.id);
+        setStatuses((prev) =>
+          prev.map((s) =>
+            s.id === b.id ? { ...s, ...result, loading: false } : s,
+          ),
+        );
+      } catch (err) {
+        setStatuses((prev) =>
+          prev.map((s) =>
+            s.id === b.id ? { ...s, available: false, authenticated: false, loading: false } : s,
+          ),
+        );
+        setErrors((prev) => ({ ...prev, [b.id]: `Probe failed: ${(err as Error).message}` }));
+      }
     });
   }, []);
 
@@ -92,6 +102,9 @@ export function WizardStep1({ onNext }: Props) {
                         : "Not installed"}
                 </div>
               </div>
+              {errors[b.id] && (
+                <p className="text-xs text-red-500">{errors[b.id]}</p>
+              )}
             </div>
           );
         })}

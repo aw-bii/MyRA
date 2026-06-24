@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { memo, useState, useEffect } from "react";
 import { listModels } from "../../ipc";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   onChange: (model: string) => void;
 }
 
-export function ModelSelector({ provider, value, onChange }: Props) {
+export const ModelSelector = memo(function ModelSelector({ provider, value, onChange }: Props) {
   const [models, setModels] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -49,4 +49,4 @@ export function ModelSelector({ provider, value, onChange }: Props) {
       )}
     </select>
   );
-}
+});

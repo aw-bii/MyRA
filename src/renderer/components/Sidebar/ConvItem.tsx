@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Trash, ArrowsSplit } from "@phosphor-icons/react";
 import type { Conversation } from "../../../shared/types";
 
@@ -10,7 +10,7 @@ interface Props {
   onRename: (id: string, title: string) => void;
 }
 
-export function ConvItem({
+export const ConvItem = memo(function ConvItem({
   conversation,
   active,
   onClick,
@@ -78,7 +78,7 @@ export function ConvItem({
           e.stopPropagation();
           onDelete(conversation.id);
         }}
-        className="opacity-0 hoverable:group-hover:opacity-100 p-1 text-gray-400 hoverable:hover:text-red-500 transition-[opacity,transform] duration-100 ease-press active:scale-95"
+        className="opacity-0 hoverable:group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 p-1 text-gray-400 hoverable:hover:text-red-500 transition-[opacity,transform] duration-100 ease-press active:scale-95"
         aria-label="Delete conversation"
         title="Delete"
       >
@@ -86,4 +86,4 @@ export function ConvItem({
       </button>
     </div>
   );
-}
+});

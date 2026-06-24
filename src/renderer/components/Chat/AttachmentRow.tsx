@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { memo, useState, useEffect } from "react";
 import type { Attachment } from "../../../shared/types";
 import { getAttachmentDataUrl } from "../../ipc";
 
@@ -31,7 +31,7 @@ function ImageAttachment({ att }: { att: Attachment }) {
   );
 }
 
-export function AttachmentRow({ attachments }: Props) {
+export const AttachmentRow = memo(function AttachmentRow({ attachments }: Props) {
   if (attachments.length === 0) return null;
 
   return (
@@ -52,4 +52,4 @@ export function AttachmentRow({ attachments }: Props) {
       ))}
     </div>
   );
-}
+});

@@ -59,7 +59,7 @@ export function McpPanel() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div role="region" aria-label="MCP Servers" className="flex flex-col h-full">
       <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-xs font-semibold uppercase text-gray-500">
           MCP Servers
@@ -74,26 +74,34 @@ export function McpPanel() {
 
       {showForm && (
         <div className="px-3 py-2 space-y-1.5 border-b border-gray-200 dark:border-gray-700">
+          <label className="block text-xs font-medium mb-1" htmlFor="mcp-server-name">Server Name</label>
           <input
-            placeholder="Server name"
+            id="mcp-server-name"
+            placeholder="e.g., my-fileserver"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+          <label className="block text-xs font-medium mb-1" htmlFor="mcp-command">Command</label>
           <input
-            placeholder="Command (e.g., npx)"
+            id="mcp-command"
+            placeholder="e.g., npx"
             value={command}
             onChange={(e) => setCommand(e.target.value)}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+          <label className="block text-xs font-medium mb-1" htmlFor="mcp-args">Arguments</label>
           <input
-            placeholder="Arguments (e.g., -y @server/filesystem /tmp)"
+            id="mcp-args"
+            placeholder="e.g., -y @server/filesystem /tmp"
             value={args}
             onChange={(e) => setArgs(e.target.value)}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+          <label className="block text-xs font-medium mb-1" htmlFor="mcp-env">Env Vars</label>
           <textarea
-            placeholder="Env vars (KEY=VALUE per line)"
+            id="mcp-env"
+            placeholder="KEY=VALUE per line"
             value={env}
             onChange={(e) => setEnv(e.target.value)}
             rows={2}

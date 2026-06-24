@@ -64,7 +64,7 @@ export function CronPanel() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div role="region" aria-label="Cron Jobs" className="flex flex-col h-full">
       <div className="flex items-center justify-between px-3 py-2 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-xs font-semibold uppercase text-gray-500">
           Scheduled Jobs
@@ -79,26 +79,34 @@ export function CronPanel() {
 
       {showForm && (
         <div className="px-3 py-2 space-y-1.5 border-b border-gray-200 dark:border-gray-700">
+          <label className="block text-xs font-medium mb-1" htmlFor="cron-name">Name</label>
           <input
-            placeholder="Name"
+            id="cron-name"
+            placeholder="e.g., Daily standup"
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+          <label className="block text-xs font-medium mb-1" htmlFor="cron-expression">Cron Expression</label>
           <input
-            placeholder="Cron expression (e.g., 0 9 * * 1-5)"
+            id="cron-expression"
+            placeholder="e.g., 0 9 * * 1-5"
             value={cronExpression}
             onChange={(e) => setCronExpression(e.target.value)}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+          <label className="block text-xs font-medium mb-1" htmlFor="cron-prompt">Prompt</label>
           <textarea
-            placeholder="Prompt to execute"
+            id="cron-prompt"
+            placeholder="Message to execute"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             rows={2}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
+          <label className="block text-xs font-medium mb-1" htmlFor="cron-backend">Backend</label>
           <select
+            id="cron-backend"
             value={backend}
             onChange={(e) => setBackend(e.target.value)}
             className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"

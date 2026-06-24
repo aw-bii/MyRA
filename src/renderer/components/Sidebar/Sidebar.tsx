@@ -5,6 +5,7 @@ import { McpPanel } from "./McpPanel";
 import { PluginPanel } from "./PluginPanel";
 
 interface Props {
+  collapsed: boolean;
   activeId: string | null;
   onSelect: (id: string) => void;
   onNew: () => void;
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export function Sidebar({
+  collapsed,
   activeId,
   onSelect,
   onNew,
@@ -34,7 +36,12 @@ export function Sidebar({
   showPlugins,
 }: Props) {
   return (
-    <div className="w-64 flex flex-col h-full border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+    <aside
+      className={`flex-shrink-0 flex flex-col h-full overflow-hidden transition-[width] duration-200 ease-press border-r border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 ${
+        collapsed ? "w-0" : "w-64 lg:w-48"
+      }`}
+      style={collapsed ? { minWidth: 0 } : undefined}
+    >
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
         <span className="font-semibold text-sm">MyRA</span>
         <button
@@ -64,6 +71,6 @@ export function Sidebar({
           />
         )}
       </div>
-    </div>
+    </aside>
   );
 }

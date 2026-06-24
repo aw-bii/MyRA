@@ -1,5 +1,5 @@
 import ReactMarkdown from "react-markdown";
-import { useState, useEffect } from "react";
+import { memo, useState, useEffect } from "react";
 import { AttachmentRow } from "./AttachmentRow";
 import { listAttachments } from "../../ipc";
 import type { Message, Attachment } from "../../../shared/types";
@@ -24,7 +24,7 @@ interface Props {
   message: Message;
 }
 
-export function MessageBubble({ message }: Props) {
+export const MessageBubble = memo(function MessageBubble({ message }: Props) {
   const isUser = message.role === "user";
   const [attachments, setAttachments] = useState<Attachment[]>([]);
 
@@ -38,6 +38,7 @@ export function MessageBubble({ message }: Props) {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"} mb-3`}>
       <div
+        role="article"
         className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
           isUser
             ? "bg-blue-600 text-white"
@@ -64,4 +65,4 @@ export function MessageBubble({ message }: Props) {
       </div>
     </div>
   );
-}
+});

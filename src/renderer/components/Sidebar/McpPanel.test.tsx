@@ -59,8 +59,8 @@ describe("McpPanel", () => {
       expect(screen.getByText("+ Add")).toBeTruthy();
     });
     fireEvent.click(screen.getByText("+ Add"));
-    expect(screen.getByPlaceholderText("Server name")).toBeTruthy();
-    expect(screen.getByPlaceholderText("Command (e.g., npx)")).toBeTruthy();
+    expect(screen.getByPlaceholderText("e.g., my-fileserver")).toBeTruthy();
+    expect(screen.getByPlaceholderText("e.g., npx")).toBeTruthy();
   });
 
   it("adds a server via IPC", async () => {
@@ -78,13 +78,13 @@ describe("McpPanel", () => {
     render(<McpPanel />);
     await waitFor(() => expect(screen.getByText("+ Add")).toBeTruthy());
     fireEvent.click(screen.getByText("+ Add"));
-    fireEvent.change(screen.getByPlaceholderText("Server name"), {
+    fireEvent.change(screen.getByPlaceholderText("e.g., my-fileserver"), {
       target: { value: "Test Server" },
     });
-    fireEvent.change(screen.getByPlaceholderText("Command (e.g., npx)"), {
+    fireEvent.change(screen.getByPlaceholderText("e.g., npx"), {
       target: { value: "node" },
     });
-    fireEvent.change(screen.getByPlaceholderText(/Arguments/i), {
+    fireEvent.change(screen.getByLabelText("Arguments"), {
       target: { value: "server.js" },
     });
     fireEvent.click(screen.getByText("Add Server"));

@@ -64,8 +64,8 @@ describe("CronPanel", () => {
       expect(screen.getByText("+ New")).toBeTruthy();
     });
     fireEvent.click(screen.getByText("+ New"));
-    expect(screen.getByPlaceholderText("Name")).toBeTruthy();
-    expect(screen.getByPlaceholderText(/Cron expression/i)).toBeTruthy();
+    expect(screen.getByPlaceholderText("e.g., Daily standup")).toBeTruthy();
+    expect(screen.getByPlaceholderText("e.g., 0 9 * * 1-5")).toBeTruthy();
     expect(screen.getByText("Create Job")).toBeTruthy();
   });
 
@@ -91,13 +91,13 @@ describe("CronPanel", () => {
       expect(screen.getByText("+ New")).toBeTruthy();
     });
     fireEvent.click(screen.getByText("+ New"));
-    fireEvent.change(screen.getByPlaceholderText("Name"), {
+    fireEvent.change(screen.getByPlaceholderText("e.g., Daily standup"), {
       target: { value: "Test Job" },
     });
-    fireEvent.change(screen.getByPlaceholderText(/Cron expression/i), {
+    fireEvent.change(screen.getByPlaceholderText("e.g., 0 9 * * 1-5"), {
       target: { value: "* * * * *" },
     });
-    fireEvent.change(screen.getAllByPlaceholderText(/Prompt/i)[0], {
+    fireEvent.change(screen.getByPlaceholderText("Message to execute"), {
       target: { value: "test" },
     });
     fireEvent.click(screen.getByText("Create Job"));

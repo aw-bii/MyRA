@@ -53,6 +53,16 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
     });
   }, []);
 
+  useEffect(() => {
+    if (theme !== "system") return;
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const handler = (e: MediaQueryListEvent) => {
+      document.documentElement.classList.toggle("dark", e.matches);
+    };
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [theme]);
+
   const handleThemeChange = async (t: "system" | "light" | "dark") => {
     setTheme(t);
     await setSetting("theme", t);
@@ -90,7 +100,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   };
 
   return (
-    <div className="w-72 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="w-72 lg:w-56 overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
         <span className="font-semibold text-sm">Settings</span>
         <button
@@ -104,7 +114,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
         <div>
           <label className="block text-xs font-medium mb-1">Theme</label>
           <select
-            className="w-full text-xs border rounded px-2 py-1.5 dark:bg-gray-800 dark:border-gray-600"
+            className="w-full text-xs border rounded px-2 py-1.5 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={theme}
             onChange={(e) => handleThemeChange(e.target.value as typeof theme)}
           >

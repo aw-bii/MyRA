@@ -48,3 +48,14 @@
     @apply w-full text-sm px-4 py-2 rounded-xl font-medium transition-transform duration-100 ease-press active:scale-95;
   }
 }
+
+@media (pointer: coarse) {
+  .btn-sm {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .btn-md {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

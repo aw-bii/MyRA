@@ -16,10 +16,12 @@ export function MessageList({ messages, streaming, conversationId }: Props) {
   const seenIdsRef = useRef(new Set<string>());
   const prevConvIdRef = useRef<string | null | undefined>(undefined);
 
-  if (prevConvIdRef.current !== conversationId) {
-    prevConvIdRef.current = conversationId;
-    messages.forEach((m) => seenIdsRef.current.add(m.id));
-  }
+  useEffect(() => {
+    if (prevConvIdRef.current !== conversationId) {
+      prevConvIdRef.current = conversationId;
+      seenIdsRef.current = new Set(messages.map((m) => m.id));
+    }
+  }, [conversationId, messages]);
 
   // Register rendered IDs after each paint so future renders know what's old.
   useEffect(() => {
@@ -29,11 +31,11 @@ export function MessageList({ messages, streaming, conversationId }: Props) {
   // Only scroll when a genuinely new message appears (not on every chunk).
   const lastMsgId = messages.at(-1)?.id;
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [lastMsgId]);
+    bottomRef.current?.scrollIntoView({ behavior: streaming ? "instant" : "smooth" });
+  }, [lastMsgId, streaming]);
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-4">
+    <div className="flex-1 overflow-y-auto px-4 py-4" aria-live="polite" role="log">
       {messages.map((msg) => {
         const isNew = !seenIdsRef.current.has(msg.id);
         return (
