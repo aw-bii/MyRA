@@ -248,7 +248,7 @@ function App() {
           </div>
         )}
         {/* Toolbar */}
-        <nav aria-label="Toolbar" className="flex items-center gap-2 px-4 py-2 border-b border-gray-200 dark:border-gray-700 overflow-x-auto flex-shrink-0">
+        <nav aria-label="Toolbar" className="flex flex-wrap items-center gap-2 px-4 py-2 border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setSidebarCollapsed((v) => !v)}
             className="btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0"
@@ -348,7 +348,7 @@ function App() {
           </button>
 
           {/* Spacer + Divider */}
-          <div className="flex-1 flex-shrink-0" />
+          <div className="flex-1" />
           <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 flex-shrink-0" />
 
           {/* Zone 3: Right panels */}
