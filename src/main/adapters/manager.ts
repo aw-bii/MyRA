@@ -67,12 +67,13 @@ export const AdapterManager = {
 
   async listAvailable(): Promise<BackendInfo[]> {
     return Promise.all(
-      registry.map(async (a) => ({
-        id: a.id,
-        label: labelFor(a.id),
-        available: await a.isAvailable(),
-        authenticated: await a.checkAuth(),
-      })),
+      registry.map(async (a) => {
+        const [available, authenticated] = await Promise.all([
+          a.isAvailable(),
+          a.checkAuth(),
+        ]);
+        return { id: a.id, label: labelFor(a.id), available, authenticated };
+      }),
     );
   },
 };
