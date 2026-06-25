@@ -34,7 +34,7 @@ describe("PipelineRunner", () => {
     vi.clearAllMocks();
   });
 
-  it("calls getAllWindows once per run, not once per step", async () => {
+  it("re-fetches BrowserWindow once per step so security events reach a reloaded window", async () => {
     mockGet.mockImplementation(() => ({
       id: "mock",
       abort: mockAbort,
@@ -52,7 +52,9 @@ describe("PipelineRunner", () => {
       onStepDone: vi.fn(),
     });
 
-    expect(mockGetAllWindows).toHaveBeenCalledTimes(1);
+    // Called once per step — if window reloads between steps, later steps
+    // still deliver security events instead of throwing on a destroyed BrowserWindow
+    expect(mockGetAllWindows).toHaveBeenCalledTimes(3);
   });
 
   it("passes user message to step 0 and accumulated output to step 1", async () => {

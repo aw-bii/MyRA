@@ -24,11 +24,11 @@ export class PipelineRunner {
     });
 
     let currentInput = params.userMessage;
-    const win = BrowserWindow.getAllWindows()[0] ?? null;
 
     try {
       for (let i = 0; i < params.steps.length; i++) {
         if (aborted) break;
+        const win = BrowserWindow.getAllWindows()[0] ?? null;
         const step = params.steps[i];
         const adapter = AdapterManager.get(step.adapterId);
         if (!adapter) throw new Error(`Adapter not found: ${step.adapterId}`);
