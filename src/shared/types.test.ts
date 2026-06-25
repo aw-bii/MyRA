@@ -43,8 +43,8 @@ describe("SecurityEvent types", () => {
     expect(payload.id).toBe("uuid-abc-123");
     expect(payload.approved).toBe(true);
 
-    // @ts-expect-error — eventType must no longer be accepted
     const _bad: SecurityRespondPayload = {
+      // @ts-expect-error — eventType must no longer be accepted
       eventType: "write_approval_needed",
       approved: true,
     };
