@@ -117,7 +117,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
         <div className="flex items-center gap-1">
           <button
             onClick={startNew}
-            className="btn-sm bg-blue-600 text-white hoverable:hover:bg-blue-700"
+            className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark"
           >
             + New
           </button>
@@ -125,7 +125,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
             <button
               onClick={onClose}
               aria-label="Close personas"
-              className="p-1 text-gray-400 hoverable:hover:text-gray-600 dark:hoverable:hover:text-gray-300 rounded"
+              className="p-1 text-text-muted hoverable:hover:text-text-base rounded"
             >
               ✕
             </button>
@@ -136,30 +136,30 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
       {/* Templates section */}
       {categories.length > 0 && (
         <div className="flex flex-col gap-2">
-          <h4 className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+          <h4 className="text-xs text-text-muted font-medium uppercase tracking-wider">
             Templates
           </h4>
           {categories.map(([cat, catTemplates]) => (
             <details key={cat} className="group" open>
-              <summary className="text-xs font-medium text-gray-500 cursor-pointer hoverable:hover:text-gray-700 dark:hoverable:hover:text-gray-300">
+              <summary className="text-xs font-medium text-text-muted cursor-pointer hoverable:hover:text-text-base">
                 {cat}
               </summary>
               <div className="flex flex-col gap-1 mt-1">
                 {catTemplates.map((t) => (
                   <button
                     key={t.id}
-                    className="w-full text-left flex items-center justify-between p-2 rounded-lg text-sm hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 transition-transform duration-100 ease-press active:scale-95"
+                    className="w-full text-left flex items-center justify-between p-2 rounded-lg text-sm hoverable:hover:bg-bubble transition-transform duration-100 ease-press active:scale-95"
                     onClick={() => startTemplateCreate(t)}
                   >
                     <div className="min-w-0 overflow-hidden">
                       <div className="font-medium truncate">{t.name}</div>
                       {t.description && (
-                        <div className="text-xs text-gray-400 truncate">
+                        <div className="text-xs text-text-muted truncate">
                           {t.description}
                         </div>
                       )}
                     </div>
-                    <span className="text-xs text-blue-500 shrink-0">
+                    <span className="text-xs text-primary shrink-0">
                       Create
                     </span>
                   </button>
@@ -172,12 +172,12 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
 
       {/* Template variable fill form */}
       {creatingFromTemplate && (
-        <div className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+        <div className="flex flex-col gap-2 border border-border rounded-lg p-3">
           <div className="text-sm font-medium">
             Create from: {creatingFromTemplate.name}
           </div>
           {creatingFromTemplate.description && (
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-text-muted">
               {creatingFromTemplate.description}
             </div>
           )}
@@ -185,14 +185,14 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
             <div key={v.name} className="flex flex-col gap-1">
               <label
                 htmlFor={`var-${v.name}`}
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="text-sm font-medium text-text-base"
               >
                 {v.label}
                 {v.required && <span className="text-red-500 ml-0.5">*</span>}
               </label>
               <input
                 id={`var-${v.name}`}
-                className="text-sm border rounded-lg px-2 py-1.5 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm border rounded-lg px-2 py-1.5 bg-surface border-border-strong focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder={v.placeholder}
                 value={variableValues[v.name] ?? ""}
                 onChange={(e) =>
@@ -207,7 +207,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
           <div className="flex gap-2 mt-1">
             <button
               onClick={submitFromTemplate}
-              className="btn-md flex-1 bg-blue-600 text-white hoverable:hover:bg-blue-700 disabled:opacity-50"
+              className="btn-md flex-1 bg-primary text-on-primary hoverable:hover:bg-primary-dark disabled:opacity-50"
               disabled={(creatingFromTemplate.variables ?? []).some(
                 (v) => v.required && !variableValues[v.name],
               )}
@@ -216,7 +216,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
             </button>
             <button
               onClick={cancel}
-              className="btn-md flex-1 border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-50 dark:hoverable:hover:bg-gray-800"
+              className="btn-md flex-1 border border-border-strong hoverable:hover:bg-bubble"
             >
               Cancel
             </button>
@@ -226,12 +226,12 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
 
       {/* Separator */}
       {userPersonas.length > 0 && (
-        <div className="border-t border-gray-200 dark:border-gray-700" />
+        <div className="border-t border-border" />
       )}
 
       {/* User personas */}
       <button
-        className={`w-full text-left flex items-center gap-2 p-2 rounded-lg text-sm transition-transform duration-100 ease-press active:scale-95 ${activePersonaId === null ? "bg-blue-100 dark:bg-blue-900" : "hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"}`}
+        className={`w-full text-left flex items-center gap-2 p-2 rounded-lg text-sm transition-transform duration-100 ease-press active:scale-95 ${activePersonaId === null ? "bg-primary-ghost" : "hoverable:hover:bg-bubble"}`}
         onClick={() => onSelect(null)}
         aria-pressed={activePersonaId === null}
       >
@@ -239,7 +239,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
       </button>
 
       {userPersonas.length === 0 && (
-        <div className="text-center text-xs text-gray-400 dark:text-gray-500 py-4 px-2">
+        <div className="text-center text-xs text-text-muted py-4 px-2">
           No saved personas. Create one to give the AI standing instructions for
           a recurring task — like a company researcher or analyst role.
         </div>
@@ -248,16 +248,16 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
       {userPersonas.map((p) => (
         <div key={p.id} className="relative">
           <button
-            className={`w-full text-left flex items-center justify-between p-2 rounded-lg text-sm transition-transform duration-100 ease-press active:scale-95 ${activePersonaId === p.id ? "bg-blue-100 dark:bg-blue-900" : "hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"}`}
+            className={`w-full text-left flex items-center justify-between p-2 rounded-lg text-sm transition-transform duration-100 ease-press active:scale-95 ${activePersonaId === p.id ? "bg-primary-ghost" : "hoverable:hover:bg-bubble"}`}
             onClick={() => onSelect(p.id)}
             aria-pressed={activePersonaId === p.id}
           >
             <div>
               <div className="font-medium">{p.name}</div>
               {p.isDefault && (
-                <div className="text-xs text-blue-500">default</div>
+                <div className="text-xs text-primary">default</div>
               )}
-              <div className="text-xs text-gray-400 dark:text-gray-500 truncate max-w-[140px]">
+              <div className="text-xs text-text-muted truncate max-w-[140px]">
                 {p.systemPrompt || "No system prompt"}
               </div>
             </div>
@@ -268,7 +268,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
           <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
             <button
               onClick={() => setEditing(p)}
-              className="text-xs text-gray-400 hoverable:hover:text-gray-700 px-1"
+              className="text-xs text-text-muted hoverable:hover:text-text-base px-1"
               aria-label={`Edit persona ${p.name}`}
             >
               Edit
@@ -298,14 +298,14 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
       {editing && !creatingFromTemplate && (
         <div
           ref={editFormRef}
-          className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-3"
+          className="flex flex-col gap-2 border border-border rounded-lg p-3"
         >
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-medium text-text-base">
               Name
             </label>
             <input
-              className="text-sm border rounded-lg px-2 py-1.5 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm border rounded-lg px-2 py-1.5 bg-surface border-border-strong focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="e.g. Code Reviewer"
               value={editing.name ?? ""}
               onChange={(e) =>
@@ -314,11 +314,11 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-medium text-text-base">
               System prompt
             </label>
             <textarea
-              className="text-sm border rounded-lg px-2 py-1.5 dark:bg-gray-800 dark:border-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="text-sm border rounded-lg px-2 py-1.5 bg-surface border-border-strong resize-none focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="You are a helpful assistant that..."
               rows={3}
               value={editing.systemPrompt ?? ""}
@@ -343,13 +343,13 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
           <div className="flex gap-2">
             <button
               onClick={submit}
-              className="btn-md flex-1 bg-blue-600 text-white hoverable:hover:bg-blue-700"
+              className="btn-md flex-1 bg-primary text-on-primary hoverable:hover:bg-primary-dark"
             >
               Save
             </button>
             <button
               onClick={cancel}
-              className="btn-md flex-1 border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-50 dark:hoverable:hover:bg-gray-800"
+              className="btn-md flex-1 border border-border-strong hoverable:hover:bg-bubble"
             >
               Cancel
             </button>
