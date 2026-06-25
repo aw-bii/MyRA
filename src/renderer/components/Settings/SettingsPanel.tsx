@@ -250,7 +250,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
           </button>
         </div>
         <div className="text-xs text-text-muted pt-4 border-t border-border">
-          Version {version || "0.1.0"}
+          Version {version || "0.2.0"}
         </div>
       </div>
     </div>
