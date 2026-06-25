@@ -99,4 +99,38 @@ describe("SecurityDialog focus trap", () => {
     const dismiss = screen.getByRole("button", { name: /dismiss/i });
     expect(document.activeElement).toBe(dismiss);
   });
+
+  it("re-focuses first button when a second queued event arrives while dialog is open", async () => {
+    const eventA = {
+      type: "injection_detected" as const,
+      severity: "low" as const,
+      message: "Event A",
+      detail: "detail A",
+      source: "claude",
+    };
+    const eventB = {
+      type: "injection_detected" as const,
+      severity: "high" as const,
+      message: "Event B",
+      detail: "detail B",
+      source: "claude",
+    };
+
+    const { rerender } = render(<SecurityDialog event={eventA} onRespond={vi.fn()} />);
+
+    // Event A: dialog is open, Dismiss receives focus
+    const dismissA = screen.getByRole("button", { name: /dismiss/i });
+    expect(document.activeElement).toBe(dismissA);
+
+    // Simulate user moving focus away (tabbing to another element)
+    dismissA.blur();
+
+    // Event B arrives before Event A was resolved
+    rerender(<SecurityDialog event={eventB} onRespond={vi.fn()} />);
+
+    // Focus should return to the first button of the updated dialog
+    await vi.waitFor(() => {
+      expect(document.activeElement).toBe(screen.getByRole("button", { name: /dismiss/i }));
+    });
+  });
 });

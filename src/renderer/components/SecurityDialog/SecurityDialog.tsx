@@ -12,17 +12,10 @@ export function SecurityDialog({ event, onRespond }: SecurityDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
 
   // Focus trap inside the dialog while it's open
-  useFocusTrap(dialogRef, !resolved);
+  useFocusTrap(dialogRef, !resolved, event);
 
   useEffect(() => {
     setResolved(false);
-    // Re-focus first focusable element when a new queued event arrives
-    requestAnimationFrame(() => {
-      const first = dialogRef.current?.querySelector<HTMLElement>(
-        'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
-      first?.focus();
-    });
   }, [event]);
 
   const onKeyDown = useCallback(

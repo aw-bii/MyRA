@@ -12,6 +12,7 @@ const FOCUSABLE = [
 export function useFocusTrap(
   containerRef: React.RefObject<HTMLElement | null>,
   enabled: boolean,
+  trigger?: unknown,
 ) {
   useEffect(() => {
     if (!enabled || !containerRef.current) return;
@@ -19,7 +20,6 @@ export function useFocusTrap(
     const container = containerRef.current;
     const focusable = Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
 
-    // Auto-focus first element
     focusable[0]?.focus();
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -44,5 +44,5 @@ export function useFocusTrap(
 
     container.addEventListener("keydown", handleKeyDown);
     return () => container.removeEventListener("keydown", handleKeyDown);
-  }, [enabled, containerRef]);
+  }, [enabled, containerRef, trigger]);
 }
