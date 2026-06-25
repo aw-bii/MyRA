@@ -24,6 +24,7 @@ export class PipelineRunner {
     });
 
     let currentInput = params.userMessage;
+    const win = BrowserWindow.getAllWindows()[0] ?? null;
 
     try {
       for (let i = 0; i < params.steps.length; i++) {
@@ -34,8 +35,6 @@ export class PipelineRunner {
 
         let accumulated = "";
         let stepCompleted = false;
-
-        const win = BrowserWindow.getAllWindows()[0] ?? null;
         for await (const chunk of securityMiddleware(
           adapter.send(currentInput, step.persona),
           adapter.id,

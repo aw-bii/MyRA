@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Hoist mock variables so they are available when vi.mock factory is evaluated
-const { mockAbort, mockGet, mockSecurityMiddleware } = vi.hoisted(() => ({
+const { mockAbort, mockGet, mockGetAllWindows, mockSecurityMiddleware } = vi.hoisted(() => ({
   mockAbort: vi.fn(),
   mockGet: vi.fn(),
+  mockGetAllWindows: vi.fn(() => []),
   mockSecurityMiddleware: vi.fn(async function* (
     source: AsyncIterable<unknown>,
   ) {
@@ -19,7 +20,7 @@ vi.mock("../adapters/manager", () => ({
 }));
 
 vi.mock("electron", () => ({
-  BrowserWindow: { getAllWindows: vi.fn(() => []) },
+  BrowserWindow: { getAllWindows: mockGetAllWindows },
 }));
 
 vi.mock("../../shared/ipc", () => ({
@@ -31,6 +32,27 @@ import { pipelineRunner } from "./runner";
 describe("PipelineRunner", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it("calls getAllWindows once per run, not once per step", async () => {
+    mockGet.mockImplementation(() => ({
+      id: "mock",
+      abort: mockAbort,
+      send: async function* () {
+        yield { type: "text", content: "out" };
+        yield { type: "done", content: "" };
+      },
+    }));
+
+    await pipelineRunner.run({
+      conversationId: "conv-getAllWindows",
+      userMessage: "hi",
+      steps: [{ adapterId: "a" }, { adapterId: "b" }, { adapterId: "c" }],
+      onChunk: vi.fn(),
+      onStepDone: vi.fn(),
+    });
+
+    expect(mockGetAllWindows).toHaveBeenCalledTimes(1);
   });
 
   it("passes user message to step 0 and accumulated output to step 1", async () => {
