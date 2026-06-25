@@ -172,7 +172,7 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   ipcMain.handle(IPC.WIZARD_INSTALL, (event, { backend }) =>
     installBackend(backend, (line) =>
-      event.sender.send("wizard:install:line", line),
+      event.sender.send("wizard:install:line", backend, line),
     ),
   );
 
