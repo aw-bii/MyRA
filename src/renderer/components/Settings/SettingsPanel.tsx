@@ -121,7 +121,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   };
 
   return (
-    <div className="w-72 lg:w-56 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="w-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
         <span className="font-semibold text-sm">Settings</span>
         <button

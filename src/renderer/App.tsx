@@ -418,7 +418,7 @@ function App() {
             }`}
             style={{ width: showPersonas ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
           >
-            <div className="w-56 lg:w-64 overflow-y-auto h-full">
+            <div className="w-full overflow-y-auto h-full">
               <PersonaPanel
                 activePersonaId={personaId}
                 onSelect={setPersonaId}
@@ -432,7 +432,7 @@ function App() {
             }`}
             style={{ width: showPipelines ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
           >
-            <div className="w-56 lg:w-64 overflow-y-auto h-full">
+            <div className="w-full overflow-y-auto h-full">
               <PipelinePanel
                 activeTemplateId={activePipelineTemplate?.id ?? null}
                 onSelect={(t) => {
