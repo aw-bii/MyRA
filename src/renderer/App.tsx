@@ -183,11 +183,11 @@ function App() {
       {/* Skip to main content link — only visible on keyboard focus */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-blue-600 focus:text-white focus:text-sm focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-primary focus:text-on-primary focus:text-sm focus:shadow-lg"
       >
         Skip to main content
       </a>
-      <div className="flex h-screen overflow-hidden bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+      <div className="flex h-screen overflow-hidden bg-surface text-text-base">
         <DiagnosticBanner />
       {viewportLg ? (
         <Sidebar
@@ -256,31 +256,31 @@ function App() {
           </div>
         )}
         {/* Toolbar */}
-        <nav aria-label="Toolbar" className="flex flex-wrap items-center gap-2 px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+        <nav aria-label="Toolbar" className="flex flex-wrap items-center gap-2 px-4 py-2 border-b border-border">
           <button
             onClick={() => setSidebarCollapsed((v) => !v)}
-            className="btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0"
+            className="btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0"
             aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
             title={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
           >
             <List size={16} />
           </button>
           {/* Zone 1: Mode + Backend */}
-          <div className="flex rounded-md border border-gray-300 dark:border-gray-600 overflow-hidden text-xs flex-shrink-0">
+          <div className="flex rounded-md border border-border-strong overflow-hidden text-xs flex-shrink-0">
             <button
               onClick={() => {
                 setMode("single");
                 setSelectedTemplate(null);
               }}
               aria-pressed={mode === "single"}
-              className={`px-3 py-1 transition-transform duration-100 ease-press active:scale-95 ${mode === "single" ? "bg-blue-600 text-white" : "hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"}`}
+              className={`px-3 py-1 transition-transform duration-100 ease-press active:scale-95 ${mode === "single" ? "bg-primary text-on-primary" : "hoverable:hover:bg-bubble"}`}
             >
               Single
             </button>
             <button
               onClick={() => setMode("pipeline")}
               aria-pressed={mode === "pipeline"}
-              className={`px-3 py-1 transition-transform duration-100 ease-press active:scale-95 ${mode === "pipeline" ? "bg-blue-600 text-white" : "hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"}`}
+              className={`px-3 py-1 transition-transform duration-100 ease-press active:scale-95 ${mode === "pipeline" ? "bg-primary text-on-primary" : "hoverable:hover:bg-bubble"}`}
             >
               Pipeline
             </button>
@@ -295,7 +295,7 @@ function App() {
 
           {(mode === "pipeline" || activeConvMeta?.pipelineTemplateId) && (
             <select
-              className="text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+              className="text-xs border rounded px-2 py-1 bg-surface border-border-strong"
               value={activePipelineTemplate?.id ?? ""}
               onChange={(e) => {
                 const t = templates.find((x) => x.id === e.target.value);
@@ -313,13 +313,13 @@ function App() {
           )}
 
           {/* Divider */}
-          <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 flex-shrink-0" />
+          <div className="w-px h-4 bg-border flex-shrink-0" />
 
           {/* Zone 2: Sidebar tools */}
           <button
             onClick={() => setSearchMode((v) => !v)}
             title="Search conversations (Ctrl+F)"
-            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${searchMode ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${searchMode ? "bg-primary-ghost" : ""}`}
             aria-label="Search conversations"
             aria-pressed={searchMode}
           >
@@ -333,7 +333,7 @@ function App() {
             aria-label="Scheduled tasks"
             title="Scheduled tasks"
             aria-pressed={showCron}
-            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showCron ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showCron ? "bg-primary-ghost" : ""}`}
           >
             Cron
           </button>
@@ -345,7 +345,7 @@ function App() {
             aria-label="Model Context Protocol servers"
             title="Model Context Protocol servers"
             aria-pressed={showMCP}
-            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showMCP ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showMCP ? "bg-primary-ghost" : ""}`}
           >
             MCP
           </button>
@@ -357,21 +357,21 @@ function App() {
             aria-label="Plugins"
             title="Plugins"
             aria-pressed={showPlugins}
-            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPlugins ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showPlugins ? "bg-primary-ghost" : ""}`}
           >
             Plugins
           </button>
 
           {/* Spacer + Divider */}
           <div className="flex-1" />
-          <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 flex-shrink-0" />
+          <div className="w-px h-4 bg-border flex-shrink-0" />
 
           {/* Zone 3: Right panels */}
           <button
             onClick={() => togglePanel("personas")}
             aria-label="Personas panel"
             aria-pressed={showPersonas}
-            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPersonas ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showPersonas ? "bg-primary-ghost" : ""}`}
           >
             Personas
           </button>
@@ -379,14 +379,14 @@ function App() {
             onClick={() => togglePanel("pipelines")}
             aria-label="Pipelines panel"
             aria-pressed={showPipelines}
-            className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPipelines ? "bg-blue-100 dark:bg-blue-900" : ""}`}
+            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showPipelines ? "bg-primary-ghost" : ""}`}
           >
             Pipelines
           </button>
           <button
             onClick={() => togglePanel("settings")}
             title="Settings"
-            className="btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0"
+            className="btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0"
             aria-label="Settings"
           >
             <GearSix size={16} />
@@ -399,13 +399,13 @@ function App() {
               <h2 className="text-sm font-semibold mb-2">
                 Welcome to MyRA
               </h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs mb-4">
+              <p className="text-xs text-text-muted max-w-xs mb-4">
                 Claude Code is built in and ready. Create a conversation, pick a
                 backend, and ask your question.
               </p>
               <button
                 onClick={handleNew}
-                className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hoverable:hover:bg-blue-700 transition-transform duration-100 ease-press active:scale-95"
+                className="px-4 py-2 rounded-xl bg-primary text-on-primary text-sm hoverable:hover:bg-primary-dark transition-transform duration-100 ease-press active:scale-95"
               >
                 New conversation
               </button>
@@ -413,7 +413,7 @@ function App() {
           ) : !activeConvId && mode === "pipeline" ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
               <h2 className="text-sm font-semibold mb-2">Pipeline mode</h2>
-              <p className="text-xs text-gray-500 dark:text-gray-400 max-w-xs">
+              <p className="text-xs text-text-muted max-w-xs">
                 Select a pipeline template from the toolbar above, then type your
                 first message to begin.
               </p>
@@ -433,7 +433,7 @@ function App() {
           )}
           <div
             className={`overflow-hidden transition-[width] duration-200 ease-drawer flex-shrink-0 ${
-              showPersonas ? "border-l border-gray-200 dark:border-gray-700" : ""
+              showPersonas ? "border-l border-border" : ""
             }`}
             style={{ width: showPersonas ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
           >
@@ -447,7 +447,7 @@ function App() {
           </div>
           <div
             className={`overflow-hidden transition-[width] duration-200 ease-drawer flex-shrink-0 ${
-              showPipelines ? "border-l border-gray-200 dark:border-gray-700" : ""
+              showPipelines ? "border-l border-border" : ""
             }`}
             style={{ width: showPipelines ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
           >
@@ -464,7 +464,7 @@ function App() {
           </div>
           <div
             className={`overflow-hidden transition-[width] duration-200 ease-drawer flex-shrink-0 ${
-              showSettings ? "border-l border-gray-200 dark:border-gray-700" : ""
+              showSettings ? "border-l border-border" : ""
             }`}
             style={{ width: showSettings ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
           >
