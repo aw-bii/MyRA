@@ -432,10 +432,10 @@ function App() {
             />
           )}
           <div
-            className={`overflow-hidden transition-[width] duration-200 ease-drawer flex-shrink-0 ${
+            className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${
               showPersonas ? "border-l border-border" : ""
             }`}
-            style={{ width: showPersonas ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
+            style={{ maxWidth: showPersonas ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0 }}
           >
             <div className="w-full overflow-y-auto h-full">
               <PersonaPanel
@@ -446,10 +446,10 @@ function App() {
             </div>
           </div>
           <div
-            className={`overflow-hidden transition-[width] duration-200 ease-drawer flex-shrink-0 ${
+            className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${
               showPipelines ? "border-l border-border" : ""
             }`}
-            style={{ width: showPipelines ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
+            style={{ maxWidth: showPipelines ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0 }}
           >
             <div className="w-full overflow-y-auto h-full">
               <PipelinePanel
@@ -463,10 +463,10 @@ function App() {
             </div>
           </div>
           <div
-            className={`overflow-hidden transition-[width] duration-200 ease-drawer flex-shrink-0 ${
+            className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${
               showSettings ? "border-l border-border" : ""
             }`}
-            style={{ width: showSettings ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0, willChange: "width" }}
+            style={{ maxWidth: showSettings ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0 }}
           >
             <SettingsPanel
               onClose={() => setShowSettings(false)}
