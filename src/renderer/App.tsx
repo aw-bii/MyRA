@@ -313,6 +313,7 @@ function App() {
             title="Search conversations (Ctrl+F)"
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${searchMode ? "bg-blue-100 dark:bg-blue-900" : ""}`}
             aria-label="Search conversations"
+            aria-pressed={searchMode}
           >
             <MagnifyingGlass size={16} />
           </button>
@@ -321,7 +322,8 @@ function App() {
               setShowCron((v) => !v);
               setSidebarCollapsed(false);
             }}
-            title="Scheduled tasks"
+            aria-label="Scheduled tasks"
+            aria-pressed={showCron}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showCron ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
             Cron
@@ -331,7 +333,8 @@ function App() {
               setShowMCP((v) => !v);
               setSidebarCollapsed(false);
             }}
-            title="Model Context Protocol servers"
+            aria-label="Model Context Protocol servers"
+            aria-pressed={showMCP}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showMCP ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
             MCP
@@ -341,7 +344,8 @@ function App() {
               setShowPlugins((v) => !v);
               setSidebarCollapsed(false);
             }}
-            title="Installed plugins"
+            aria-label="Plugins"
+            aria-pressed={showPlugins}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPlugins ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
             Plugins
@@ -354,12 +358,16 @@ function App() {
           {/* Zone 3: Right panels */}
           <button
             onClick={() => togglePanel("personas")}
+            aria-label="Personas panel"
+            aria-pressed={showPersonas}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPersonas ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
             Personas
           </button>
           <button
             onClick={() => togglePanel("pipelines")}
+            aria-label="Pipelines panel"
+            aria-pressed={showPipelines}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPipelines ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
             Pipelines
