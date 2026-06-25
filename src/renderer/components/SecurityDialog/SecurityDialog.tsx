@@ -16,6 +16,13 @@ export function SecurityDialog({ event, onRespond }: SecurityDialogProps) {
 
   useEffect(() => {
     setResolved(false);
+    // Re-focus first focusable element when a new queued event arrives
+    requestAnimationFrame(() => {
+      const first = dialogRef.current?.querySelector<HTMLElement>(
+        'button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      );
+      first?.focus();
+    });
   }, [event]);
 
   const onKeyDown = useCallback(

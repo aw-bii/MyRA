@@ -331,6 +331,7 @@ function App() {
               setSidebarCollapsed(false);
             }}
             aria-label="Scheduled tasks"
+            title="Scheduled tasks"
             aria-pressed={showCron}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showCron ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
@@ -342,6 +343,7 @@ function App() {
               setSidebarCollapsed(false);
             }}
             aria-label="Model Context Protocol servers"
+            title="Model Context Protocol servers"
             aria-pressed={showMCP}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showMCP ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >
@@ -353,6 +355,7 @@ function App() {
               setSidebarCollapsed(false);
             }}
             aria-label="Plugins"
+            title="Plugins"
             aria-pressed={showPlugins}
             className={`btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 flex-shrink-0 ${showPlugins ? "bg-blue-100 dark:bg-blue-900" : ""}`}
           >

@@ -44,7 +44,7 @@ export function MessageList({ messages, streaming, conversationId, id, "aria-lab
       id={id}
       aria-labelledby={ariaLabelledBy}
       className="flex-1 overflow-y-auto px-4 py-4"
-      aria-live="polite"
+      {...(role !== "tabpanel" ? { "aria-live": "polite" } : {})}
       role={role}
     >
       {messages.map((msg) => {
