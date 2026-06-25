@@ -35,25 +35,34 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   const [proxyNo, setProxyNo] = useState("");
 
   useEffect(() => {
-    getAppVersion().then(setVersion);
-  }, []);
-
-  useEffect(() => {
-    getSetting("theme").then((v) => {
-      if (v === "light" || v === "dark" || v === "system")
-        setTheme(v as typeof theme);
-    });
-  }, []);
-
-  useEffect(() => {
-    Promise.all(
-      API_PROVIDERS.map(async (p) => {
-        const exists = await hasKey(p.id);
-        return { id: p.id, exists };
-      }),
-    ).then((results) => {
-      setKeyStates(Object.fromEntries(results.map((r) => [r.id, r.exists])));
-    });
+    (async () => {
+      const [appVersion, themeSetting, keyResults, proxy] = await Promise.all([
+        getAppVersion(),
+        getSetting("theme"),
+        Promise.all(
+          API_PROVIDERS.map((p) =>
+            hasKey(p.id).then((exists) => ({ id: p.id, exists })),
+          ),
+        ),
+        getProxySettings().catch(() => ({
+          httpProxy: "",
+          httpsProxy: "",
+          noProxy: "",
+        })),
+      ]);
+      setVersion(appVersion);
+      if (
+        themeSetting === "light" ||
+        themeSetting === "dark" ||
+        themeSetting === "system"
+      ) {
+        setTheme(themeSetting);
+      }
+      setKeyStates(Object.fromEntries(keyResults.map((r) => [r.id, r.exists])));
+      setProxyHttp(proxy.httpProxy);
+      setProxyHttps(proxy.httpsProxy);
+      setProxyNo(proxy.noProxy);
+    })();
   }, []);
 
   useEffect(() => {
@@ -65,16 +74,6 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, [theme]);
-
-  useEffect(() => {
-    getProxySettings()
-      .then((p) => {
-        setProxyHttp(p.httpProxy);
-        setProxyHttps(p.httpsProxy);
-        setProxyNo(p.noProxy);
-      })
-      .catch(() => {});
-  }, []);
 
   const saveProxy = async () => {
     await setProxySettings({
