@@ -20,6 +20,12 @@ function safeUrl(url: string): string | null {
   return null;
 }
 
+const attachmentCache = new Map<string, Attachment[]>();
+
+export function clearAttachmentCache() {
+  attachmentCache.clear();
+}
+
 interface Props {
   message: Message;
 }
@@ -30,8 +36,16 @@ export const MessageBubble = memo(function MessageBubble({ message }: Props) {
 
   useEffect(() => {
     if (!isUser || !message.id) return;
+    const cached = attachmentCache.get(message.id);
+    if (cached) {
+      setAttachments(cached);
+      return;
+    }
     listAttachments(message.id)
-      .then(setAttachments)
+      .then((atts) => {
+        attachmentCache.set(message.id, atts);
+        setAttachments(atts);
+      })
       .catch(() => {});
   }, [message.id, isUser]);
 

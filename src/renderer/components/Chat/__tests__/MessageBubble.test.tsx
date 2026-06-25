@@ -1,15 +1,21 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { MessageBubble } from "../MessageBubble";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, act } from "@testing-library/react";
+import { MessageBubble, clearAttachmentCache } from "../MessageBubble";
 import type { Message } from "../../../../shared/types";
 
 vi.mock("react-markdown", () => ({
   default: ({ children }: any) => <div data-testid="markdown">{children}</div>,
 }));
 
-vi.mock("../../ipc", () => ({
-  listAttachments: vi.fn().mockResolvedValue([]),
+const { mockListAttachments } = vi.hoisted(() => ({
+  mockListAttachments: vi.fn().mockResolvedValue([]),
 }));
+vi.mock("../../../ipc", () => ({ listAttachments: mockListAttachments }));
+
+beforeEach(() => {
+  mockListAttachments.mockClear();
+  clearAttachmentCache();
+});
 
 describe("MessageBubble", () => {
   const userMsg: Message = {
@@ -92,5 +98,44 @@ describe("MessageBubble accessibility", () => {
     expect(timeEl?.getAttribute("dateTime")).toBe(
       new Date(userMsg.createdAt).toISOString()
     );
+  });
+});
+
+describe("MessageBubble attachment fetch", () => {
+  const userMsg: Message = {
+    id: "m1",
+    role: "user",
+    content: "Hi",
+    conversationId: "c1",
+    backend: "claude",
+    stepIndex: null,
+    createdAt: Date.now(),
+  };
+
+  it("fetches attachments only once per message id, not on re-render", async () => {
+    mockListAttachments.mockClear();
+    const { rerender } = render(<MessageBubble message={userMsg} />);
+    await act(async () => {});
+    expect(mockListAttachments).toHaveBeenCalledTimes(1);
+
+    // Re-render with same message id but different content — should NOT fetch again
+    rerender(<MessageBubble message={{ ...userMsg, content: "updated" }} />);
+    await act(async () => {});
+    expect(mockListAttachments).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses cached attachments on remount with same message id (conversation switch back)", async () => {
+    mockListAttachments.mockClear();
+    const { unmount } = render(<MessageBubble message={userMsg} />);
+    await act(async () => {});
+    expect(mockListAttachments).toHaveBeenCalledTimes(1);
+
+    // Unmount (switch away)
+    unmount();
+
+    // Remount (switch back) — should use cache, not re-fetch
+    render(<MessageBubble message={userMsg} />);
+    await act(async () => {});
+    expect(mockListAttachments).toHaveBeenCalledTimes(1);
   });
 });
