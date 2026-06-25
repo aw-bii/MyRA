@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { ConvItem } from "../ConvItem";
 import type { Conversation } from "../../../../shared/types";
 
@@ -116,5 +116,53 @@ describe("ConvItem", () => {
         "A very long conversation title that will definitely truncate",
       ),
     ).toBeInTheDocument();
+  });
+});
+
+describe("ConvItem long-press rename", () => {
+  const conv = {
+    id: "c1",
+    title: "Test Conv",
+    backend: "claude",
+    personaId: null,
+    pipelineTemplateId: null,
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  };
+
+  beforeEach(() => { vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("enters rename mode after 600ms touch hold", () => {
+    render(
+      <ConvItem
+        conversation={conv}
+        active={false}
+        onClick={vi.fn()}
+        onDelete={vi.fn()}
+        onRename={vi.fn()}
+      />
+    );
+    const btn = screen.getByRole("button", { name: /Test Conv/i });
+    fireEvent.touchStart(btn);
+    act(() => { vi.advanceTimersByTime(650); });
+    expect(screen.getByRole("textbox")).toBeTruthy();
+  });
+
+  it("does not enter rename on short tap", () => {
+    render(
+      <ConvItem
+        conversation={conv}
+        active={false}
+        onClick={vi.fn()}
+        onDelete={vi.fn()}
+        onRename={vi.fn()}
+      />
+    );
+    const btn = screen.getByRole("button", { name: /Test Conv/i });
+    fireEvent.touchStart(btn);
+    fireEvent.touchEnd(btn);
+    act(() => { vi.advanceTimersByTime(650); });
+    expect(screen.queryByRole("textbox")).toBeNull();
   });
 });

@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useRef } from "react";
 import { Trash, ArrowsSplit } from "@phosphor-icons/react";
 import type { Conversation } from "../../../shared/types";
 
@@ -20,6 +20,21 @@ export const ConvItem = memo(function ConvItem({
   const [editing, setEditing] = useState(false);
   const [editValue, setEditValue] = useState(conversation.title);
   const isPipeline = conversation.pipelineTemplateId !== null;
+  const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const onTouchStart = () => {
+    longPressTimer.current = setTimeout(() => {
+      setEditValue(conversation.title);
+      setEditing(true);
+    }, 600);
+  };
+
+  const onTouchEnd = () => {
+    if (longPressTimer.current) {
+      clearTimeout(longPressTimer.current);
+      longPressTimer.current = null;
+    }
+  };
 
   const handleSubmit = () => {
     const trimmed = editValue.trim();
@@ -55,6 +70,9 @@ export const ConvItem = memo(function ConvItem({
           setEditValue(conversation.title);
           setEditing(true);
         }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+        onTouchMove={onTouchEnd}
         aria-current={active ? "page" : undefined}
         className={`flex-1 text-left px-3 py-2 rounded-lg text-sm truncate hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800 transition-[background-color,transform] duration-100 ease-press active:scale-95 ${
           active ? "bg-gray-200 dark:bg-gray-700 font-medium" : ""
