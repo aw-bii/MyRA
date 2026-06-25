@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import type { SecurityEvent } from "../../../shared/types";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
 
 interface SecurityDialogProps {
   event: SecurityEvent;
@@ -8,6 +9,10 @@ interface SecurityDialogProps {
 
 export function SecurityDialog({ event, onRespond }: SecurityDialogProps) {
   const [resolved, setResolved] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap inside the dialog while it's open
+  useFocusTrap(dialogRef, !resolved);
 
   useEffect(() => {
     setResolved(false);
@@ -51,6 +56,7 @@ export function SecurityDialog({ event, onRespond }: SecurityDialogProps) {
       aria-label={`${event.severity} security alert: ${event.message}`}
     >
       <div
+        ref={dialogRef}
         className={`max-w-md w-full mx-4 rounded-lg border p-4 shadow-lg motion-safe:animate-scale-in ${severityClass}`}
       >
         <div className="font-semibold mb-1 text-sm uppercase tracking-wide">

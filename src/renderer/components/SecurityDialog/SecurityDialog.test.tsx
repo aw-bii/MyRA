@@ -84,3 +84,19 @@ describe("SecurityDialog", () => {
     expect(mockRespond).toHaveBeenCalledWith(true);
   });
 });
+
+describe("SecurityDialog focus trap", () => {
+  it("Dismiss button receives focus when dialog opens", () => {
+    const event = {
+      type: "injection_detected" as const,
+      severity: "low" as const,
+      message: "Test alert",
+      detail: "pattern matched",
+      source: "claude",
+    };
+    render(<SecurityDialog event={event} onRespond={vi.fn()} />);
+    // First focusable element inside dialog should be focused
+    const dismiss = screen.getByRole("button", { name: /dismiss/i });
+    expect(document.activeElement).toBe(dismiss);
+  });
+});
