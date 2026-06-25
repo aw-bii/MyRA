@@ -139,7 +139,7 @@ export function PipelinePanel({ activeTemplateId, onSelect, onClose }: Props) {
             <div
               tabIndex={0}
               role="button"
-              className="flex-1 cursor-pointer"
+              className="flex-1 min-w-0 overflow-hidden cursor-pointer"
               onClick={() => onSelect(t)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -148,7 +148,7 @@ export function PipelinePanel({ activeTemplateId, onSelect, onClose }: Props) {
                 }
               }}
             >
-              <div className="font-medium">{t.name}</div>
+              <div className="font-medium truncate">{t.name}</div>
               <div className="text-xs text-gray-400">
                 {t.steps.length} steps
               </div>
