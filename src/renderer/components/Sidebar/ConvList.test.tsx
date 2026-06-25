@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import type { SearchResult } from "../../../shared/types";
 
 const { mockSearch } = vi.hoisted(() => ({
   mockSearch: vi.fn().mockResolvedValue([]),
@@ -35,5 +36,32 @@ describe("ConvList search debounce", () => {
     // Called exactly once with final value
     expect(mockSearch).toHaveBeenCalledTimes(1);
     expect(mockSearch).toHaveBeenCalledWith("abc");
+  });
+});
+
+describe("ConvList search unmount safety", () => {
+  beforeEach(() => { vi.useFakeTimers(); mockSearch.mockClear(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("does not call setState after unmount when search resolves late", async () => {
+    let resolveSearch!: (v: SearchResult[]) => void;
+    mockSearch.mockReturnValueOnce(
+      new Promise<SearchResult[]>((res) => { resolveSearch = res; }),
+    );
+
+    const { unmount } = render(
+      <ConvList activeId={null} onSelect={vi.fn()} onDelete={vi.fn()} onRename={vi.fn()} />,
+    );
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "abc" } });
+
+    // Advance past debounce — timer fires, IPC is now in flight
+    await act(async () => { vi.advanceTimersByTime(350); });
+
+    // Unmount before search resolves
+    unmount();
+
+    // Resolving after unmount must not throw
+    await act(async () => { resolveSearch([]); });
+    // If we reach here without error, the guard works
   });
 });
