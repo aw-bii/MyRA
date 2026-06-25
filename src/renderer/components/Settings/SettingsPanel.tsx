@@ -120,12 +120,12 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   };
 
   return (
-    <div className="w-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+    <div className="w-full overflow-y-auto bg-surface">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <span className="font-semibold text-sm">Settings</span>
         <button
           onClick={onClose}
-          className="btn-sm border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"
+          className="btn-sm border border-border-strong hoverable:hover:bg-bubble"
         >
           Close
         </button>
@@ -134,7 +134,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
         <div>
           <label className="block text-xs font-medium mb-1">Theme</label>
           <select
-            className="w-full text-xs border rounded px-2 py-1.5 dark:bg-gray-800 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full text-xs border rounded px-2 py-1.5 bg-surface border-border-strong focus:outline-none focus:ring-2 focus:ring-primary"
             value={theme}
             onChange={(e) => handleThemeChange(e.target.value as typeof theme)}
           >
@@ -144,23 +144,23 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
           </select>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <div className="border-t border-border pt-4">
           <span className="text-xs font-semibold block mb-2">API Keys</span>
           <div className="space-y-3">
             {API_PROVIDERS.map((p) => (
               <div key={p.id}>
-                <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">
+                <label className="text-xs text-text-muted block mb-1">
                   {p.label}
                 </label>
                 {p.id === "ollama" ? (
-                  <p className="text-xs text-gray-400 dark:text-gray-500 italic">
+                  <p className="text-xs text-text-muted italic">
                     No key needed — connects to localhost:11434
                   </p>
                 ) : (
                   <div className="flex gap-1">
                     <input
                       type="password"
-                      className="flex-1 text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+                      className="flex-1 text-xs border rounded px-2 py-1 bg-surface border-border-strong"
                       placeholder={
                         keyStates[p.id] ? "Key set — blank to delete" : "sk-..."
                       }
@@ -174,14 +174,14 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
                     />
                     <button
                       onClick={() => handleSaveKey(p.id)}
-                      className="btn-sm bg-blue-600 text-white hoverable:hover:bg-blue-700 text-xs px-2"
+                      className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark text-xs px-2"
                     >
                       Save
                     </button>
                     <button
                       onClick={() => handleTest(p.id)}
                       disabled={testing[p.id]}
-                      className="btn-sm border border-gray-300 dark:border-gray-600 text-xs px-2 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"
+                      className="btn-sm border border-border-strong text-xs px-2 hoverable:hover:bg-bubble"
                     >
                       {testing[p.id] ? "..." : "Test"}
                     </button>
@@ -192,39 +192,39 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+        <div className="border-t border-border pt-4">
           <span className="text-xs font-semibold block mb-2">
             Network Proxy
           </span>
           <div className="space-y-2">
             <div>
-              <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">
+              <label className="text-xs text-text-muted block mb-1">
                 HTTP_PROXY
               </label>
               <input
-                className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+                className="w-full text-xs border rounded px-2 py-1 bg-surface border-border-strong"
                 placeholder="http://proxy:8080"
                 value={proxyHttp}
                 onChange={(e) => setProxyHttp(e.target.value)}
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">
+              <label className="text-xs text-text-muted block mb-1">
                 HTTPS_PROXY
               </label>
               <input
-                className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+                className="w-full text-xs border rounded px-2 py-1 bg-surface border-border-strong"
                 placeholder="https://proxy:8443"
                 value={proxyHttps}
                 onChange={(e) => setProxyHttps(e.target.value)}
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500 dark:text-gray-400 block mb-1">
+              <label className="text-xs text-text-muted block mb-1">
                 NO_PROXY
               </label>
               <input
-                className="w-full text-xs border rounded px-2 py-1 dark:bg-gray-800 dark:border-gray-600"
+                className="w-full text-xs border rounded px-2 py-1 bg-surface border-border-strong"
                 placeholder="localhost,127.0.0.1"
                 value={proxyNo}
                 onChange={(e) => setProxyNo(e.target.value)}
@@ -232,7 +232,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
             </div>
             <button
               onClick={saveProxy}
-              className="btn-sm bg-blue-600 text-white hoverable:hover:bg-blue-700 text-xs w-full mt-1"
+              className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark text-xs w-full mt-1"
             >
               Save Proxy
             </button>
@@ -242,12 +242,12 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
         <div>
           <button
             onClick={onReRunWizard}
-            className="btn-sm w-full px-3 py-2 border border-gray-300 dark:border-gray-600 hoverable:hover:bg-gray-100 dark:hoverable:hover:bg-gray-800"
+            className="btn-sm w-full px-3 py-2 border border-border-strong hoverable:hover:bg-bubble"
           >
             Re-run Setup Wizard
           </button>
         </div>
-        <div className="text-xs text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="text-xs text-text-muted pt-4 border-t border-border">
           Version {version || "0.1.0"}
         </div>
       </div>
