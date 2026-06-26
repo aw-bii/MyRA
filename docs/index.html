@@ -60,10 +60,13 @@ body {
   height: 60px; display: flex; align-items: center; justify-content: space-between;
 }
 .nav-logo {
-  font-family: var(--display); font-size: 17px; font-weight: 800;
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--display); font-size: 17px;
   letter-spacing: -.03em; color: var(--ink); text-decoration: none;
 }
-.nav-logo b { color: var(--blue); }
+.nav-logo svg { flex-shrink: 0; }
+.nav-logo .lw { font-weight: 300; }
+.nav-logo .bw { font-weight: 800; }
 .nav-acts { display: flex; align-items: center; gap: 10px; }
 .nav-gh {
   display: inline-flex; align-items: center; gap: 7px;
@@ -394,7 +397,12 @@ body {
   padding: 28px 0; border-top: 1px solid var(--bdr);
   display: flex; align-items: center; justify-content: space-between;
 }
-.footer-logo { font-family: var(--display); font-size: 15px; font-weight: 800; color: var(--ink-2); letter-spacing: -.02em; }
+.footer-logo {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--display); font-size: 15px; letter-spacing: -.02em; color: var(--ink-2);
+}
+.footer-logo .lw { font-weight: 300; }
+.footer-logo .bw { font-weight: 800; }
 .footer-copy { font-size: 13px; color: var(--ink-3); }
 
 /* ── REVEAL ─────────────────────────────── */
@@ -435,7 +443,15 @@ body {
 <!-- NAV -->
 <nav class="nav" role="navigation" aria-label="Main">
   <div class="nav-i">
-    <a href="#" class="nav-logo">My<b>RA</b></a>
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 512 512" width="30" height="30" aria-hidden="true">
+        <rect width="512" height="512" rx="80" fill="#2563EB"/>
+        <polygon points="48,96 164,96 256,432" fill="white"/>
+        <polygon points="200,96 312,96 256,432" fill="white"/>
+        <polygon points="348,96 464,96 256,432" fill="white"/>
+      </svg>
+      <span class="lw">My</span><span class="bw">RA</span>
+    </a>
     <div class="nav-acts">
       <a href="https://github.com/aw-bii/MyRA" target="_blank" rel="noopener" class="nav-gh">
         <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"/></svg>
@@ -822,7 +838,15 @@ body {
 <footer>
   <div class="c">
     <div class="footer">
-      <span class="footer-logo">MyRA</span>
+      <span class="footer-logo">
+        <svg viewBox="0 0 512 512" width="18" height="18" aria-hidden="true">
+          <rect width="512" height="512" rx="80" fill="#2563EB"/>
+          <polygon points="48,96 164,96 256,432" fill="white"/>
+          <polygon points="200,96 312,96 256,432" fill="white"/>
+          <polygon points="348,96 464,96 256,432" fill="white"/>
+        </svg>
+        <span class="lw">My</span><span class="bw">RA</span>
+      </span>
       <span class="footer-copy">Open source · MIT License</span>
     </div>
   </div>
