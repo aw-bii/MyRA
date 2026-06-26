@@ -1,403 +1,507 @@
-<title>MyRA</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyRA — Every AI model, one place</title>
+<meta name="description" content="Claude, Gemini, and Opencode in a single desktop app. All conversations saved locally. No accounts, no cloud.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:       oklch(99.5% 0.002 255);
-  --surf:     oklch(97.5% 0.003 255);
-  --surf2:    oklch(94% 0.006 255);
-  --accent:   oklch(50.4% 0.225 264);
-  --accent-h: oklch(44.8% 0.225 264);
-  --text:     oklch(15% 0.012 255);
-  --t2:       oklch(46% 0.012 255);
-  --t3:       oklch(66% 0.008 255);
-  --bdr:      oklch(89% 0.006 255);
-  --bdr2:     oklch(83% 0.008 255);
-  --r-sm: 4px; --r-md: 6px; --r-lg: 8px; --r-xl: 12px; --r-2xl: 16px; --r-pill: 9999px;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Display', system-ui, sans-serif;
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --white:  #ffffff;
+  --ink:    #111827;
+  --ink-2:  #6b7280;
+  --ink-3:  #9ca3af;
+  --surf:   #f9fafb;
+  --surf-2: #f3f4f6;
+  --bdr:    #e5e7eb;
+  --bdr-2:  #d1d5db;
+  --blue:   #2563eb;
+  --blue-d: #1d4ed8;
+  --blue-bg: #dbeafe;
+  --r3: 3px; --r6: 6px; --r8: 8px; --r12: 12px;
+  --r16: 16px; --r20: 20px;
+  --sh-sm: 0 1px 3px rgba(13,13,28,.06), 0 1px 2px rgba(13,13,28,.04);
+  --sh-md: 0 4px 20px rgba(13,13,28,.09), 0 1px 5px rgba(13,13,28,.05);
+  --sh-lg: 0 20px 60px rgba(13,13,28,.12), 0 6px 16px rgba(13,13,28,.07);
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
 }
 
+html { scroll-behavior: smooth; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 14px;
-  line-height: 1.55;
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* ── HEADER ─────────────────────────── */
-.hd {
+/* ── LAYOUT ─────────────────────────────── */
+.c { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+
+/* ── NAV ────────────────────────────────── */
+.nav {
   position: sticky; top: 0; z-index: 100;
-  background: oklch(99.5% 0.002 255 / 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--bdr);
 }
-.hd-inner {
-  max-width: 1040px; margin: 0 auto; padding: 0 28px;
-  height: 52px;
-  display: flex; align-items: center; justify-content: space-between;
+.nav-i {
+  max-width: 1120px; margin: 0 auto; padding: 0 32px;
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
 }
-.hd-logo { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.02em; }
-.hd-gh {
-  display: flex; align-items: center; justify-content: center;
-  width: 34px; height: 34px;
-  border-radius: var(--r-md);
-  color: var(--t2); text-decoration: none;
-  transition: color 150ms var(--ease-out), background 150ms var(--ease-out);
+.nav-logo {
+  font-family: var(--display); font-size: 17px; font-weight: 800;
+  letter-spacing: -.03em; color: var(--ink); text-decoration: none;
 }
-.hd-gh:hover { color: var(--text); background: var(--surf2); }
+.nav-logo b { color: var(--blue); }
+.nav-acts { display: flex; align-items: center; gap: 10px; }
+.nav-gh {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: var(--r8);
+  font-size: 14px; font-weight: 600; color: var(--ink-2);
+  text-decoration: none; border: 1px solid var(--bdr);
+  transition: color 140ms var(--ease), background 140ms var(--ease), transform 140ms var(--ease);
+}
+.nav-gh:hover { color: var(--ink); background: var(--surf); }
+.nav-gh:active { transform: scale(.97); }
+.nav-dl {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; border-radius: var(--r8);
+  font-size: 14px; font-weight: 700; color: #fff;
+  text-decoration: none; background: var(--blue);
+  transition: background 140ms var(--ease), transform 140ms var(--ease);
+}
+.nav-dl:hover { background: var(--blue-d); }
+.nav-dl:active { transform: scale(.97); }
 
-/* ── WRAP ───────────────────────────── */
-.wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
-
-/* ── HERO ───────────────────────────── */
-.hero { text-align: center; padding: 72px 28px 0; max-width: 1040px; margin: 0 auto; }
+/* ── HERO ───────────────────────────────── */
+.hero { padding: 88px 32px 0; max-width: 1120px; margin: 0 auto; }
 .hero-h1 {
-  font-size: clamp(38px, 5.5vw, 64px);
-  line-height: 1.05; letter-spacing: -0.038em; font-weight: 700;
-  color: var(--text); margin-bottom: 18px;
+  font-family: var(--display);
+  font-size: clamp(48px, 6.8vw, 88px);
+  font-weight: 800; line-height: 1.02; letter-spacing: -.045em;
+  color: var(--ink); margin-bottom: 24px;
+  text-wrap: balance; max-width: 700px;
 }
+.hero-h1 .g { color: var(--blue); }
 .hero-sub {
-  font-size: 17px; line-height: 1.65; color: var(--t2);
-  max-width: 440px; margin: 0 auto 32px;
+  font-size: 18px; line-height: 1.7; color: var(--ink-2);
+  max-width: 460px; margin-bottom: 36px;
 }
-.hero-cta { display: flex; justify-content: center; margin-bottom: 52px; }
-.btn-dl {
+.hero-acts { display: flex; align-items: center; gap: 12px; margin-bottom: 64px; flex-wrap: wrap; }
+.btn-primary {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--accent); color: #fff;
-  font-size: 14px; font-weight: 600;
-  padding: 11px 22px; border-radius: var(--r-xl);
+  background: var(--blue); color: #fff;
+  font-size: 15px; font-weight: 700;
+  padding: 13px 24px; border-radius: var(--r12);
   text-decoration: none;
-  transition: background 150ms var(--ease-out), transform 160ms var(--ease-out);
+  transition: background 140ms var(--ease), transform 140ms var(--ease);
 }
-.btn-dl:hover { background: var(--accent-h); }
-.btn-dl:active { transform: scale(0.97); }
-.btn-dl-icon {
-  width: 22px; height: 22px; border-radius: 50%;
-  background: oklch(100% 0 0 / 0.2);
-  display: flex; align-items: center; justify-content: center;
+.btn-primary:hover { background: var(--blue-d); }
+.btn-primary:active { transform: scale(.97); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--bdr-2); color: var(--ink-2);
+  font-size: 15px; font-weight: 600;
+  padding: 12px 22px; border-radius: var(--r12);
+  text-decoration: none;
+  transition: color 140ms var(--ease), background 140ms var(--ease), transform 140ms var(--ease);
 }
+.btn-ghost:hover { color: var(--ink); background: var(--surf); }
+.btn-ghost:active { transform: scale(.97); }
 
-/* ── WINDOW CHROME ──────────────────── */
-.win-wrap {
-  border-radius: var(--r-2xl); overflow: hidden;
-  border: 1px solid var(--bdr);
-  box-shadow: 0 4px 16px oklch(0% 0 0 / 0.07), 0 1px 4px oklch(0% 0 0 / 0.05);
+/* ── WINDOW ─────────────────────────────── */
+.win-wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+.win {
+  border-radius: var(--r20); overflow: hidden;
+  border: 1px solid var(--bdr); box-shadow: var(--sh-lg);
 }
 .win-bar {
-  height: 36px; background: var(--surf);
-  border-bottom: 1px solid var(--bdr);
-  display: flex; align-items: center; padding: 0 14px; gap: 6px; flex-shrink: 0;
+  height: 40px; background: var(--surf); border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; padding: 0 16px; gap: 7px;
 }
-.wd { width: 10px; height: 10px; border-radius: 50%; }
-.wd.r { background: oklch(68% 0.13 25); }
-.wd.y { background: oklch(80% 0.15 85); }
-.wd.g { background: oklch(72% 0.17 145); }
-.win-bar-title { flex: 1; text-align: center; font-size: 11px; font-weight: 600; color: var(--t3); }
+.wd { width: 11px; height: 11px; border-radius: 50%; }
+.wd-r { background: #f96b6b; }
+.wd-y { background: #f9c969; }
+.wd-g { background: #6cd97e; }
+.win-ttl { flex: 1; text-align: center; font-size: 12px; font-weight: 600; color: var(--ink-3); }
 
-/* ── APP SHELL (shared) ─────────────── */
-.app-shell {
-  display: grid; grid-template-columns: 186px 1fr;
-  background: var(--bg);
+/* ── APP SHELL ──────────────────────────── */
+.shell {
+  display: grid; grid-template-columns: 196px 1fr;
+  background: var(--white); height: 440px;
 }
-.app-sidebar {
-  background: var(--surf);
-  border-right: 1px solid var(--bdr);
+.sb {
+  background: var(--surf); border-right: 1px solid var(--bdr);
   display: flex; flex-direction: column; overflow: hidden;
 }
 .sb-hd {
-  padding: 12px 12px 10px;
-  border-bottom: 1px solid var(--bdr);
+  padding: 13px 13px 9px; border-bottom: 1px solid var(--bdr);
   display: flex; align-items: center; justify-content: space-between;
 }
-.sb-hd-name { font-size: 13px; font-weight: 600; color: var(--text); }
-.sb-new-btn {
-  font-size: 11px; font-weight: 600;
-  background: var(--accent); color: #fff;
-  padding: 3px 9px; border-radius: var(--r-md);
+.sb-hd-name { font-size: 13px; font-weight: 700; color: var(--ink); }
+.sb-new {
+  font-size: 11px; font-weight: 700;
+  background: var(--blue); color: #fff;
+  padding: 3px 9px; border-radius: var(--r6);
 }
-.sb-conv {
-  padding: 7px 10px; margin: 2px 5px;
-  border-radius: var(--r-md);
+.sb-grp {
+  padding: 8px 8px 2px 12px;
+  font-size: 10px; font-weight: 700; color: var(--ink-3);
+  letter-spacing: .07em; text-transform: uppercase;
 }
-.sb-conv.active { background: var(--surf2); }
-.sb-conv-title { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sb-conv-meta { font-size: 10px; color: var(--t3); margin-top: 2px; }
-.app-main {
-  display: flex; flex-direction: column;
-  background: oklch(100% 0 0);
+.sb-item { padding: 8px 10px; margin: 1px 6px; border-radius: var(--r6); }
+.sb-item.on { background: var(--surf-2); }
+.sb-item-t {
+  font-size: 12px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.app-topbar {
-  padding: 9px 14px; border-bottom: 1px solid var(--bdr);
-  display: flex; align-items: center; gap: 6px;
+.sb-item.on .sb-item-t { color: var(--blue); }
+.sb-item-m { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
+.main { display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  padding: 10px 16px; border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
 }
-.be-chip {
-  font-size: 11px; font-weight: 600;
-  padding: 3px 10px; border-radius: var(--r-pill);
-  border: 1px solid var(--bdr); color: var(--t2);
+.chip {
+  font-size: 12px; font-weight: 700;
+  padding: 4px 10px; border-radius: var(--r6);
+  border: 1.5px solid var(--bdr); color: var(--ink-3); background: var(--white);
 }
-.be-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.app-msgs {
-  flex: 1; padding: 14px 18px;
-  display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+.chip.on { background: var(--blue); color: #fff; border-color: var(--blue); }
+.msgs {
+  flex: 1; padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 12px; overflow: hidden;
 }
-.msg-u {
-  align-self: flex-end;
-  background: var(--accent); color: #fff;
-  padding: 7px 11px; border-radius: var(--r-2xl);
-  border-bottom-right-radius: var(--r-sm);
-  font-size: 11.5px; line-height: 1.4; max-width: 74%;
+.mu {
+  align-self: flex-end; background: var(--blue); color: #fff;
+  padding: 9px 14px; border-radius: var(--r16); border-bottom-right-radius: var(--r3);
+  font-size: 12px; line-height: 1.45; max-width: 72%;
 }
-.msg-a {
-  align-self: flex-start;
-  background: var(--surf2);
-  padding: 8px 11px; border-radius: var(--r-2xl);
-  border-bottom-left-radius: var(--r-sm);
-  font-size: 11.5px; line-height: 1.5; max-width: 84%; color: var(--text);
+.ma {
+  align-self: flex-start; background: var(--surf);
+  border: 1px solid var(--bdr);
+  padding: 10px 14px; border-radius: var(--r16); border-bottom-left-radius: var(--r3);
+  font-size: 12px; line-height: 1.6; max-width: 86%; color: var(--ink);
 }
-.msg-meta { font-size: 10px; color: var(--t3); margin-top: 3px; }
-.app-input-row {
-  padding: 10px 14px; border-top: 1px solid var(--bdr);
-  display: flex; align-items: center; gap: 8px;
+.mt { font-size: 10px; color: var(--ink-3); margin-top: 4px; }
+.inp-row {
+  padding: 12px 16px; border-top: 1px solid var(--bdr);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
 }
-.app-field {
-  flex: 1; height: 32px;
-  background: var(--surf); border: 1px solid var(--bdr);
-  border-radius: var(--r-xl);
-  font-size: 11px; color: var(--t3);
+.inp-field {
+  flex: 1; height: 34px; background: var(--surf); border: 1px solid var(--bdr);
+  border-radius: var(--r8); font-size: 12px; color: var(--ink-3);
   padding: 0 12px; display: flex; align-items: center;
 }
-.app-send {
-  width: 32px; height: 32px; border-radius: var(--r-xl);
-  background: var(--accent); flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
+.inp-send {
+  width: 34px; height: 34px; border-radius: var(--r8); flex-shrink: 0;
+  background: var(--blue); display: flex; align-items: center; justify-content: center;
 }
 
-/* ── HERO SHOT ──────────────────────── */
-.hero-shot { margin: 0 28px; }
-.hero-shot .app-shell { height: 400px; }
 
-/* ── SCREENSHOTS SECTION ─────────────── */
-.shots-section { padding: 72px 0; border-top: 1px solid var(--bdr); }
-.shots-eyebrow {
-  font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 12px;
+/* ── FEATURES ───────────────────────────── */
+.feats {}
+.feat { padding: 96px 0; border-bottom: 1px solid var(--bdr); }
+.feat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; align-items: center; }
+.feat-flip .feat-grid { direction: rtl; }
+.feat-flip .feat-grid > * { direction: ltr; }
+.feat-ey {
+  font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 16px; display: block;
 }
-.shots-h2 {
-  font-size: clamp(22px, 2.5vw, 32px); font-weight: 700;
-  letter-spacing: -0.025em; margin-bottom: 36px; line-height: 1.15;
+.feat-h2 {
+  font-family: var(--display);
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: 800; line-height: 1.08; letter-spacing: -.03em;
+  color: var(--ink); margin-bottom: 18px; text-wrap: balance;
 }
-.shots-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.shot-item { overflow: hidden; }
-.shot-cap { margin-top: 14px; font-size: 13px; font-weight: 600; color: var(--text); }
-.shot-cap-sub { font-size: 12px; color: var(--t2); margin-top: 3px; }
+.feat-body { font-size: 16px; color: var(--ink-2); line-height: 1.8; }
 
-/* Persona-panel screenshot */
-.persona-shell {
-  display: grid; grid-template-columns: 150px 1fr 176px;
-  background: var(--bg); height: 300px;
+/* Feature mockup shared */
+.fmock {
+  border: 1px solid var(--bdr); border-radius: var(--r16);
+  overflow: hidden; box-shadow: var(--sh-md); background: var(--white);
 }
-.persona-panel {
-  background: var(--surf);
-  border-left: 1px solid var(--bdr);
-  padding: 12px 10px; overflow: hidden;
+.fmock-tb {
+  padding: 11px 14px; border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; gap: 7px; background: var(--surf);
 }
-.persona-hd { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--bdr); }
-.persona-item {
-  padding: 7px 8px; border-radius: var(--r-md); margin-bottom: 2px;
+.fmock-lbl { font-size: 11px; font-weight: 600; color: var(--ink-3); margin-right: 4px; }
+.fmock-msgs { padding: 16px 18px; display: flex; flex-direction: column; gap: 11px; }
+.fmock-q {
+  align-self: flex-end; background: var(--blue); color: #fff;
+  padding: 8px 13px; border-radius: var(--r16); border-bottom-right-radius: var(--r3);
+  font-size: 11.5px; line-height: 1.45; max-width: 82%;
 }
-.persona-item.active { background: oklch(93% 0.04 264); }
-.persona-item-name { font-size: 11px; font-weight: 600; color: var(--text); }
-.persona-item.active .persona-item-name { color: var(--accent); }
-.persona-item-sub { font-size: 10px; color: var(--t3); margin-top: 1px; }
+.fmock-a {
+  align-self: flex-start; background: var(--surf); border: 1px solid var(--bdr);
+  padding: 10px 13px; border-radius: var(--r16); border-bottom-left-radius: var(--r3);
+  font-size: 11.5px; line-height: 1.6; max-width: 88%; color: var(--ink);
+}
+.fmock-src {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700; margin-bottom: 5px;
+}
+.fmock-src-dot { width: 5px; height: 5px; border-radius: 50%; }
 
-/* History screenshot */
-.hist-shell {
-  display: grid; grid-template-columns: 186px 1fr;
-  background: var(--bg); height: 300px;
+/* Personas mock */
+.pmock { display: grid; grid-template-columns: 1fr 156px; }
+.pmock-main { border-right: 1px solid var(--bdr); display: flex; flex-direction: column; }
+.pmock-panel { padding: 13px 11px; }
+.pmock-hd {
+  font-size: 12px; font-weight: 700; color: var(--ink);
+  margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--bdr);
 }
-.hist-search {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--bdr);
-}
-.hist-search-field {
-  height: 28px; width: 100%;
-  background: oklch(100% 0 0); border: 1px solid var(--bdr);
-  border-radius: var(--r-lg);
-  font-size: 11px; color: var(--t3);
-  padding: 0 10px; display: flex; align-items: center;
-}
+.pcard { padding: 8px 9px; border-radius: var(--r8); margin-bottom: 3px; }
+.pcard.on { background: var(--blue-bg); border: 1px solid rgba(37,99,235,.15); }
+.pcard-n { font-size: 12px; font-weight: 700; color: var(--ink); }
+.pcard.on .pcard-n { color: var(--blue); }
+.pcard-s { font-size: 10px; color: var(--ink-3); margin-top: 1px; }
 
-/* ── BENEFITS ───────────────────────── */
-.benefits-section { padding: 72px 0; border-top: 1px solid var(--bdr); }
-.benefits-h2 {
-  font-size: clamp(22px, 2.5vw, 32px); font-weight: 700;
-  letter-spacing: -0.025em; margin-bottom: 32px; line-height: 1.15;
+/* History mock */
+.hmock { display: grid; grid-template-columns: 192px 1fr; height: 310px; }
+.hmock-sb {
+  background: var(--surf); border-right: 1px solid var(--bdr);
+  display: flex; flex-direction: column; overflow: hidden;
 }
-.blist { border-top: 1px solid var(--bdr); }
-.bitem {
-  display: grid; grid-template-columns: 200px 1fr;
-  gap: 48px; align-items: start;
-  padding: 22px 0;
-  border-bottom: 1px solid var(--bdr);
+.hmock-search {
+  padding: 9px 9px 8px; border-bottom: 1px solid var(--bdr);
 }
-.bname { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.35; }
-.bdesc { font-size: 14px; color: var(--t2); line-height: 1.7; max-width: 540px; }
+.hmock-sf {
+  height: 28px; width: 100%; background: var(--white); border: 1px solid var(--bdr);
+  border-radius: var(--r8); font-size: 11px; color: var(--ink-3);
+  padding: 0 10px; display: flex; align-items: center; gap: 6px;
+}
+.hmock-main { display: flex; flex-direction: column; overflow: hidden; }
 
-/* ── SETUP ──────────────────────────── */
-.setup-section { padding: 72px 0; border-top: 1px solid var(--bdr); }
-.setup-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+/* ── CARDS ──────────────────────────────── */
+.cards { padding: 96px 0; border-bottom: 1px solid var(--bdr); }
+.cards-h2 {
+  font-family: var(--display);
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 800; letter-spacing: -.03em;
+  margin-bottom: 48px; text-align: center; text-wrap: balance;
+}
+.cards-g { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card {
+  background: var(--surf); border: 1px solid var(--bdr);
+  border-radius: var(--r16); padding: 28px 26px;
+}
+.card-ico {
+  width: 42px; height: 42px; border-radius: var(--r12);
+  background: var(--blue-bg); border: 1px solid rgba(37,99,235,.12);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+}
+.card-t { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.card-b { font-size: 14px; color: var(--ink-2); line-height: 1.65; }
+
+/* ── SETUP ──────────────────────────────── */
+.setup { padding: 96px 0; border-bottom: 1px solid var(--bdr); }
+.setup-g { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
 .setup-h2 {
-  font-size: clamp(22px, 2.5vw, 32px); font-weight: 700;
-  letter-spacing: -0.025em; margin-bottom: 14px; line-height: 1.15;
+  font-family: var(--display);
+  font-size: clamp(26px, 2.8vw, 40px);
+  font-weight: 800; line-height: 1.08; letter-spacing: -.03em;
+  margin-bottom: 18px; text-wrap: balance;
 }
-.setup-body { font-size: 14px; color: var(--t2); line-height: 1.75; }
+.setup-body { font-size: 16px; color: var(--ink-2); line-height: 1.8; }
 .setup-card {
-  background: oklch(100% 0 0);
-  border: 1px solid var(--bdr); border-radius: var(--r-2xl); overflow: hidden;
-  box-shadow: 0 2px 8px oklch(0% 0 0 / 0.04);
+  background: var(--white); border: 1px solid var(--bdr);
+  border-radius: var(--r16); overflow: hidden; box-shadow: var(--sh-sm);
 }
 .setup-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 16px 20px; border-bottom: 1px solid var(--bdr);
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 22px; border-bottom: 1px solid var(--bdr);
 }
 .setup-row:last-child { border-bottom: none; }
-.setup-dot {
-  width: 26px; height: 26px; border-radius: 50%;
+.setup-badge {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; flex-shrink: 0;
+  font-size: 12px; font-weight: 800;
 }
-.setup-dot.ready { background: var(--accent); color: #fff; }
-.setup-dot.opt { background: var(--surf2); border: 1px solid var(--bdr); color: var(--t2); }
-.setup-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
-.setup-detail { font-size: 12px; color: var(--t2); }
+.setup-badge.incl { background: var(--blue); color: #fff; }
+.setup-badge.opt { background: var(--surf-2); border: 1.5px solid var(--bdr); color: var(--ink-3); }
+.setup-lbl { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+.setup-det { font-size: 12px; color: var(--ink-2); }
 
-/* ── CTA ────────────────────────────── */
-.cta-section { padding: 72px 0 80px; text-align: center; border-top: 1px solid var(--bdr); }
+/* ── CTA BOTTOM ─────────────────────────── */
+.cta-bottom {
+  background: linear-gradient(155deg, #1e3a8a 0%, #1d4ed8 55%, #2563eb 100%);
+  padding: 104px 0;
+}
+.cta-bottom-inner { text-align: center; }
 .cta-h2 {
-  font-size: clamp(26px, 3vw, 40px); font-weight: 700;
-  letter-spacing: -0.028em; margin-bottom: 10px; line-height: 1.1;
+  font-family: var(--display);
+  font-size: clamp(34px, 4.5vw, 60px);
+  font-weight: 800; line-height: 1.04; letter-spacing: -.045em;
+  color: #fff; margin-bottom: 16px; text-wrap: balance;
 }
-.cta-sub { font-size: 15px; color: var(--t2); line-height: 1.65; max-width: 300px; margin: 0 auto 28px; }
-.cta-actions { display: flex; justify-content: center; }
+.cta-sub {
+  font-size: 18px; color: rgba(255,255,255,.72); line-height: 1.65;
+  max-width: 340px; margin: 0 auto 38px;
+}
+.btn-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; color: var(--blue);
+  font-size: 15px; font-weight: 800;
+  padding: 14px 28px; border-radius: var(--r12);
+  text-decoration: none; box-shadow: 0 4px 20px rgba(0,0,0,.18);
+  transition: transform 140ms var(--ease), box-shadow 140ms var(--ease);
+}
+.btn-white:hover { box-shadow: 0 8px 28px rgba(0,0,0,.22); }
+.btn-white:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) {
+  .btn-white:hover { transform: translateY(-2px); }
+}
 
-/* ── REVEAL ─────────────────────────── */
-.rv { opacity: 0; transform: translateY(14px); transition: opacity 580ms var(--ease-out), transform 580ms var(--ease-out); }
+/* ── FOOTER ─────────────────────────────── */
+.footer {
+  padding: 28px 0; border-top: 1px solid var(--bdr);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo { font-family: var(--display); font-size: 15px; font-weight: 800; color: var(--ink-2); letter-spacing: -.02em; }
+.footer-copy { font-size: 13px; color: var(--ink-3); }
+
+/* ── REVEAL ─────────────────────────────── */
+.rv { opacity: 0; transform: translateY(10px); transition: opacity 420ms var(--ease), transform 420ms var(--ease); }
 .rv.in { opacity: 1; transform: none; }
-.d1 { transition-delay: 65ms; }
-.d2 { transition-delay: 130ms; }
-
+.d1 { transition-delay: 80ms; }
+.d2 { transition-delay: 160ms; }
 @media (prefers-reduced-motion: reduce) {
-  .rv { opacity: 1; transform: none; transition: none; }
-  .btn-dl { transition: none; }
+  .rv { transform: none; transition: opacity 200ms ease; }
 }
 
-/* ── RESPONSIVE ─────────────────────── */
-@media (max-width: 768px) {
-  .hero { padding: 52px 20px 0; }
-  .hero-shot { margin: 0 20px; }
-  .hero-shot .app-shell { height: 320px; }
-  .shots-grid { grid-template-columns: 1fr; }
-  .persona-shell { grid-template-columns: 1fr; }
-  .persona-shell .app-sidebar, .persona-shell .persona-panel { display: none; }
-  .hist-shell .app-sidebar { display: none; }
-  .bitem { grid-template-columns: 1fr; gap: 6px; }
-  .setup-inner { grid-template-columns: 1fr; gap: 32px; }
-  .wrap { padding: 0 20px; }
+/* ── RESPONSIVE ─────────────────────────── */
+@media (max-width: 900px) {
+  .feat-grid { grid-template-columns: 1fr; gap: 40px; }
+  .feat-flip .feat-grid { direction: ltr; }
+  .setup-g { grid-template-columns: 1fr; gap: 40px; }
+  .cards-g { grid-template-columns: 1fr; }
+  .shell { grid-template-columns: 170px 1fr; height: 380px; }
+}
+@media (max-width: 640px) {
+  .c, .nav-i, .win-wrap { padding-left: 20px; padding-right: 20px; }
+  .hero { padding: 60px 20px 0; }
+  .nav-gh { display: none; }
+  .hero-acts { flex-direction: column; align-items: flex-start; }
+  .shell { grid-template-columns: 1fr; height: 320px; }
+  .sb { display: none; }
+  .feat { padding: 64px 0; }
+  .cards { padding: 64px 0; }
+  .setup { padding: 64px 0; }
+  .cta-bottom { padding: 72px 0; }
+  .footer { flex-direction: column; gap: 8px; text-align: center; }
 }
 </style>
+</head>
+<body>
 
-<!-- HEADER -->
-<header class="hd">
-  <div class="hd-inner">
-    <span class="hd-logo">MyRA</span>
-    <a href="https://github.com/aw-bii/MyRA" target="_blank" rel="noopener" class="hd-gh" aria-label="View on GitHub">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"/>
-      </svg>
-    </a>
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main">
+  <div class="nav-i">
+    <a href="#" class="nav-logo">My<b>RA</b></a>
+    <div class="nav-acts">
+      <a href="https://github.com/aw-bii/MyRA" target="_blank" rel="noopener" class="nav-gh">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"/></svg>
+        GitHub
+      </a>
+      <a href="https://github.com/aw-bii/MyRA/releases" target="_blank" rel="noopener" class="nav-dl">Download</a>
+    </div>
   </div>
-</header>
+</nav>
 
 <main>
 
 <!-- HERO -->
-<section class="hero rv in">
-  <h1 class="hero-h1">Every AI model.<br>One place.</h1>
-  <p class="hero-sub">Claude, Gemini, and Opencode in a single desktop app. Every conversation saved locally. No accounts, no cloud.</p>
-  <div class="hero-cta">
-    <a href="https://github.com/aw-bii/MyRA/releases" target="_blank" rel="noopener" class="btn-dl">
-      Download for Windows
-      <span class="btn-dl-icon" aria-hidden="true">
-        <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-          <path d="M6 2v5.5M3.5 5l2.5 2.5L8.5 5M2.5 9.5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-    </a>
+<section>
+  <div class="hero rv in">
+    <h1 class="hero-h1"><span class="g">Every AI model.</span><br>One interface.</h1>
+    <p class="hero-sub">Your conversations stay on your computer. Claude works from first launch — no setup, no accounts.</p>
+    <div class="hero-acts">
+      <a href="https://github.com/aw-bii/MyRA/releases" target="_blank" rel="noopener" class="btn-primary">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download for Windows
+      </a>
+      <a href="https://github.com/aw-bii/MyRA" target="_blank" rel="noopener" class="btn-ghost">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"/></svg>
+        View on GitHub
+      </a>
+    </div>
   </div>
-  <div class="hero-shot rv d1 in">
-    <div class="win-wrap">
+
+  <!-- App mockup -->
+  <div class="win-wrap rv d1 in">
+    <div class="win">
       <div class="win-bar">
-        <div class="wd r"></div>
-        <div class="wd y"></div>
-        <div class="wd g"></div>
-        <span class="win-bar-title">MyRA</span>
+        <div class="wd wd-r"></div><div class="wd wd-y"></div><div class="wd wd-g"></div>
+        <span class="win-ttl">MyRA</span>
       </div>
-      <div class="app-shell" style="height:400px">
-        <div class="app-sidebar">
+      <div class="shell">
+        <div class="sb">
           <div class="sb-hd">
             <span class="sb-hd-name">MyRA</span>
-            <span class="sb-new-btn">+ New</span>
+            <span class="sb-new">+ New</span>
           </div>
-          <div class="sb-conv active">
-            <div class="sb-conv-title">Q3 research findings</div>
-            <div class="sb-conv-meta">Claude · 2h ago</div>
+          <div class="sb-grp">Today</div>
+          <div class="sb-item on">
+            <div class="sb-item-t">Q3 sector research</div>
+            <div class="sb-item-m">Claude · 2h ago</div>
           </div>
-          <div class="sb-conv">
-            <div class="sb-conv-title">Marketing brief</div>
-            <div class="sb-conv-meta">Gemini · Yesterday</div>
+          <div class="sb-item">
+            <div class="sb-item-t">Investment memo draft</div>
+            <div class="sb-item-m">Claude · 4h ago</div>
           </div>
-          <div class="sb-conv">
-            <div class="sb-conv-title">Competitor analysis</div>
-            <div class="sb-conv-meta">Claude · Mon</div>
+          <div class="sb-grp">Yesterday</div>
+          <div class="sb-item">
+            <div class="sb-item-t">Competitor landscape</div>
+            <div class="sb-item-m">Gemini · Yesterday</div>
           </div>
-          <div class="sb-conv">
-            <div class="sb-conv-title">Investment memo draft</div>
-            <div class="sb-conv-meta">Claude · Sun</div>
+          <div class="sb-item">
+            <div class="sb-item-t">Board deck outline</div>
+            <div class="sb-item-m">Claude · Yesterday</div>
           </div>
-          <div class="sb-conv">
-            <div class="sb-conv-title">Sector overview</div>
-            <div class="sb-conv-meta">Gemini · Fri</div>
+          <div class="sb-item">
+            <div class="sb-item-t">Due diligence checklist</div>
+            <div class="sb-item-m">Gemini · Mon</div>
+          </div>
+          <div class="sb-item">
+            <div class="sb-item-t">Market sizing model</div>
+            <div class="sb-item-m">Claude · Sun</div>
           </div>
         </div>
-        <div class="app-main">
-          <div class="app-topbar">
-            <span class="be-chip active">Claude</span>
-            <span class="be-chip">Gemini</span>
-            <span class="be-chip">Opencode</span>
+        <div class="main">
+          <div class="topbar">
+            <span class="chip on">Claude</span>
+            <span class="chip">Gemini</span>
+            <span class="chip">Opencode</span>
           </div>
-          <div class="app-msgs">
-            <div class="msg-u">Summarise the key findings from the Q3 sector research.</div>
-            <div class="msg-a">
-              Three themes dominate the Q3 data: accelerating digital infrastructure investment (up 34% YoY), consolidation pressure in the mid-market segment, and a shift toward platform-centric acquisition targets. The clearest opportunity remains in Tier 2 cities where penetration is below 18%.
-              <div class="msg-meta">Claude · 2:14 PM</div>
+          <div class="msgs">
+            <div class="mu">Summarise the Q3 sector findings — focus on deal flow implications.</div>
+            <div class="ma">
+              Three themes stand out: infrastructure spend accelerated 34% YoY, mid-market consolidation is intensifying, and platform-led acquisitions now command a 2.4× premium over standalone targets. The clearest opportunity is in Tier 2 cities — penetration sits below 18% with minimal competition.
+              <div class="mt">Claude · 2:14 PM</div>
             </div>
-            <div class="msg-u">Which geography showed the strongest margin profile?</div>
-            <div class="msg-a">
-              Western region leads at 42% gross margin, driven by lower CAC and higher ARPU. Northern markets lag at 31% but show faster growth, suggesting a timing play.
-              <div class="msg-meta">Claude · 2:14 PM</div>
+            <div class="mu">Which geography has the strongest margin profile?</div>
+            <div class="ma">
+              Western region leads at 42% gross margin, driven by lower CAC and higher ARPU. Northern markets lag at 31% but are growing faster — the data reads as a timing play, not a structural weakness.
+              <div class="mt">Claude · 2:15 PM</div>
             </div>
           </div>
-          <div class="app-input-row">
-            <div class="app-field">Ask a follow-up...</div>
-            <div class="app-send">
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M2 7h10M7 2l5 5-5 5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+          <div class="inp-row">
+            <div class="inp-field">Ask a follow-up...</div>
+            <div class="inp-send" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
         </div>
@@ -406,149 +510,212 @@ body {
   </div>
 </section>
 
-<!-- SCREENSHOTS -->
-<div class="wrap shots-section rv">
-  <div class="shots-eyebrow">Walkthrough</div>
-  <h2 class="shots-h2">Built for the way analysts actually work.</h2>
-  <div class="shots-grid">
 
-    <!-- Screenshot 1: Personas panel -->
-    <div class="shot-item">
-      <div class="win-wrap">
-        <div class="win-bar">
-          <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
-          <span class="win-bar-title">MyRA — Personas</span>
+<!-- FEATURES -->
+<div class="feats">
+
+  <!-- Feature 1: Backends -->
+  <div class="feat rv">
+    <div class="c">
+      <div class="feat-grid">
+        <div>
+          <span class="feat-ey">Multi-backend</span>
+          <h2 class="feat-h2">Switch AI models in a single click</h2>
+          <p class="feat-body">You're already paying for Claude and Gemini. MyRA puts them in one window — same interface, same history, just pick the model you want for each conversation.</p>
         </div>
-        <div class="persona-shell">
-          <div class="app-sidebar">
-            <div class="sb-hd"><span class="sb-hd-name">MyRA</span></div>
-            <div class="sb-conv active"><div class="sb-conv-title">Deal sourcing</div></div>
-            <div class="sb-conv"><div class="sb-conv-title">Board prep</div></div>
-            <div class="sb-conv"><div class="sb-conv-title">Sector scan</div></div>
-          </div>
-          <div class="app-main">
-            <div class="app-topbar">
-              <span class="be-chip active">Claude</span>
-              <span class="be-chip">Gemini</span>
+        <div>
+          <div class="fmock">
+            <div class="fmock-tb">
+              <span class="fmock-lbl">Model</span>
+              <span class="chip on" style="font-size:11px;padding:4px 11px">Claude</span>
+              <span class="chip" style="font-size:11px;padding:4px 11px">Gemini</span>
+              <span class="chip" style="font-size:11px;padding:4px 11px">Opencode</span>
             </div>
-            <div class="app-msgs" style="gap:8px">
-              <div class="msg-u">What are the top 5 SaaS metrics I should review?</div>
-              <div class="msg-a" style="font-size:11px">As an investment analyst, focus on: ARR growth rate, NRR, CAC payback, gross margin, and Rule of 40. Each signals a different dimension of health.</div>
-            </div>
-          </div>
-          <div class="persona-panel">
-            <div class="persona-hd">Personas</div>
-            <div class="persona-item active">
-              <div class="persona-item-name">Investment Analyst</div>
-              <div class="persona-item-sub">Finance, deal memos</div>
-            </div>
-            <div class="persona-item">
-              <div class="persona-item-name">Research Assistant</div>
-              <div class="persona-item-sub">Deep dives, summaries</div>
-            </div>
-            <div class="persona-item">
-              <div class="persona-item-name">Concise</div>
-              <div class="persona-item-sub">Short answers only</div>
-            </div>
-            <div class="persona-item">
-              <div class="persona-item-name">Devil's Advocate</div>
-              <div class="persona-item-sub">Challenge assumptions</div>
+            <div class="fmock-msgs">
+              <div class="fmock-q">What metrics should I benchmark before a Series B?</div>
+              <div class="fmock-a">
+                <div class="fmock-src">
+                  <span class="fmock-src-dot" style="background:#d97a31"></span>
+                  <span style="color:#d97a31">Claude</span>
+                </div>
+                ARR growth rate (target ≥ 80% YoY), NRR above 120%, gross margin ≥ 70%, and CAC payback under 18 months. Burn multiple below 1.5× is the headline efficiency signal investors focus on most.
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="shot-cap">Personas</div>
-      <div class="shot-cap-sub">Define how the AI should behave, once. Pick it at the start of any conversation.</div>
     </div>
-
-    <!-- Screenshot 2: Conversation history -->
-    <div class="shot-item">
-      <div class="win-wrap">
-        <div class="win-bar">
-          <div class="wd r"></div><div class="wd y"></div><div class="wd g"></div>
-          <span class="win-bar-title">MyRA — History</span>
-        </div>
-        <div class="hist-shell">
-          <div class="app-sidebar">
-            <div class="sb-hd"><span class="sb-hd-name">MyRA</span></div>
-            <div style="padding:8px 6px">
-              <div class="hist-search-field">Search conversations...</div>
-            </div>
-            <div style="padding:4px 6px 2px 10px; font-size:10px; font-weight:600; color:var(--t3); letter-spacing:.06em; text-transform:uppercase">Today</div>
-            <div class="sb-conv active"><div class="sb-conv-title">Q3 research</div><div class="sb-conv-meta">Claude</div></div>
-            <div class="sb-conv"><div class="sb-conv-title">Deal sourcing</div><div class="sb-conv-meta">Claude</div></div>
-            <div style="padding:8px 6px 2px 10px; font-size:10px; font-weight:600; color:var(--t3); letter-spacing:.06em; text-transform:uppercase">Yesterday</div>
-            <div class="sb-conv"><div class="sb-conv-title">Marketing brief</div><div class="sb-conv-meta">Gemini</div></div>
-            <div class="sb-conv"><div class="sb-conv-title">Sector overview</div><div class="sb-conv-meta">Claude</div></div>
-            <div class="sb-conv"><div class="sb-conv-title">Board deck outline</div><div class="sb-conv-meta">Claude</div></div>
-          </div>
-          <div class="app-main">
-            <div class="app-topbar">
-              <span class="be-chip active">Claude</span>
-              <span class="be-chip">Gemini</span>
-              <span class="be-chip">Opencode</span>
-            </div>
-            <div class="app-msgs">
-              <div class="msg-u">Compare Claude and Gemini on the last three market research queries.</div>
-              <div class="msg-a">Across all three queries, Claude produced longer responses with more structured formatting. Gemini's answers were more concise but occasionally missed nuance in the financial context. For deal memos, Claude is the stronger default.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="shot-cap">Conversation history</div>
-      <div class="shot-cap-sub">Every session saved locally. Search back through everything, compare backends, pick up where you left off.</div>
-    </div>
-
   </div>
+
+  <!-- Feature 2: Personas (flipped) -->
+  <div class="feat feat-flip rv">
+    <div class="c">
+      <div class="feat-grid">
+        <div>
+          <span class="feat-ey">Personas</span>
+          <h2 class="feat-h2">Tell it how to behave, once</h2>
+          <p class="feat-body">You shouldn't have to re-explain yourself every time you open a conversation. Write down the role, tone, and format once. Pick that persona when you start a chat — MyRA applies it from the first message.</p>
+        </div>
+        <div>
+          <div class="fmock">
+            <div class="pmock">
+              <div class="pmock-main">
+                <div class="fmock-tb" style="background:var(--surf)">
+                  <span class="chip on" style="font-size:11px;padding:3px 10px">Claude</span>
+                </div>
+                <div class="msgs" style="padding:13px 15px;gap:10px">
+                  <div class="mu" style="font-size:11px">Top 5 SaaS metrics to stress-test before a deal?</div>
+                  <div class="ma" style="font-size:11px">As your investment analyst: ARR growth, NRR, CAC payback, gross margin, and Rule of 40. Each reveals a different failure mode.</div>
+                </div>
+              </div>
+              <div class="pmock-panel">
+                <div class="pmock-hd">Personas</div>
+                <div class="pcard on">
+                  <div class="pcard-n">Investment Analyst</div>
+                  <div class="pcard-s">Finance · deal memos</div>
+                </div>
+                <div class="pcard">
+                  <div class="pcard-n">Research Assistant</div>
+                  <div class="pcard-s">Deep dives</div>
+                </div>
+                <div class="pcard">
+                  <div class="pcard-n">Devil's Advocate</div>
+                  <div class="pcard-s">Challenge assumptions</div>
+                </div>
+                <div class="pcard">
+                  <div class="pcard-n">Concise</div>
+                  <div class="pcard-s">Short answers only</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature 3: History -->
+  <div class="feat rv">
+    <div class="c">
+      <div class="feat-grid">
+        <div>
+          <span class="feat-ey">Local history</span>
+          <h2 class="feat-h2">Your conversations are yours.</h2>
+          <p class="feat-body">Everything is stored as SQLite on your machine. Search back through past conversations, pick up where you left off. Nothing is synced, nothing is sent — just a file on your drive.</p>
+        </div>
+        <div>
+          <div class="fmock">
+            <div class="hmock">
+              <div class="hmock-sb">
+                <div class="sb-hd" style="padding:11px 12px 8px"><span class="sb-hd-name">MyRA</span></div>
+                <div class="hmock-search">
+                  <div class="hmock-sf">
+                    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><circle cx="5" cy="5" r="3.5" stroke="#9499ab" stroke-width="1.2"/><path d="M8 8l2 2" stroke="#9499ab" stroke-width="1.2" stroke-linecap="round"/></svg>
+                    Search conversations...
+                  </div>
+                </div>
+                <div class="sb-grp">Today</div>
+                <div class="sb-item on">
+                  <div class="sb-item-t">Q3 research</div>
+                  <div class="sb-item-m">Claude</div>
+                </div>
+                <div class="sb-item">
+                  <div class="sb-item-t">Deal sourcing</div>
+                  <div class="sb-item-m">Claude</div>
+                </div>
+                <div class="sb-grp">Yesterday</div>
+                <div class="sb-item">
+                  <div class="sb-item-t">Marketing brief</div>
+                  <div class="sb-item-m">Gemini</div>
+                </div>
+                <div class="sb-item">
+                  <div class="sb-item-t">Sector overview</div>
+                  <div class="sb-item-m">Claude</div>
+                </div>
+                <div class="sb-item">
+                  <div class="sb-item-t">Board deck</div>
+                  <div class="sb-item-m">Claude</div>
+                </div>
+              </div>
+              <div class="hmock-main">
+                <div class="fmock-tb" style="background:var(--surf)">
+                  <span class="chip on" style="font-size:11px;padding:3px 10px">Claude</span>
+                  <span class="chip" style="font-size:11px;padding:3px 10px">Gemini</span>
+                </div>
+                <div class="msgs" style="padding:13px 15px;gap:10px">
+                  <div class="mu" style="font-size:11px">Pick up from yesterday's sector analysis.</div>
+                  <div class="ma" style="font-size:11px">Continuing from yesterday: Western region led at 42% gross margin. You asked about Northern markets next — their 31% lag looks like timing, not structure. Want to model the catch-up timeline?</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- BENEFITS -->
-<div class="wrap benefits-section">
-  <h2 class="benefits-h2 rv">A few things it does well.</h2>
-  <div class="blist">
-    <div class="bitem rv">
-      <div class="bname">All your AI tools in one window</div>
-      <div class="bdesc">Claude, Gemini, and Opencode all live in one window. Switch between them whenever. The interface stays the same and your history stays put.</div>
-    </div>
-    <div class="bitem rv d1">
-      <div class="bname">Your conversations stay on your machine</div>
-      <div class="bdesc">Everything lives on your hard drive, not a cloud server. Saves automatically. Search back through every conversation you've ever had.</div>
-    </div>
-    <div class="bitem rv d2">
-      <div class="bname">Tell it how to behave, once</div>
-      <div class="bdesc">Write a short note about the tone, focus, and format you want. Save it as a persona, pick it when you open a new conversation. No need to explain yourself each time.</div>
+<!-- CARDS -->
+<div class="cards rv">
+  <div class="c">
+    <h2 class="cards-h2">A few things it quietly does well.</h2>
+    <div class="cards-g">
+      <div class="card rv">
+        <div class="card-ico">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H17l-4.6 3.3 1.8 5.4L10 13l-4.2 3.1 1.8-5.4L3 7.4h5.2L10 2z" fill="#4744f6"/></svg>
+        </div>
+        <div class="card-t">Claude comes included</div>
+        <div class="card-b">Open the app, start typing. No key to find, no account to create. Claude is bundled with the installer and works from first launch.</div>
+      </div>
+      <div class="card rv d1">
+        <div class="card-ico">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="6" width="14" height="11" rx="2" stroke="#4744f6" stroke-width="1.5"/><path d="M7 6V5a3 3 0 016 0v1" stroke="#4744f6" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="card-t">Stored only on your drive</div>
+        <div class="card-b">SQLite on your machine. Nothing is sent to any server. Uninstall the app and your data goes with it.</div>
+      </div>
+      <div class="card rv d2">
+        <div class="card-ico">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke="#4744f6" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="#4744f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="card-t">Open source</div>
+        <div class="card-b">All code is on GitHub. Read exactly what runs on your machine. Fork it, audit it, build on top of it.</div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- SETUP -->
-<div class="wrap setup-section">
-  <div class="setup-inner">
-    <div class="rv">
-      <h2 class="setup-h2">Open the app. Claude is already there.</h2>
-      <p class="setup-body">No account to create, no key to paste. Claude comes with the app. Open it and start typing.<br><br>If you use Gemini or Opencode too, a short wizard finds them on your machine and handles the rest.</p>
-    </div>
-    <div class="rv d1">
-      <div class="setup-card">
-        <div class="setup-row">
-          <div class="setup-dot ready" aria-label="Included">&#10003;</div>
-          <div>
-            <div class="setup-name">Claude</div>
-            <div class="setup-detail">Comes with the app, works the moment you open it</div>
+<div class="setup">
+  <div class="c">
+    <div class="setup-g">
+      <div class="rv">
+        <h2 class="setup-h2">Open the app. Claude is already there.</h2>
+        <p class="setup-body">No API key to paste, no account to verify. Claude is bundled with the installer. Open MyRA and start a conversation immediately.<br><br>If you also use Gemini or Opencode, a short setup wizard finds them on your machine and handles authentication automatically.</p>
+      </div>
+      <div class="rv d1">
+        <div class="setup-card">
+          <div class="setup-row">
+            <div class="setup-badge incl" aria-label="Included">&#10003;</div>
+            <div>
+              <div class="setup-lbl">Claude</div>
+              <div class="setup-det">Bundled — works from first launch, zero configuration</div>
+            </div>
           </div>
-        </div>
-        <div class="setup-row">
-          <div class="setup-dot opt" aria-label="Optional">+</div>
-          <div>
-            <div class="setup-name">Gemini</div>
-            <div class="setup-detail">Optional. The wizard finds it and sets it up.</div>
+          <div class="setup-row">
+            <div class="setup-badge opt" aria-label="Optional">+</div>
+            <div>
+              <div class="setup-lbl">Gemini</div>
+              <div class="setup-det">Optional — the wizard detects and configures it</div>
+            </div>
           </div>
-        </div>
-        <div class="setup-row">
-          <div class="setup-dot opt" aria-label="Optional">+</div>
-          <div>
-            <div class="setup-name">Opencode</div>
-            <div class="setup-detail">Optional. The wizard finds it and sets it up.</div>
+          <div class="setup-row">
+            <div class="setup-badge opt" aria-label="Optional">+</div>
+            <div>
+              <div class="setup-lbl">Opencode</div>
+              <div class="setup-det">Optional — the wizard detects and configures it</div>
+            </div>
           </div>
         </div>
       </div>
@@ -556,19 +723,15 @@ body {
   </div>
 </div>
 
-<!-- CTA -->
-<div class="wrap cta-section">
-  <div class="rv">
-    <h2 class="cta-h2">Free download for Windows.</h2>
-    <p class="cta-sub">Claude included. Open it, start typing.</p>
-    <div class="cta-actions">
-      <a href="https://github.com/aw-bii/MyRA/releases" target="_blank" rel="noopener" class="btn-dl">
+<!-- CTA BOTTOM -->
+<div class="cta-bottom">
+  <div class="c">
+    <div class="cta-bottom-inner rv">
+      <h2 class="cta-h2">Open source and free.</h2>
+      <p class="cta-sub">Free to download, free to keep. MIT licensed.</p>
+      <a href="https://github.com/aw-bii/MyRA/releases" target="_blank" rel="noopener" class="btn-white">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2v8M5 7l3 3 3-3M3 13h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Download for Windows
-        <span class="btn-dl-icon" aria-hidden="true">
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
-            <path d="M6 2v5.5M3.5 5l2.5 2.5L8.5 5M2.5 9.5h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
       </a>
     </div>
   </div>
@@ -576,11 +739,25 @@ body {
 
 </main>
 
+<footer>
+  <div class="c">
+    <div class="footer">
+      <span class="footer-logo">MyRA</span>
+      <span class="footer-copy">Open source · MIT License</span>
+    </div>
+  </div>
+</footer>
+
 <script>
-  var obs = new IntersectionObserver(function(entries) {
+(function() {
+  var io = new IntersectionObserver(function(entries) {
     entries.forEach(function(e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
     });
-  }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
-  document.querySelectorAll('.rv:not(.in)').forEach(function(el) { obs.observe(el); });
+  }, { threshold: 0.06, rootMargin: '0px 0px -28px 0px' });
+  document.querySelectorAll('.rv:not(.in)').forEach(function(el) { io.observe(el); });
+})();
 </script>
+
+</body>
+</html>
