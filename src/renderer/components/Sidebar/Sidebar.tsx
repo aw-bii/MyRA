@@ -1,8 +1,5 @@
+import { GearSix } from "@phosphor-icons/react";
 import { ConvList } from "./ConvList";
-import { SearchPanel } from "../SearchPanel/SearchPanel";
-import { CronPanel } from "./CronPanel";
-import { McpPanel } from "./McpPanel";
-import { PluginPanel } from "./PluginPanel";
 
 interface Props {
   collapsed: boolean;
@@ -11,13 +8,8 @@ interface Props {
   onNew: () => void;
   onDelete: (id: string) => void;
   onRename: (id: string, title: string) => void;
-  searchInputRef?: React.MutableRefObject<HTMLInputElement | null>;
   refreshTrigger?: number;
-  searchMode: boolean;
-  onCloseSearch: () => void;
-  showCron: boolean;
-  showMCP: boolean;
-  showPlugins: boolean;
+  onOpenSettings: () => void;
 }
 
 export function Sidebar({
@@ -27,13 +19,8 @@ export function Sidebar({
   onNew,
   onDelete,
   onRename,
-  searchInputRef,
   refreshTrigger,
-  searchMode,
-  onCloseSearch,
-  showCron,
-  showMCP,
-  showPlugins,
+  onOpenSettings,
 }: Props) {
   return (
     <aside
@@ -52,24 +39,24 @@ export function Sidebar({
         </button>
       </div>
       <div className="flex-1 overflow-y-auto py-2 px-2">
-        {showPlugins ? (
-          <PluginPanel />
-        ) : showMCP ? (
-          <McpPanel />
-        ) : showCron ? (
-          <CronPanel />
-        ) : searchMode ? (
-          <SearchPanel onSelect={onSelect} onClose={onCloseSearch} />
-        ) : (
-          <ConvList
-            activeId={activeId}
-            onSelect={onSelect}
-            onDelete={onDelete}
-            onRename={onRename}
-            searchInputRef={searchInputRef}
-            refreshTrigger={refreshTrigger}
-          />
-        )}
+        <ConvList
+          activeId={activeId}
+          onSelect={onSelect}
+          onDelete={onDelete}
+          onRename={onRename}
+          refreshTrigger={refreshTrigger}
+        />
+      </div>
+      <div className="border-t border-border p-2">
+        <button
+          onClick={onOpenSettings}
+          aria-label="Settings"
+          title="Settings"
+          className="w-full flex items-center gap-2 px-3 py-2 text-xs text-text-muted hoverable:hover:text-text-base hoverable:hover:bg-bubble rounded-lg transition-colors"
+        >
+          <GearSix size={14} />
+          Settings
+        </button>
       </div>
     </aside>
   );

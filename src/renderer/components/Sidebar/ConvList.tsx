@@ -8,7 +8,6 @@ interface Props {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onRename: (id: string, title: string) => void;
-  searchInputRef?: React.MutableRefObject<HTMLInputElement | null>;
   refreshTrigger?: number;
 }
 
@@ -17,7 +16,6 @@ export function ConvList({
   onSelect,
   onDelete,
   onRename,
-  searchInputRef,
   refreshTrigger,
 }: Props) {
   const { conversations, search } = useConversations(refreshTrigger);
@@ -61,9 +59,6 @@ export function ConvList({
         placeholder="Search conversations..."
         value={query}
         onChange={(e) => handleSearch(e.target.value)}
-        ref={(el: HTMLInputElement | null) => {
-          if (searchInputRef) searchInputRef.current = el;
-        }}
       />
       {displayed.map((conv) => (
         <ConvItem
