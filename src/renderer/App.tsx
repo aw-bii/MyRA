@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GearSix, MagnifyingGlass, List } from "@phosphor-icons/react";
 import { SetupWizard } from "./components/Wizard/SetupWizard";
 import { Sidebar } from "./components/Sidebar/Sidebar";
@@ -124,8 +124,6 @@ function App() {
     );
   })();
 
-  const searchInputRef = useRef<HTMLInputElement | null>(null);
-
   const handleNew = useCallback(async () => {
     try {
       const conv = await createConversation(
@@ -195,20 +193,12 @@ function App() {
           activeId={activeConvId}
           onSelect={(id) => {
             setActiveConvId(id);
-            setShowCron(false);
-            setShowMCP(false);
-            setShowPlugins(false);
           }}
           onNew={handleNew}
           onDelete={handleDelete}
           onRename={handleRename}
-          searchInputRef={searchInputRef}
           refreshTrigger={refreshTrigger}
-          searchMode={searchMode}
-          onCloseSearch={() => setSearchMode(false)}
-          showCron={showCron}
-          showMCP={showMCP}
-          showPlugins={showPlugins}
+          onOpenSettings={() => {}}
         />
       ) : (
         <>
@@ -229,20 +219,12 @@ function App() {
               onSelect={(id) => {
                 setSidebarCollapsed(true);
                 setActiveConvId(id);
-                setShowCron(false);
-                setShowMCP(false);
-                setShowPlugins(false);
               }}
               onNew={() => { handleNew(); setSidebarCollapsed(true); }}
               onDelete={handleDelete}
               onRename={handleRename}
-              searchInputRef={searchInputRef}
               refreshTrigger={refreshTrigger}
-              searchMode={searchMode}
-              onCloseSearch={() => setSearchMode(false)}
-              showCron={showCron}
-              showMCP={showMCP}
-              showPlugins={showPlugins}
+              onOpenSettings={() => {}}
             />
           </div>
         </>
