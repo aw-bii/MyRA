@@ -54,10 +54,28 @@ function getProxyEnv(): Record<string, string> {
   }
 }
 
+function getInstallCommand(id: string): string {
+  const cmdDef = INSTALL_COMMANDS[id];
+  if (!cmdDef) return "";
+  const cmd = typeof cmdDef === "function" ? cmdDef(process.platform) : cmdDef;
+  if (cmd.type === "npm") {
+    return `npm install -g ${cmd.pkg}`;
+  }
+  if (cmd.shell === "pwsh") {
+    return `irm ${cmd.url} | iex`;
+  }
+  return `curl -fsSL ${cmd.url} | sh`;
+}
+
 export function installBackend(
   id: string,
   onData: (line: string) => void,
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{
+  success: boolean;
+  error?: string;
+  available?: boolean;
+  authenticated?: boolean;
+}> {
   const cmdDef = INSTALL_COMMANDS[id];
   if (!cmdDef) {
     return Promise.resolve({ success: false, error: `Unknown backend: ${id}` });
@@ -82,7 +100,6 @@ export function installBackend(
     binary = "npm";
     args = ["install", "-g", cmd.pkg];
   } else {
-    // curl | sh or curl | pwsh
     if (cmd.shell === "pwsh") {
       binary = "powershell.exe";
       args = ["-Command", `irm ${cmd.url} | iex`];
@@ -91,6 +108,8 @@ export function installBackend(
       args = ["-c", `curl -fsSL ${cmd.url} | sh`];
     }
   }
+
+  const installCommandHint = getInstallCommand(id);
 
   return new Promise((resolve) => {
     const p = spawn(binary, args, {
@@ -115,8 +134,8 @@ export function installBackend(
         success: false,
         error: isPermissionError
           ? isWin
-            ? `Permission denied. Run the installer in a terminal opened as Administrator.`
-            : `Permission denied. Try running the install command with sudo.`
+            ? `Permission denied. Run this command in a terminal opened as Administrator:\n${installCommandHint}`
+            : `Permission denied. Try running this command with sudo:\n${installCommandHint}`
           : `Install failed with exit code ${code}. See output above.`,
       });
     });

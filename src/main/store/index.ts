@@ -15,20 +15,28 @@ export const ConvStore = {
     title: string,
     backend: string,
     personaId: string | null,
+    pipelineTemplateId?: string,
   ): Conversation {
     const db = getDb();
     const id = crypto.randomUUID();
     const now = Date.now();
-    db.prepare(
-      `INSERT INTO conversations (id, title, backend, persona_id, created_at, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?)`,
-    ).run(id, title, backend, personaId, now, now);
+    if (pipelineTemplateId) {
+      db.prepare(
+        `INSERT INTO conversations (id, title, backend, persona_id, pipeline_template_id, created_at, updated_at)
+                  VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      ).run(id, title, backend, personaId, pipelineTemplateId, now, now);
+    } else {
+      db.prepare(
+        `INSERT INTO conversations (id, title, backend, persona_id, created_at, updated_at)
+                  VALUES (?, ?, ?, ?, ?, ?)`,
+      ).run(id, title, backend, personaId, now, now);
+    }
     return {
       id,
       title,
       backend,
       personaId,
-      pipelineTemplateId: null,
+      pipelineTemplateId: pipelineTemplateId ?? null,
       createdAt: now,
       updatedAt: now,
     };

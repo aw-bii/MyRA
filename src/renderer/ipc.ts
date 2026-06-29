@@ -71,11 +71,13 @@ export async function createConversation(
   title: string,
   backend: string,
   personaId?: string,
+  pipelineTemplateId?: string,
 ): Promise<Conversation> {
   return ipcInvoke<Conversation>(IPC.CONV_CREATE, {
     title,
     backend,
     personaId,
+    pipelineTemplateId,
   });
 }
 

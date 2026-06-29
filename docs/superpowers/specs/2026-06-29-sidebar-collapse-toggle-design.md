@@ -28,7 +28,15 @@ The toolbar was removed in commit `1d51770`. The toolbar previously held the onl
 - Returns `[collapsed: boolean, toggle: () => void]`.
 - `toggle` flips the bool and writes `localStorage.setItem('myra:sidebar-collapsed', String(next))`.
 
-**`App.tsx` change:** replace `useState(window.innerWidth < 1024)` with `useSidebarCollapsed()`. The existing `setSidebarCollapsed(true)` calls in mobile handlers are removed; mobile collapse is handled separately by the overlay/drawer mechanism and does not touch localStorage.
+**`App.tsx` change:** introduce two separate state variables instead of one shared one:
+
+```ts
+const [sidebarCollapsed, toggleSidebarCollapsed] = useSidebarCollapsed(); // desktop
+const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);        // mobile
+```
+
+- Desktop `<Sidebar>` receives `collapsed={sidebarCollapsed}`.
+- Mobile drawer uses `mobileSidebarOpen` for its `-translate-x-full` / `translate-x-0` transform and the overlay visibility. Mobile `<Sidebar>` receives `collapsed={false}` (the drawer itself handles hide/show). Mobile `onSelect` / `onNew` handlers call `setMobileSidebarOpen(false)` to close the drawer. No localStorage write occurs on mobile close.
 
 ---
 
@@ -40,7 +48,7 @@ The toolbar was removed in commit `1d51770`. The toolbar previously held the onl
 
 **Positioning:**
 
-```
+```text
 position: absolute
 top: 50%  →  -translate-y-1/2  (vertically centred in the screen)
 left: left-0 (collapsed) | left-48 lg:left-64 (expanded)
@@ -52,7 +60,7 @@ The `left` value matches the sidebar's Tailwind width classes (`w-48` / `lg:w-64
 
 **Appearance:**
 
-```
+```text
 w-4 h-8
 rounded-r-md
 bg-surface-subtle            ← same as sidebar background
@@ -78,7 +86,7 @@ Icon: `‹` when expanded (click to collapse), `›` when collapsed (click to ex
 ## Edge Cases
 
 | Case | Behaviour |
-|---|---|
+| --- | --- |
 | Corrupt localStorage value | Falls back to expanded (`false`) |
 | Resize from desktop → mobile | `viewportLg` flips to `false`; button unmounts; mobile drawer takes over; desktop localStorage preference is unaffected |
 | Resize from mobile → desktop | `viewportLg` flips to `true`; button mounts; reads stored desktop preference |
@@ -88,7 +96,7 @@ Icon: `‹` when expanded (click to collapse), `›` when collapsed (click to ex
 ## Files Changed
 
 | File | Change |
-|---|---|
+| --- | --- |
 | `src/renderer/hooks/useSidebarCollapsed.ts` | New — ~15 lines |
 | `src/renderer/App.tsx` | Replace `useState` with hook; add `relative` to root div; add chevron button inside `viewportLg` branch |
 

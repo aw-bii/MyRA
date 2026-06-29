@@ -87,7 +87,12 @@ export interface IpcInvokeMap {
   };
   [IPC.CHAT_ABORT]: { conversationId: string };
   [IPC.CONV_LIST]: { limit: number; offset: number };
-  [IPC.CONV_CREATE]: { title: string; backend: string; personaId?: string };
+  [IPC.CONV_CREATE]: {
+    title: string;
+    backend: string;
+    personaId?: string;
+    pipelineTemplateId?: string;
+  };
   [IPC.CONV_GET]: { conversationId: string };
   [IPC.CONV_SEARCH]: { query: string };
   [IPC.PERSONA_LIST]: void;

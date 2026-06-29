@@ -52,7 +52,9 @@ export function SettingsModal({
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       data-testid="settings-backdrop"
+      role="presentation"
       onClick={onClose}
+      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
     >
       <div
         role="dialog"
@@ -89,7 +91,7 @@ export function SettingsModal({
         </nav>
 
         {/* Section content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-y-auto">
           {section === "settings" && (
             <SettingsPanel onClose={onClose} onReRunWizard={onReRunWizard} />
           )}

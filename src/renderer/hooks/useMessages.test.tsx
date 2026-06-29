@@ -20,7 +20,11 @@ describe("applyChunk", () => {
       makeMsg({ id: "u1", role: "user", content: "hello" }),
       makeMsg({ id: "a1", role: "assistant", content: "" }),
     ];
-    const next = applyChunk(state, { type: "text", content: "Hi!", conversationId: "conv-1" }, ref);
+    const next = applyChunk(
+      state,
+      { type: "text", content: "Hi!", conversationId: "conv-1" },
+      ref,
+    );
     expect(next[1].content).toBe("Hi!");
     expect(ref.current).toBe("Hi!");
   });
@@ -31,7 +35,15 @@ describe("applyChunk", () => {
       makeMsg({ id: "u1", role: "user", content: "hello" }),
       makeMsg({ id: "a1", role: "assistant", content: "" }),
     ];
-    const next = applyChunk(state, { type: "error", content: "spawn claude ENOENT", conversationId: "conv-1" }, ref);
+    const next = applyChunk(
+      state,
+      {
+        type: "error",
+        content: "spawn claude ENOENT",
+        conversationId: "conv-1",
+      },
+      ref,
+    );
     expect(next[1].content).toBe("⚠ Error: spawn claude ENOENT");
   });
 
@@ -41,7 +53,11 @@ describe("applyChunk", () => {
       makeMsg({ id: "u1", role: "user", content: "hello", conversationId: "" }),
       makeMsg({ id: "a1", role: "assistant", content: "", conversationId: "" }),
     ];
-    const next = applyChunk(state, { type: "text", content: "Hi!", conversationId: "conv-new-uuid" }, ref);
+    const next = applyChunk(
+      state,
+      { type: "text", content: "Hi!", conversationId: "conv-new-uuid" },
+      ref,
+    );
     expect(next[1].content).toBe("Hi!");
     expect(next[1].conversationId).toBe("conv-new-uuid");
   });

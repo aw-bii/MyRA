@@ -3,6 +3,8 @@ import { ModelSelector } from "../Toolbar/ModelSelector";
 import { usePersonas } from "../../hooks/usePersonas";
 import type { PipelineTemplate } from "../../../shared/types";
 
+// Requires .hoverable parent class for hover styles (touch detection)
+
 export interface BottomBarProps {
   mode: "single" | "pipeline";
   setMode: (m: "single" | "pipeline") => void;
@@ -103,23 +105,55 @@ export function BottomBar({
       )}
 
       {mode === "pipeline" && (
-        <select
-          aria-label="Pipeline template"
-          value={selectedTemplate?.id ?? ""}
-          onChange={(e) => {
-            const t = templates.find((x) => x.id === e.target.value);
-            onTemplateSelect(t ?? null);
-          }}
-          disabled={disabled}
-          className="text-xs border rounded px-2 py-1 bg-surface border-border-strong flex-shrink-0"
-        >
-          <option value="">Select pipeline…</option>
-          {templates.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
+        <>
+          <select
+            aria-label="Pipeline template"
+            value={selectedTemplate?.id ?? ""}
+            onChange={(e) => {
+              const t = templates.find((x) => x.id === e.target.value);
+              onTemplateSelect(t ?? null);
+            }}
+            disabled={disabled}
+            className="text-xs border rounded px-2 py-1 bg-surface border-border-strong flex-shrink-0"
+          >
+            <option value="">Select pipeline…</option>
+            {templates.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name}
+              </option>
+            ))}
+          </select>
+          <div className="flex items-center gap-2 opacity-50 pointer-events-none" title="Backend is set per pipeline step">
+            <div className="flex-shrink-0">
+              <BackendSwitcher
+                value={backend}
+                onChange={setBackend}
+                refreshTrigger={backendRefresh}
+              />
+            </div>
+            <div className="flex-shrink-0">
+              <ModelSelector
+                provider={backend}
+                value={model}
+                onChange={setModel}
+              />
+            </div>
+            <select
+              aria-label="Persona"
+              value={personaId ?? ""}
+              onChange={(e) => setPersonaId(e.target.value || null)}
+              disabled
+              className="text-xs border rounded px-2 py-1 bg-surface border-border-strong flex-shrink-0"
+            >
+              <option value="">Per-step persona</option>
+              {personas.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
       )}
     </div>
   );

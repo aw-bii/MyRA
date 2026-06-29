@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { installBackend } from "../../ipc";
+import { installBackend, probeBackend } from "../../ipc";
 import { IPC } from "../../../shared/ipc";
 
 const LABELS: Record<string, string> = {
@@ -24,7 +24,9 @@ interface Props {
 export function WizardStep2({ missing, onNext, onBack }: Props) {
   const [logs, setLogs] = useState<Record<string, string[]>>({});
   const [installing, setInstalling] = useState<Record<string, boolean>>({});
+  const [startingOllama, setStartingOllama] = useState(false);
   const [done, setDone] = useState<Record<string, boolean>>({});
+  const [verified, setVerified] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const install = async (id: string) => {
@@ -45,21 +47,47 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
         }
       },
     );
-    const { success: ok, error } = await installBackend(id);
+    const result = await installBackend(id);
     off();
 
     setInstalling((prev) => ({ ...prev, [id]: false }));
-    setDone((prev) => ({ ...prev, [id]: ok }));
-    if (!ok) {
+
+    if (result.success) {
+      const probeResult = await probeBackend(id);
+      if (probeResult.available) {
+        setVerified((prev) => ({ ...prev, [id]: true }));
+        setDone((prev) => ({ ...prev, [id]: true }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          [id]: "Install finished but backend not detected. It may not be on PATH — try restarting the wizard.",
+        }));
+      }
+    } else {
       setErrors((prev) => ({
         ...prev,
-        [id]: error ?? "Installation failed. Check your internet connection.",
+        [id]: result.error ?? "Installation failed. Check your internet connection.",
       }));
     }
   };
 
-  const startOllama = () => {
-    window.ipc.invoke(IPC.OLLAMA_START).catch(() => {});
+  const startOllama = async () => {
+    setStartingOllama(true);
+    setErrors((prev) => {
+      const n = { ...prev };
+      delete n.ollama;
+      return n;
+    });
+    try {
+      await window.ipc.invoke(IPC.OLLAMA_START);
+    } catch (err) {
+      setErrors((prev) => ({
+        ...prev,
+        ollama: `Failed to start Ollama: ${(err as Error).message ?? "unknown error"}`,
+      }));
+    } finally {
+      setStartingOllama(false);
+    }
   };
 
   if (missing.length === 0) {
@@ -124,9 +152,10 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
                   {id === "ollama" && (
                     <button
                       onClick={startOllama}
-                      className="btn-sm border border-border-strong hoverable:hover:bg-bubble"
+                      disabled={startingOllama}
+                      className="btn-sm border border-border-strong hoverable:hover:bg-bubble disabled:opacity-50"
                     >
-                      Start Ollama
+                      {startingOllama ? "Starting..." : "Start Ollama"}
                     </button>
                   )}
                   <button
@@ -135,7 +164,9 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
                     className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark disabled:opacity-50"
                   >
                     {done[id]
-                      ? "Installed"
+                      ? verified[id]
+                        ? "Installed ✓"
+                        : "Installed"
                       : installing[id]
                         ? "Installing..."
                         : "Install"}

@@ -137,13 +137,17 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     ConvStore.listConversations(limit, offset),
   );
 
-  ipcMain.handle(IPC.CONV_CREATE, (_event, { title, backend, personaId }) => {
-    return ConvStore.createConversation(
-      title || "New conversation",
-      backend || "claude",
-      personaId || null,
-    );
-  });
+  ipcMain.handle(
+    IPC.CONV_CREATE,
+    (_event, { title, backend, personaId, pipelineTemplateId }) => {
+      return ConvStore.createConversation(
+        title || "New conversation",
+        backend || "claude",
+        personaId || null,
+        pipelineTemplateId,
+      );
+    },
+  );
 
   ipcMain.handle(IPC.CONV_GET, (_event, { conversationId }) => ({
     conversation: ConvStore.getConversation(conversationId),
@@ -171,11 +175,17 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     probeBackend(backend),
   );
 
-  ipcMain.handle(IPC.WIZARD_INSTALL, (event, { backend }) =>
-    installBackend(backend, (line) =>
+  ipcMain.handle(IPC.WIZARD_INSTALL, async (event, { backend }) => {
+    const result = await installBackend(backend, (line) =>
       event.sender.send("wizard:install:line", backend, line),
-    ),
-  );
+    );
+    if (result.success) {
+      const probe = await probeBackend(backend);
+      result.available = probe.available;
+      result.authenticated = probe.authenticated;
+    }
+    return result;
+  });
 
   ipcMain.handle(IPC.WIZARD_DONE, () => {
     ConvStore.setSetting("wizard_done", "1");
@@ -506,10 +516,17 @@ export function registerIpcHandlers(win: BrowserWindow): void {
   });
 
   ipcMain.handle(IPC.OLLAMA_START, () => {
-    const child = spawn("ollama", ["serve"], {
-      detached: true,
-      stdio: "ignore",
-    });
-    child.unref();
+    try {
+      const child = spawn("ollama", ["serve"], {
+        detached: true,
+        stdio: "ignore",
+      });
+      child.on("error", () => {});
+      child.unref();
+    } catch (err) {
+      throw new Error(
+        `Failed to start Ollama: ${(err as Error).message}. Is Ollama installed and on PATH?`,
+      );
+    }
   });
 }

@@ -51,7 +51,7 @@ This aligns the type with `BottomBarProps.onTemplateSelect` and the actual usage
 
 ## Commit
 
-SHA recorded below after commit.
+**`dc1f431`** — `fix(review): BottomBar in pipeline empty state; onTemplateSelect type; verify store API`
 
 ---
 
