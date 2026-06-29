@@ -3,9 +3,14 @@ import { CheckCircle, MinusCircle } from "@phosphor-icons/react";
 import { probeBackend } from "../../ipc";
 
 const BACKENDS = [
-  { id: "claude", label: "Claude Code", bundled: true },
-  { id: "gemini", label: "Gemini CLI", bundled: false },
-  { id: "opencode", label: "Opencode", bundled: false },
+  { id: "claude", label: "Claude Code" },
+  { id: "claude-api", label: "Claude API" },
+  { id: "gemini", label: "Gemini CLI" },
+  { id: "gemini-api", label: "Gemini API" },
+  { id: "opencode", label: "Opencode" },
+  { id: "ollama", label: "Ollama" },
+  { id: "openrouter", label: "OpenRouter" },
+  { id: "codex", label: "Codex" },
 ];
 
 interface BackendStatus {
@@ -29,15 +34,15 @@ export function WizardStep1({ onNext }: Props) {
   const [statuses, setStatuses] = useState<BackendStatus[]>(
     BACKENDS.map((b) => ({
       id: b.id,
-      available: b.bundled,
-      authenticated: b.bundled,
-      loading: !b.bundled,
+      available: false,
+      authenticated: false,
+      loading: true,
     })),
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    BACKENDS.filter((b) => !b.bundled).forEach(async (b) => {
+    BACKENDS.forEach(async (b) => {
       try {
         const result = await probeBackend(b.id);
         setStatuses((prev) =>
@@ -66,13 +71,12 @@ export function WizardStep1({ onNext }: Props) {
       <div>
         <h2 className="text-sm font-semibold mb-1">Setting up your tools</h2>
         <p className="text-xs text-text-muted">
-          Claude Code is built in and ready. Checking if you have any additional
-          AI tools installed.
+          Checking which AI tools are installed and ready on your system.
         </p>
       </div>
-      <div className="flex flex-col gap-3">
-        {BACKENDS.map((b, i) => {
-          const s = statuses[i];
+      <div className="flex flex-col gap-3 max-h-72 overflow-y-auto pr-1">
+        {BACKENDS.map((b) => {
+          const s = statuses.find((x) => x.id === b.id)!;
           return (
             <div
               key={b.id}
@@ -98,13 +102,11 @@ export function WizardStep1({ onNext }: Props) {
               <div>
                 <div className="font-medium text-sm">{b.label}</div>
                 <div className="text-xs text-text-muted">
-                  {b.bundled
-                    ? "Included — always available"
-                    : s.loading
-                      ? "Checking..."
-                      : s.available
-                        ? "Found on your system"
-                        : "Not installed"}
+                  {s.loading
+                    ? "Checking..."
+                    : s.available
+                      ? "Found on your system"
+                      : "Not installed"}
                 </div>
               </div>
               {errors[b.id] && (
