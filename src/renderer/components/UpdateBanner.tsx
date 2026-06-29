@@ -6,7 +6,7 @@ import {
   onUpdateError,
   downloadUpdate,
   installUpdate,
-} from "../ipc";
+} from "../ipc/update";
 
 type UpdateState =
   | { phase: "available"; version: string }

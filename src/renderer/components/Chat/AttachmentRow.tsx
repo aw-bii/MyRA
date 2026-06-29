@@ -1,6 +1,6 @@
 import { memo, useState, useEffect } from "react";
 import type { Attachment } from "../../../shared/types";
-import { getAttachmentDataUrl } from "../../ipc";
+import { getAttachmentDataUrl } from "../../ipc/attachment";
 
 interface Props {
   attachments: Attachment[];

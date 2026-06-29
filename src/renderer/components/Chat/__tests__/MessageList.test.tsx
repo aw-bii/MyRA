@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/attachment", () => ({
   listAttachments: vi.fn().mockResolvedValue([]),
 }));
 

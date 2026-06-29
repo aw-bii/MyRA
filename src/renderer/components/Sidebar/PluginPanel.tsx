@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import type { PluginInfo } from "../../../shared/types";
-import { listPlugins, togglePlugin, reloadPlugins } from "../../ipc";
+import { listPlugins, togglePlugin, reloadPlugins } from "../../ipc/plugin";
 
 export function PluginPanel() {
   const [plugins, setPlugins] = useState<PluginInfo[]>([]);

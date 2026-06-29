@@ -2,7 +2,7 @@ import { useState } from "react";
 import { WizardStep1 } from "./WizardStep1";
 import { WizardStep2 } from "./WizardStep2";
 import { WizardStep3 } from "./WizardStep3";
-import { markWizardDone } from "../../ipc";
+import { markWizardDone } from "../../ipc/backend";
 
 interface BackendStatus {
   id: string;

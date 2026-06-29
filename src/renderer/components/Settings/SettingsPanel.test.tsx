@@ -2,18 +2,24 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { SettingsPanel } from "./SettingsPanel";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/settings", () => ({
   getSetting: vi.fn().mockResolvedValue(null),
   setSetting: vi.fn(),
+}));
+vi.mock("../../ipc/key", () => ({
   getAppVersion: vi.fn().mockResolvedValue("0.2.1"),
   storeKey: vi.fn().mockResolvedValue(undefined),
   deleteKey: vi.fn().mockResolvedValue(undefined),
   hasKey: vi
     .fn()
     .mockImplementation((id: string) => Promise.resolve(id === "openai")),
+}));
+vi.mock("../../ipc/backend", () => ({
   probeBackend: vi
     .fn()
     .mockResolvedValue({ available: false, authenticated: false }),
+}));
+vi.mock("../../ipc/net", () => ({
   getProxySettings: vi
     .fn()
     .mockResolvedValue({ httpProxy: "", httpsProxy: "", noProxy: "" }),

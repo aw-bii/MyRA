@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/attachment", () => ({
   uploadAttachment: vi.fn(),
   deleteAttachment: vi.fn(),
 }));

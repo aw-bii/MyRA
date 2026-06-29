@@ -14,14 +14,12 @@ import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import {
   getConversation,
   createConversation,
-  setSetting,
   deleteConversation,
   renameConversation,
-  getSetting,
-  onSecurityEvent,
-  respondSecurity,
-  checkConnectivity,
-} from "./ipc";
+} from "./ipc/conversation";
+import { getSetting, setSetting } from "./ipc/settings";
+import { onSecurityEvent, respondSecurity } from "./ipc/security";
+import { checkConnectivity } from "./ipc/net";
 import type {
   PipelineTemplate,
   Conversation,

@@ -2,8 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { BottomBar } from "./BottomBar";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/key", () => ({
   listModels: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../ipc/backend", () => ({
   listBackends: vi.fn().mockResolvedValue([
     {
       id: "claude",
@@ -12,8 +14,10 @@ vi.mock("../../ipc", () => ({
       authenticated: true,
     },
   ]),
-  listPersonas: vi.fn().mockResolvedValue([]),
   probeBackend: vi.fn().mockResolvedValue({ available: true, authenticated: true }),
+}));
+vi.mock("../../ipc/persona", () => ({
+  listPersonas: vi.fn().mockResolvedValue([]),
 }));
 
 const base = {

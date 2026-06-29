@@ -19,46 +19,58 @@ beforeAll(() => {
   });
 });
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/settings", () => ({
   getSetting: vi.fn().mockResolvedValue(null),
   setSetting: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("../../ipc/key", () => ({
   getAppVersion: vi.fn().mockResolvedValue("0.2.1"),
   storeKey: vi.fn().mockResolvedValue(undefined),
   deleteKey: vi.fn().mockResolvedValue(undefined),
   hasKey: vi.fn().mockResolvedValue(false),
+  listModels: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../ipc/backend", () => ({
   probeBackend: vi
     .fn()
     .mockResolvedValue({ available: false, authenticated: false }),
+  listBackends: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../ipc/net", () => ({
   getProxySettings: vi
     .fn()
     .mockResolvedValue({ httpProxy: "", httpsProxy: "", noProxy: "" }),
   setProxySettings: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("../../ipc/persona", () => ({
   listPersonas: vi.fn().mockResolvedValue([]),
   savePersona: vi.fn().mockResolvedValue({ id: "1", name: "Test" }),
   deletePersona: vi.fn().mockResolvedValue(undefined),
-  listPipelines: vi.fn().mockResolvedValue([]),
-  savePipeline: vi.fn().mockResolvedValue({ id: "1", name: "Test" }),
-  deletePipeline: vi.fn().mockResolvedValue(undefined),
-  listBackends: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../ipc/pipeline", () => ({
+  listPipelineTemplates: vi.fn().mockResolvedValue([]),
+  savePipelineTemplate: vi.fn().mockResolvedValue({ id: "1", name: "Test" }),
+  deletePipelineTemplate: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("../../ipc/mcp", () => ({
   listMcpServers: vi.fn().mockResolvedValue([]),
   addMcpServer: vi.fn().mockResolvedValue(undefined),
   removeMcpServer: vi.fn().mockResolvedValue(undefined),
   toggleMcpServer: vi.fn().mockResolvedValue(undefined),
   listMcpTools: vi.fn().mockResolvedValue([]),
-  listCronJobs: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("../../ipc/cron", () => ({
+  getCronJobs: vi.fn().mockResolvedValue([]),
   createCronJob: vi.fn().mockResolvedValue(undefined),
-  updateCronJob: vi.fn().mockResolvedValue(undefined),
   deleteCronJob: vi.fn().mockResolvedValue(undefined),
   toggleCronJob: vi.fn().mockResolvedValue(undefined),
-  getCronJobs: vi.fn().mockResolvedValue([]),
   getCronJobLogs: vi.fn().mockResolvedValue([]),
   runCronJobNow: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("../../ipc/plugin", () => ({
   listPlugins: vi.fn().mockResolvedValue([]),
   togglePlugin: vi.fn().mockResolvedValue(undefined),
   reloadPlugins: vi.fn().mockResolvedValue(undefined),
-  getDefaultModel: vi.fn().mockResolvedValue(""),
-  setDefaultModel: vi.fn().mockResolvedValue(undefined),
-  listModels: vi.fn().mockResolvedValue([]),
 }));
 
 const base = {

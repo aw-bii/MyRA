@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { listConversations, searchConversations } from "../ipc";
+import { listConversations, searchConversations } from "../ipc/conversation";
 import type { Conversation, SearchResult } from "../../shared/types";
 
 export function useConversations(refreshKey?: number) {

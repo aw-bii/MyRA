@@ -3,7 +3,7 @@ import {
   listPipelineTemplates,
   savePipelineTemplate,
   deletePipelineTemplate,
-} from "../ipc";
+} from "../ipc/pipeline";
 import type { PipelineTemplate } from "../../shared/types";
 
 export function usePipelines() {

@@ -3,11 +3,11 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { SearchPanel } from "./SearchPanel";
 import type { SearchResult } from "../../../shared/types";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/conversation", () => ({
   searchConversations: vi.fn(),
 }));
 
-import { searchConversations } from "../../ipc";
+import { searchConversations } from "../../ipc/conversation";
 
 describe("SearchPanel", () => {
   const mockOnSelect = vi.fn();

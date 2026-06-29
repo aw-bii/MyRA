@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { McpPanel } from "./McpPanel";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/mcp", () => ({
   listMcpServers: vi.fn(),
   addMcpServer: vi.fn(),
   removeMcpServer: vi.fn(),
@@ -16,7 +16,7 @@ import {
   removeMcpServer,
   toggleMcpServer,
   listMcpTools,
-} from "../../ipc";
+} from "../../ipc/mcp";
 
 describe("McpPanel", () => {
   beforeEach(() => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { listBackends } from "../ipc";
+import { listBackends } from "../ipc/backend";
 import type { BackendInfo } from "../../shared/types";
 
 export function useBackends(refreshTrigger = 0) {

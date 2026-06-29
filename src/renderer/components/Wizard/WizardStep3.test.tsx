@@ -1,9 +1,9 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { WizardStep3 } from "./WizardStep3";
-import { probeBackend } from "../../ipc";
+import { probeBackend } from "../../ipc/backend";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/backend", () => ({
   probeBackend: vi
     .fn()
     .mockResolvedValue({ available: true, authenticated: true }),

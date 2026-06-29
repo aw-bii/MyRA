@@ -2,8 +2,9 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { WizardStep2 } from "./WizardStep2";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/backend", () => ({
   installBackend: vi.fn().mockResolvedValue({ success: false }),
+  probeBackend: vi.fn().mockResolvedValue({ available: false, authenticated: false }),
 }));
 
 describe("WizardStep2", () => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle, MinusCircle } from "@phosphor-icons/react";
-import { probeBackend } from "../../ipc";
+import { probeBackend } from "../../ipc/backend";
 
 const BACKENDS = [
   { id: "claude", label: "Claude Code" },

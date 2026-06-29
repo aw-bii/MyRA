@@ -1,11 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  getConversation,
-  sendChat,
-  onChatChunk,
-  onChatDone,
-  abortChat,
-} from "../ipc";
+import { getConversation } from "../ipc/conversation";
+import { sendChat, onChatChunk, onChatDone, abortChat } from "../ipc/chat";
 import type { Message } from "../../shared/types";
 
 export type ChunkPayload = {

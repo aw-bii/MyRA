@@ -7,7 +7,7 @@ import {
   deleteCronJob,
   getCronJobLogs,
   runCronJobNow,
-} from "../../ipc";
+} from "../../ipc/cron";
 
 export function CronPanel() {
   const [jobs, setJobs] = useState<CronJob[]>([]);

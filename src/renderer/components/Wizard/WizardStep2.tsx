@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { installBackend, probeBackend } from "../../ipc";
+import { installBackend, probeBackend } from "../../ipc/backend";
 import { IPC } from "../../../shared/ipc";
 
 const LABELS: Record<string, string> = {

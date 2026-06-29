@@ -26,19 +26,26 @@ vi.mock("./components/Settings/SettingsModal", () => ({
 }));
 vi.mock("./components/Chat/BottomBar", () => ({ BottomBar: vi.fn(() => null) }));
 
-// Mock ipc module so createConversation can be controlled per-test
-vi.mock("./ipc", async (importOriginal) => {
-  const original = await importOriginal<typeof import("./ipc")>();
-  return {
-    ...original,
-    createConversation: vi.fn(),
-    getConversation: vi.fn().mockResolvedValue({ conversation: null }),
-    getSetting: vi.fn().mockResolvedValue(undefined),
-    setSetting: vi.fn().mockResolvedValue(undefined),
-    onSecurityEvent: vi.fn(() => () => {}),
-    checkConnectivity: vi.fn().mockResolvedValue({ online: true }),
-  };
-});
+// Mock domain ipc modules so App functions can be controlled per-test
+vi.mock("./ipc/conversation", () => ({
+  createConversation: vi.fn(),
+  getConversation: vi.fn().mockResolvedValue({ conversation: null }),
+  deleteConversation: vi.fn(),
+  renameConversation: vi.fn(),
+  listConversations: vi.fn().mockResolvedValue([]),
+  searchConversations: vi.fn().mockResolvedValue([]),
+}));
+vi.mock("./ipc/settings", () => ({
+  getSetting: vi.fn().mockResolvedValue(undefined),
+  setSetting: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock("./ipc/security", () => ({
+  onSecurityEvent: vi.fn(() => () => {}),
+  respondSecurity: vi.fn(),
+}));
+vi.mock("./ipc/net", () => ({
+  checkConnectivity: vi.fn().mockResolvedValue({ online: true }),
+}));
 
 import React from "react";
 import App from "./App";
@@ -46,7 +53,7 @@ import { Sidebar } from "./components/Sidebar/Sidebar";
 import { SettingsModal } from "./components/Settings/SettingsModal";
 import { ChatView } from "./components/Chat/ChatView";
 import { BottomBar } from "./components/Chat/BottomBar";
-import { createConversation } from "./ipc";
+import { createConversation } from "./ipc/conversation";
 
 beforeEach(() => {
   localStorage.setItem("wizardDone", "1");

@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { WizardStep1 } from "./WizardStep1";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/backend", () => ({
   probeBackend: vi
     .fn()
     .mockResolvedValue({ available: false, authenticated: false }),
@@ -27,7 +27,7 @@ describe("WizardStep1", () => {
   });
 
   it("probes claude instead of marking it bundled", async () => {
-    const { probeBackend } = await import("../../ipc");
+    const { probeBackend } = await import("../../ipc/backend");
     render(<WizardStep1 onNext={vi.fn()} />);
     // probeBackend should be called for all backends including claude
     await vi.waitFor(() => {

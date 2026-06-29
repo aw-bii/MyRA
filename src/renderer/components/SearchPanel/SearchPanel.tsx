@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { searchConversations } from "../../ipc";
+import { searchConversations } from "../../ipc/conversation";
 import type { SearchResult } from "../../../shared/types";
 
 interface Props {

@@ -6,7 +6,7 @@ import {
   removeMcpServer,
   toggleMcpServer,
   listMcpTools,
-} from "../../ipc";
+} from "../../ipc/mcp";
 
 export function McpPanel() {
   const [servers, setServers] = useState<McpServerConfig[]>([]);

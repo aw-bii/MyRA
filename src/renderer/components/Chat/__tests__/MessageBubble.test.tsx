@@ -10,7 +10,7 @@ vi.mock("react-markdown", () => ({
 const { mockListAttachments } = vi.hoisted(() => ({
   mockListAttachments: vi.fn().mockResolvedValue([]),
 }));
-vi.mock("../../../ipc", () => ({ listAttachments: mockListAttachments }));
+vi.mock("../../../ipc/attachment", () => ({ listAttachments: mockListAttachments }));
 
 beforeEach(() => {
   mockListAttachments.mockClear();

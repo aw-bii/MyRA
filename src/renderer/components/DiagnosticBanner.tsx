@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { lastIpcError, clearIpcError } from "../ipc";
+import { lastIpcError, clearIpcError } from "../ipc/index";
 
 export function DiagnosticBanner() {
   const [error, setError] = useState<Error | null>(null);

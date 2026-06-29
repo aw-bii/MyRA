@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { getConversation } from "../ipc/conversation";
 import {
-  getConversation,
   runPipeline,
   abortPipeline,
   onPipelineChunk,
   onPipelineStepDone,
   onPipelineDone,
-} from "../ipc";
+} from "../ipc/pipeline";
 import type { Message, PipelineTemplate } from "../../shared/types";
 
 export function usePipelineMessages(

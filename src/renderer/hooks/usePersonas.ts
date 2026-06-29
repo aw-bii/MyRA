@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { listPersonas, savePersona, deletePersona } from "../ipc";
+import { listPersonas, savePersona, deletePersona } from "../ipc/persona";
 import type { Persona } from "../../shared/types";
 
 export function usePersonas() {

@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
-import {
-  getSetting,
-  setSetting,
-  getAppVersion,
-  storeKey,
-  deleteKey,
-  hasKey,
-  probeBackend,
-  getProxySettings,
-  setProxySettings,
-} from "../../ipc";
+import { getSetting, setSetting } from "../../ipc/settings";
+import { getAppVersion, storeKey, deleteKey, hasKey } from "../../ipc/key";
+import { probeBackend } from "../../ipc/backend";
+import { getProxySettings, setProxySettings } from "../../ipc/net";
 
 const API_PROVIDERS = [
   { id: "openai", label: "OpenAI" },

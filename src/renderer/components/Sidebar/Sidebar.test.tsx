@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { Sidebar } from "./Sidebar";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/conversation", () => ({
   listConversations: vi.fn().mockResolvedValue([]),
   searchConversations: vi.fn().mockResolvedValue([]),
   createConversation: vi.fn().mockResolvedValue({ id: "1", title: "Test" }),

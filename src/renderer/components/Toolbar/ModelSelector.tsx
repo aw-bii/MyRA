@@ -1,5 +1,5 @@
 import { memo, useState, useEffect } from "react";
-import { listModels } from "../../ipc";
+import { listModels } from "../../ipc/key";
 
 interface Props {
   provider: string;

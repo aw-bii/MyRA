@@ -25,17 +25,22 @@ const { mockGetAppVersion, mockGetSetting, mockHasKey, mockGetProxySettings } = 
   mockGetProxySettings: vi.fn().mockResolvedValue({ httpProxy: "", httpsProxy: "", noProxy: "" }),
 }));
 
-// From __tests__/, the ipc module is at ../../../ipc (relative to this test file)
-vi.mock("../../../ipc", () => ({
+vi.mock("../../../ipc/key", () => ({
   getAppVersion: mockGetAppVersion,
-  getSetting: mockGetSetting,
   hasKey: mockHasKey,
-  getProxySettings: mockGetProxySettings,
-  setSetting: vi.fn(),
   storeKey: vi.fn(),
   deleteKey: vi.fn(),
-  probeBackend: vi.fn(),
+}));
+vi.mock("../../../ipc/settings", () => ({
+  getSetting: mockGetSetting,
+  setSetting: vi.fn(),
+}));
+vi.mock("../../../ipc/net", () => ({
+  getProxySettings: mockGetProxySettings,
   setProxySettings: vi.fn(),
+}));
+vi.mock("../../../ipc/backend", () => ({
+  probeBackend: vi.fn(),
 }));
 
 import { SettingsPanel } from "../SettingsPanel";

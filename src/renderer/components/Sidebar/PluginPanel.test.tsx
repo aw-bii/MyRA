@@ -2,13 +2,13 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { PluginPanel } from "./PluginPanel";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/plugin", () => ({
   listPlugins: vi.fn(),
   togglePlugin: vi.fn(),
   reloadPlugins: vi.fn(),
 }));
 
-import { listPlugins, togglePlugin, reloadPlugins } from "../../ipc";
+import { listPlugins, togglePlugin, reloadPlugins } from "../../ipc/plugin";
 
 describe("PluginPanel", () => {
   beforeEach(() => {

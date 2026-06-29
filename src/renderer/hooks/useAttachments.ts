@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { ingestAttachments } from "../ipc";
+import { ingestAttachments } from "../ipc/attachment";
 import type { Attachment } from "../../shared/types";
 
 export function useAttachments() {

@@ -1,7 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import { memo, useState, useEffect } from "react";
 import { AttachmentRow } from "./AttachmentRow";
-import { listAttachments } from "../../ipc";
+import { listAttachments } from "../../ipc/attachment";
 import type { Message, Attachment } from "../../../shared/types";
 
 function safeUrl(url: string): string | null {

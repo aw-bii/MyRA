@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { CronPanel } from "./CronPanel";
 
-vi.mock("../../ipc", () => ({
+vi.mock("../../ipc/cron", () => ({
   getCronJobs: vi.fn(),
   createCronJob: vi.fn(),
   toggleCronJob: vi.fn(),
@@ -17,7 +17,7 @@ import {
   toggleCronJob,
   deleteCronJob,
   getCronJobLogs,
-} from "../../ipc";
+} from "../../ipc/cron";
 
 describe("CronPanel", () => {
   beforeEach(() => {
