@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { installBackend } from "../../ipc";
+import { IPC } from "../../../shared/ipc";
 
 const LABELS: Record<string, string> = {
   claude: "Claude Code",
@@ -11,6 +12,8 @@ const LABELS: Record<string, string> = {
   openrouter: "OpenRouter",
   codex: "Codex",
 };
+
+const API_KEY_ONLY = new Set(["claude-api", "gemini-api", "openrouter"]);
 
 interface Props {
   missing: string[];
@@ -56,7 +59,7 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
   };
 
   const startOllama = () => {
-    window.ipc.invoke("ollama:start").catch(() => {});
+    window.ipc.invoke(IPC.OLLAMA_START).catch(() => {});
   };
 
   if (missing.length === 0) {
@@ -97,28 +100,14 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
           key={id}
           className="flex flex-col gap-2 border border-border rounded-xl p-4"
         >
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-sm">{LABELS[id] ?? id}</span>
-            <div className="flex gap-2">
-              {id === "ollama" && (
-                <button
-                  onClick={startOllama}
-                  className="btn-sm border border-border-strong hoverable:hover:bg-bubble"
-                >
-                  Start Ollama
-                </button>
-              )}
-              <button
-                onClick={() => install(id)}
-                disabled={installing[id] || done[id]}
-                className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark disabled:opacity-50"
-              >
-                {done[id]
-                  ? "Installed"
-                  : installing[id]
-                    ? "Installing..."
-                    : "Install"}
-              </button>
+          {API_KEY_ONLY.has(id) ? (
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <span className="font-medium text-sm">{LABELS[id] ?? id}</span>
+                <span className="text-xs text-text-muted">
+                  No installation needed — configure your API key in Settings
+                </span>
+              </div>
               <button
                 onClick={() => setDone((prev) => ({ ...prev, [id]: true }))}
                 disabled={done[id]}
@@ -127,13 +116,49 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
                 Skip
               </button>
             </div>
-          </div>
-          {(logs[id] ?? []).length > 0 && (
-            <pre className="text-xs bg-gray-900 text-gray-300 rounded-lg p-2 max-h-24 overflow-y-auto">
-              {logs[id].join("\n")}
-            </pre>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-sm">{LABELS[id] ?? id}</span>
+                <div className="flex gap-2">
+                  {id === "ollama" && (
+                    <button
+                      onClick={startOllama}
+                      className="btn-sm border border-border-strong hoverable:hover:bg-bubble"
+                    >
+                      Start Ollama
+                    </button>
+                  )}
+                  <button
+                    onClick={() => install(id)}
+                    disabled={installing[id] || done[id]}
+                    className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark disabled:opacity-50"
+                  >
+                    {done[id]
+                      ? "Installed"
+                      : installing[id]
+                        ? "Installing..."
+                        : "Install"}
+                  </button>
+                  <button
+                    onClick={() => setDone((prev) => ({ ...prev, [id]: true }))}
+                    disabled={done[id]}
+                    className="btn-sm border border-border-strong hoverable:hover:bg-bubble disabled:opacity-30"
+                  >
+                    Skip
+                  </button>
+                </div>
+              </div>
+              {(logs[id] ?? []).length > 0 && (
+                <pre className="text-xs bg-gray-900 text-gray-300 rounded-lg p-2 max-h-24 overflow-y-auto">
+                  {logs[id].join("\n")}
+                </pre>
+              )}
+              {errors[id] && (
+                <p className="text-xs text-red-500">{errors[id]}</p>
+              )}
+            </>
           )}
-          {errors[id] && <p className="text-xs text-red-500">{errors[id]}</p>}
         </div>
       ))}
       <button

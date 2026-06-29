@@ -102,6 +102,7 @@ export interface IpcInvokeMap {
   [IPC.WIZARD_PROBE]: { backend: string };
   [IPC.WIZARD_INSTALL]: { backend: string };
   [IPC.WIZARD_DONE]: void;
+  [IPC.OLLAMA_START]: void;
   [IPC.PIPELINE_LIST]: void;
   [IPC.PIPELINE_SAVE]: {
     id?: string;

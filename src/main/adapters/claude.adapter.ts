@@ -1,4 +1,5 @@
 import { spawn, ChildProcess } from "child_process";
+import fs from "fs";
 import type {
   BackendAdapter,
   MessageChunk,
@@ -41,8 +42,12 @@ export class ClaudeAdapter implements BackendAdapter {
           injections.push(
             `[Attachment: ${att.originalName}]\n(extraction failed)\n[/Attachment]`,
           );
-        } else {
+        } else if (fs.existsSync(att.storedPath)) {
           args.push("--file", att.storedPath);
+        } else {
+          injections.push(
+            `[Attachment: ${att.originalName}]\n${att.extractedText ?? `[${att.originalName}]`}\n[/Attachment]`,
+          );
         }
       }
       if (injections.length > 0) {

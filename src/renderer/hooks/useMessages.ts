@@ -8,7 +8,11 @@ import {
 } from "../ipc";
 import type { Message } from "../../shared/types";
 
-export type ChunkPayload = { type: string; content: string; conversationId: string };
+export type ChunkPayload = {
+  type: string;
+  content: string;
+  conversationId: string;
+};
 
 export function applyChunk(
   prev: Message[],
@@ -27,10 +31,15 @@ export function applyChunk(
     streamingContentRef.current += chunk.content;
     return [
       ...prev.slice(0, -1),
-      { ...last, content: streamingContentRef.current, conversationId: chunk.conversationId },
+      {
+        ...last,
+        content: streamingContentRef.current,
+        conversationId: chunk.conversationId,
+      },
     ];
   }
   if (chunk.type === "error") {
+    streamingContentRef.current = "";
     return [
       ...prev.slice(0, -1),
       {
@@ -61,7 +70,13 @@ export function useMessages(conversationId: string | null) {
 
   useEffect(() => {
     const offChunk = onChatChunk(({ conversationId: cid, type, content }) => {
-      setMessages((prev) => applyChunk(prev, { type, content, conversationId: cid }, streamingContent));
+      setMessages((prev) =>
+        applyChunk(
+          prev,
+          { type, content, conversationId: cid },
+          streamingContent,
+        ),
+      );
     });
     const offDone = onChatDone(() => {
       setStreaming(false);

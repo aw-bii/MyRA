@@ -1,70 +1,86 @@
 # Final Review Fix Report
 
-**Branch:** fix/security-remediation-remaining-gaps  
-**Commit:** 7a87ad0  
-**Date:** 2026-06-24
-
----
-
-## Finding 1: CSP broke Vite HMR in dev mode
-
-**File:** `src/main/index.ts`
-
-**Problem:** The CSP was built as a single string with `connect-src 'self'` embedded in the middle. The dev-mode `csp +=` appended the `ws://` source after `form-action 'self'`, making it an invalid directive value rather than part of `connect-src`.
-
-**Fix Applied:** Replaced the single-string CSP with an array-join approach. `connectSrc` is assembled first (including the `ws://` source when in dev mode), then each directive becomes an array element joined with `"; "`.
-
----
-
-## Finding 2: SAFE_COMMAND_RE permits mid-string path traversal
-
-**Files:** `src/main/mcp/mcp-client-manager.ts`, `src/main/mcp/mcp-client-manager.test.ts`
-
-**Problem:** The regex `/^[a-zA-Z0-9_][a-zA-Z0-9_./-]*$/` allowed `/` in the character class, so `node/../../evil` would pass. The comment said "no path separators" but the implementation contradicted it.
-
-**Fix Applied:**
-- Removed `/` from the character class: `/^[a-zA-Z0-9_][a-zA-Z0-9_.-]*$/`
-- Added regression test `"rejects mid-string path traversal command"` in the `describe("addServer validation")` block
-
----
-
-## Finding 3: Escape key on injection alert sends `{ id: undefined }`
-
-**File:** `src/renderer/App.tsx`
-
-**Problem:** `SecurityEvent.id` is `undefined` for `injection_detected` events. The Escape handler in `SecurityDialog.tsx` called `onRespond(false)` for non-`write_approval_needed` events, which triggered `respondSecurity({ id: undefined!, approved })` in `App.tsx`. The main IPC handler throws on `typeof id !== "string"`, producing an unhandled promise rejection.
-
-**Fix Applied:** Gated the `respondSecurity` call behind a presence check on `eventId`. Injection-detected dismissals now correctly skip the IPC call. The dialog still closes because `SecurityDialog` sets `resolved(true)` independently.
-
----
-
-## Test Output
-
-```
-Test Files: 4 failed | 31 passed (35)
-     Tests: 17 failed | 163 passed | 16 skipped (196)
-```
-
-- 163 passed (includes the new mid-string path traversal regression test)
-- 17 failures are all pre-existing SQLite3 `ENOENT` cleanup failures in `src/main/store/index.test.ts` — unrelated to these changes
-- TypeScript typecheck: 0 errors (`npx tsc --noEmit`)
+**Status:** DONE  
+**Date:** 2026-06-29
 
 ---
 
 ## Files Changed
 
-- `src/main/index.ts` — CSP restructure
-- `src/main/mcp/mcp-client-manager.ts` — SAFE_COMMAND_RE slash removed
-- `src/main/mcp/mcp-client-manager.test.ts` — regression test added
-- `src/renderer/App.tsx` — respondSecurity id guard
+1. `src/renderer/components/Wizard/WizardStep2.tsx`
+2. `src/shared/ipc.ts`
+3. `src/renderer/hooks/useMessages.ts`
+4. `src/main/adapters/claude.adapter.ts`
+
+---
+
+## Finding 1 (Critical): Raw string "ollama:start" in renderer
+
+**File:** `src/renderer/components/Wizard/WizardStep2.tsx`
+
+Added `import { IPC } from "../../../shared/ipc";`. Changed `window.ipc.invoke("ollama:start")` to `window.ipc.invoke(IPC.OLLAMA_START)`.
+
+Note: The import path in the brief was `../../../../shared/ipc` (4 levels up) but the file lives at `src/renderer/components/Wizard/`, which is 3 levels deep from `src/renderer/`. The correct path is `../../../shared/ipc`. The build caught the incorrect path immediately.
+
+---
+
+## Finding 2 (Important): `OLLAMA_START` missing from `IpcInvokeMap`
+
+**File:** `src/shared/ipc.ts`
+
+Added `[IPC.OLLAMA_START]: void;` immediately after `[IPC.WIZARD_DONE]: void;` in the `IpcInvokeMap` interface.
+
+---
+
+## Finding 3 (Important): `applyChunk` doesn't reset `streamingContentRef` on error
+
+**File:** `src/renderer/hooks/useMessages.ts`
+
+Added `streamingContentRef.current = "";` as the first statement in the `chunk.type === "error"` branch. Prevents stale accumulated streaming text from corrupting subsequent messages after an error event.
+
+---
+
+## Finding 4 (Important): Attachment file-existence fallback in `claude.adapter.ts`
+
+**File:** `src/main/adapters/claude.adapter.ts`
+
+Added `import fs from "fs";` after the `spawn` import. In the attachment loop, the non-error branch was split:
+- `else if (fs.existsSync(att.storedPath))` → `args.push("--file", att.storedPath)` (original behavior when file exists)
+- `else` → inline injection: `[Attachment: name]\n<extractedText ?? [name]>\n[/Attachment]` (fallback when file is missing)
+
+Note: The opencode adapter uses `AttachmentService.getContent()` for all attachments and does not itself use `fs.existsSync`. The fallback pattern was sourced from the finding description and applied directly to claude.adapter.ts.
+
+---
+
+## Finding 5 (Important): API-key-only backends show "Install" button
+
+**File:** `src/renderer/components/Wizard/WizardStep2.tsx`
+
+Added `const API_KEY_ONLY = new Set(["claude-api", "gemini-api", "openrouter"]);` before the component definition. In `missing.map()`, branched on `API_KEY_ONLY.has(id)`:
+- API-key-only: render label + "No installation needed — configure your API key in Settings" note + Skip button only. No Install button, no logs pre, no error text.
+- CLI backends: unchanged (Install / Skip / logs / error UI exactly as before).
+
+---
+
+## Lint / Build / Test Results
+
+**Lint:** `npm run lint` → 0 errors, 386 warnings (all pre-existing prettier formatting warnings unrelated to these changes).
+
+**Build:** `npm run build` → exit 0. All three bundles compiled cleanly (main 93.37 kB, preload 3.13 kB, renderer 706.56 kB).
+
+**Tests:** `npx vitest run src/renderer/hooks/useMessages.test.tsx --reporter=verbose`
+```
+✓ applyChunk > appends text chunk content to assistant placeholder
+✓ applyChunk > renders error chunk as visible error message
+✓ applyChunk > falls back to matching placeholder with empty conversationId for new conversations
+
+Test Files  1 passed (1)
+      Tests  3 passed (3)
+      Duration 7.26s
+```
 
 ---
 
 ## Commit
 
-**Hash:** `7a87ad0`  
-**Message:** `fix(review): CSP HMR regression, SAFE_COMMAND_RE slash, Escape injection id undefined`
-
----
-
-**Status:** DONE
+**Message:** `fix(review): IPC constant, IpcInvokeMap, applyChunk reset, attachment fallback, API-key wizard UI`
