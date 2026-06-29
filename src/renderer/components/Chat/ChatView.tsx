@@ -144,7 +144,7 @@ function PipelineChatView({
           >
             {step.backendId}
             {streamingStepIndex === i && (
-              <span className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="ml-1 inline-block w-1.5 h-1.5 rounded-full bg-primary" />
             )}
           </button>
         ))}
