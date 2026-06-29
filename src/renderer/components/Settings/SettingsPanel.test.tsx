@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { SettingsPanel } from "./SettingsPanel";
 
 vi.mock("../../ipc/settings", () => ({
@@ -52,5 +53,48 @@ describe("SettingsPanel key UX", () => {
       const saveBtns = screen.getAllByText("Save");
       expect(saveBtns.length).toBeGreaterThan(0);
     });
+  });
+});
+
+describe("SettingsPanel inline test feedback", () => {
+  it("shows inline failure message after Test click, not alert", async () => {
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    render(<SettingsPanel onClose={vi.fn()} onReRunWizard={vi.fn()} />);
+
+    // Wait for component to settle
+    await vi.waitFor(() => {
+      expect(screen.getAllByText("Test").length).toBeGreaterThan(0);
+    });
+
+    const testBtns = screen.getAllByText("Test");
+    await userEvent.click(testBtns[0]);
+
+    await vi.waitFor(() => {
+      // probeBackend returns { available: false, authenticated: false }
+      // so message should contain "not available"
+      expect(screen.getByText(/not available/i)).toBeTruthy();
+    });
+
+    expect(alertSpy).not.toHaveBeenCalled();
+    alertSpy.mockRestore();
+  });
+
+  it("does not call alert() when test result arrives", async () => {
+    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
+    render(<SettingsPanel onClose={vi.fn()} onReRunWizard={vi.fn()} />);
+
+    await vi.waitFor(() => {
+      expect(screen.getAllByText("Test").length).toBeGreaterThan(0);
+    });
+
+    const testBtns = screen.getAllByText("Test");
+    await userEvent.click(testBtns[0]);
+
+    await vi.waitFor(() => {
+      expect(screen.getByText(/not available/i)).toBeTruthy();
+    });
+
+    expect(alertSpy).not.toHaveBeenCalled();
+    alertSpy.mockRestore();
   });
 });

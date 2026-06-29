@@ -23,6 +23,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
   const [keyStates, setKeyStates] = useState<Record<string, boolean>>({});
   const [testing, setTesting] = useState<Record<string, boolean>>({});
+  const [testResults, setTestResults] = useState<Record<string, { success: boolean; message: string } | null>>({});
   const [proxyHttp, setProxyHttp] = useState("");
   const [proxyHttps, setProxyHttps] = useState("");
   const [proxyNo, setProxyNo] = useState("");
@@ -107,11 +108,16 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
     setTesting((prev) => ({ ...prev, [provider]: true }));
     const result = await probeBackend(provider);
     setTesting((prev) => ({ ...prev, [provider]: false }));
-    alert(
-      result.available && result.authenticated
-        ? `${provider}: connected and authenticated`
-        : `${provider}: ${!result.available ? "not available" : "not authenticated"}`,
-    );
+    const success = result.available && result.authenticated;
+    const message = success
+      ? `${provider}: connected and authenticated`
+      : `${provider}: ${!result.available ? "not available" : "not authenticated"}`;
+    setTestResults((prev) => ({ ...prev, [provider]: { success, message } }));
+    if (success) {
+      setTimeout(() => {
+        setTestResults((prev) => ({ ...prev, [provider]: null }));
+      }, 5000);
+    }
   };
 
   return (
@@ -152,47 +158,54 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
                     No key needed — connects to localhost:11434
                   </p>
                 ) : (
-                  <div className="flex gap-1">
-                    {keyStates[p.id] ? (
-                      <button
-                        onClick={async () => {
-                          await deleteKey(p.id);
-                          setKeyStates((prev) => ({ ...prev, [p.id]: false }));
-                        }}
-                        className="btn-sm border border-danger-muted text-danger hoverable:hover:bg-danger-subtle text-xs px-2"
-                      >
-                        Remove
-                      </button>
-                    ) : (
-                      <>
-                        <input
-                          type="password"
-                          className="flex-1 text-xs border rounded px-2 py-1 bg-surface border-border-strong"
-                          placeholder="sk-..."
-                          value={apiKeys[p.id] ?? ""}
-                          onChange={(e) =>
-                            setApiKeys((prev) => ({
-                              ...prev,
-                              [p.id]: e.target.value,
-                            }))
-                          }
-                        />
+                  <>
+                    <div className="flex gap-1">
+                      {keyStates[p.id] ? (
                         <button
-                          onClick={() => handleSaveKey(p.id)}
-                          className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark text-xs px-2"
+                          onClick={async () => {
+                            await deleteKey(p.id);
+                            setKeyStates((prev) => ({ ...prev, [p.id]: false }));
+                          }}
+                          className="btn-sm border border-danger-muted text-danger hoverable:hover:bg-danger-subtle text-xs px-2"
                         >
-                          Save
+                          Remove
                         </button>
-                      </>
+                      ) : (
+                        <>
+                          <input
+                            type="password"
+                            className="flex-1 text-xs border rounded px-2 py-1 bg-surface border-border-strong"
+                            placeholder="sk-..."
+                            value={apiKeys[p.id] ?? ""}
+                            onChange={(e) =>
+                              setApiKeys((prev) => ({
+                                ...prev,
+                                [p.id]: e.target.value,
+                              }))
+                            }
+                          />
+                          <button
+                            onClick={() => handleSaveKey(p.id)}
+                            className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark text-xs px-2"
+                          >
+                            Save
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleTest(p.id)}
+                        disabled={testing[p.id]}
+                        className="btn-sm border border-border-strong text-xs px-2 hoverable:hover:bg-bubble"
+                      >
+                        {testing[p.id] ? "..." : "Test"}
+                      </button>
+                    </div>
+                    {testResults[p.id] && (
+                      <span className={`text-xs mt-1 block ${testResults[p.id]!.success ? "text-success" : "text-danger"}`}>
+                        {testResults[p.id]!.message}
+                      </span>
                     )}
-                    <button
-                      onClick={() => handleTest(p.id)}
-                      disabled={testing[p.id]}
-                      className="btn-sm border border-border-strong text-xs px-2 hoverable:hover:bg-bubble"
-                    >
-                      {testing[p.id] ? "..." : "Test"}
-                    </button>
-                  </div>
+                  </>
                 )}
               </div>
             ))}
