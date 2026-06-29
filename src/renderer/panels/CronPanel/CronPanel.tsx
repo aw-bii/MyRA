@@ -8,14 +8,11 @@ import {
   getCronJobLogs,
   runCronJobNow,
 } from "../../ipc/cron";
+import { CronJobForm } from "./CronJobForm";
 
 export function CronPanel() {
   const [jobs, setJobs] = useState<CronJob[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [name, setName] = useState("");
-  const [cronExpression, setCronExpression] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [backend, setBackend] = useState("claude");
   const [logs, setLogs] = useState<Record<string, CronJobLog[]>>({});
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
 
@@ -27,13 +24,8 @@ export function CronPanel() {
     refresh();
   }, [refresh]);
 
-  const handleCreate = async () => {
-    if (!name || !cronExpression || !prompt) return;
-    await createCronJob({ name, cronExpression, prompt, backend });
-    setName("");
-    setCronExpression("");
-    setPrompt("");
-    setBackend("claude");
+  const handleCreate = async (input: { name: string; cronExpression: string; prompt: string; backend: string }) => {
+    await createCronJob(input);
     setShowForm(false);
     await refresh();
   };
@@ -77,69 +69,7 @@ export function CronPanel() {
         </button>
       </div>
 
-      {showForm && (
-        <div className="px-3 py-2 space-y-1.5 border-b border-border">
-          <label className="block text-xs font-medium mb-1" htmlFor="cron-name">
-            Name
-          </label>
-          <input
-            id="cron-name"
-            placeholder="e.g., Daily standup"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full text-xs border border-border-strong rounded px-2 py-1 bg-surface focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-          <label
-            className="block text-xs font-medium mb-1"
-            htmlFor="cron-expression"
-          >
-            Cron Expression
-          </label>
-          <input
-            id="cron-expression"
-            placeholder="e.g., 0 9 * * 1-5"
-            value={cronExpression}
-            onChange={(e) => setCronExpression(e.target.value)}
-            className="w-full text-xs border border-border-strong rounded px-2 py-1 bg-surface focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-          <label
-            className="block text-xs font-medium mb-1"
-            htmlFor="cron-prompt"
-          >
-            Prompt
-          </label>
-          <textarea
-            id="cron-prompt"
-            placeholder="Message to execute"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            rows={2}
-            className="w-full text-xs border border-border-strong rounded px-2 py-1 bg-surface focus:outline-none focus:ring-1 focus:ring-primary"
-          />
-          <label
-            className="block text-xs font-medium mb-1"
-            htmlFor="cron-backend"
-          >
-            Backend
-          </label>
-          <select
-            id="cron-backend"
-            value={backend}
-            onChange={(e) => setBackend(e.target.value)}
-            className="w-full text-xs border border-border-strong rounded px-2 py-1 bg-surface focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            <option value="claude">Claude Code</option>
-            <option value="gemini">Gemini CLI</option>
-            <option value="opencode">Opencode</option>
-          </select>
-          <button
-            onClick={handleCreate}
-            className="w-full text-xs py-1 rounded bg-green-600 text-white hoverable:hover:bg-green-700 transition-transform duration-100 ease-press active:scale-95"
-          >
-            Create Job
-          </button>
-        </div>
-      )}
+      {showForm && <CronJobForm onCreate={handleCreate} />}
 
       <div className="flex-1 overflow-y-auto py-1">
         {jobs.length === 0 && !showForm && (
