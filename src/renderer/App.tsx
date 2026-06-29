@@ -317,7 +317,10 @@ function App() {
 
           {/* Zone 2: Sidebar tools */}
           <button
-            onClick={() => setSearchMode((v) => !v)}
+            onClick={() => {
+              setSearchMode((v) => !v);
+              setSidebarCollapsed(false);
+            }}
             title="Search conversations (Ctrl+F)"
             className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${searchMode ? "bg-primary-ghost" : ""}`}
             aria-label="Search conversations"
@@ -419,17 +422,19 @@ function App() {
               </p>
             </div>
           ) : (
-            <ChatView
-              conversationId={activeConvId}
-              backend={backend}
-              model={model}
-              personaId={personaId ?? undefined}
-              pipelineTemplate={activePipelineTemplate}
-              onNewConversation={(id) => {
-                setActiveConvId(id);
-                setRefreshTrigger((n) => n + 1);
-              }}
-            />
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <ChatView
+                conversationId={activeConvId}
+                backend={backend}
+                model={model}
+                personaId={personaId ?? undefined}
+                pipelineTemplate={activePipelineTemplate}
+                onNewConversation={(id) => {
+                  setActiveConvId(id);
+                  setRefreshTrigger((n) => n + 1);
+                }}
+              />
+            </div>
           )}
           <div
             className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${

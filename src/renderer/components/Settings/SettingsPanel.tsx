@@ -122,7 +122,7 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   };
 
   return (
-    <div className="w-full overflow-y-auto bg-surface">
+    <div className="w-full h-full overflow-y-auto bg-surface">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <span className="font-semibold text-sm">Settings</span>
         <button
