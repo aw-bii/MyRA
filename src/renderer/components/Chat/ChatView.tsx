@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useMessages } from "../../hooks/useMessages";
 import { usePipelineMessages } from "../../hooks/usePipelineMessages";
 import { MessageList } from "./MessageList";
@@ -11,6 +12,7 @@ interface Props {
   personaId?: string;
   pipelineTemplate?: PipelineTemplate;
   onNewConversation: (id: string) => void;
+  bottomBar?: ReactNode;
 }
 
 export function ChatView({
@@ -20,6 +22,7 @@ export function ChatView({
   personaId,
   pipelineTemplate,
   onNewConversation,
+  bottomBar,
 }: Props) {
   if (pipelineTemplate) {
     return (
@@ -27,6 +30,7 @@ export function ChatView({
         conversationId={conversationId}
         template={pipelineTemplate}
         onNewConversation={onNewConversation}
+        bottomBar={bottomBar}
       />
     );
   }
@@ -37,6 +41,7 @@ export function ChatView({
       model={model}
       personaId={personaId}
       onNewConversation={onNewConversation}
+      bottomBar={bottomBar}
     />
   );
 }
@@ -47,6 +52,7 @@ function SingleChatView({
   model,
   personaId,
   onNewConversation,
+  bottomBar,
 }: Omit<Props, "pipelineTemplate">) {
   const { messages, streaming, send, abort } = useMessages(conversationId);
 
@@ -73,6 +79,7 @@ function SingleChatView({
           conversationId={conversationId}
         />
       )}
+      {bottomBar}
       <InputBar onSend={handleSend} onAbort={abort} streaming={streaming} />
       <StreamingAnnouncer
         content={streaming ? (messages[messages.length - 1]?.content ?? "") : ""}
@@ -85,10 +92,12 @@ function PipelineChatView({
   conversationId,
   template,
   onNewConversation,
+  bottomBar,
 }: {
   conversationId: string | null;
   template: PipelineTemplate;
   onNewConversation: (id: string) => void;
+  bottomBar?: ReactNode;
 }) {
   const {
     stepMessages,
@@ -160,6 +169,7 @@ function PipelineChatView({
         />
       )}
 
+      {bottomBar}
       <InputBar onSend={handleSend} onAbort={abort} streaming={streaming} />
       <StreamingAnnouncer
         content={

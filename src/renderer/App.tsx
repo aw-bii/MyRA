@@ -1,13 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { GearSix, MagnifyingGlass, List } from "@phosphor-icons/react";
 import { SetupWizard } from "./components/Wizard/SetupWizard";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { ChatView } from "./components/Chat/ChatView";
-import { PersonaPanel } from "./components/Personas/PersonaPanel";
-import { PipelinePanel } from "./components/Pipelines/PipelinePanel";
-import { SettingsPanel } from "./components/Settings/SettingsPanel";
-import { BackendSwitcher } from "./components/BackendSwitcher";
-import { ModelSelector } from "./components/Toolbar/ModelSelector";
+import { BottomBar } from "./components/Chat/BottomBar";
+import { SettingsModal } from "./components/Settings/SettingsModal";
+import type { SettingsSection } from "./components/Settings/SettingsModal";
 import { SecurityDialog } from "./components/SecurityDialog";
 import { UpdateBanner } from "./components/UpdateBanner";
 import { DiagnosticBanner } from "./components/DiagnosticBanner";
@@ -54,22 +51,9 @@ function App() {
   const [personaId, setPersonaId] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] =
     useState<PipelineTemplate | null>(null);
-  const [showPersonas, setShowPersonas] = useState(false);
-  const [showPipelines, setShowPipelines] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const { templates } = usePipelines();
-  const togglePanel = useCallback((panel: "personas" | "pipelines" | "settings") => {
-    const nextPersonas = panel === "personas" ? !showPersonas : false;
-    const nextPipelines = panel === "pipelines" ? !showPipelines : false;
-    const nextSettings = panel === "settings" ? !showSettings : false;
-    setShowPersonas(nextPersonas);
-    setShowPipelines(nextPipelines);
-    setShowSettings(nextSettings);
-  }, [showPersonas, showPipelines, showSettings]);
-  const [searchMode, setSearchMode] = useState(false);
-  const [showCron, setShowCron] = useState(false);
-  const [showMCP, setShowMCP] = useState(false);
-  const [showPlugins, setShowPlugins] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [settingsSection, setSettingsSection] = useState<SettingsSection>("settings");
   const [sidebarCollapsed, setSidebarCollapsed] = useState(window.innerWidth < 1024);
   const [viewportLg, setViewportLg] = useState(window.innerWidth >= 1024);
 
@@ -146,10 +130,6 @@ function App() {
         e.preventDefault();
         handleNew();
       }
-      if (mod && e.key === "f") {
-        e.preventDefault();
-        setSearchMode((v) => !v);
-      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -198,7 +178,10 @@ function App() {
           onDelete={handleDelete}
           onRename={handleRename}
           refreshTrigger={refreshTrigger}
-          onOpenSettings={() => {}}
+          onOpenSettings={() => {
+            setSettingsOpen(true);
+            setSettingsSection("settings");
+          }}
         />
       ) : (
         <>
@@ -224,7 +207,10 @@ function App() {
               onDelete={handleDelete}
               onRename={handleRename}
               refreshTrigger={refreshTrigger}
-              onOpenSettings={() => {}}
+              onOpenSettings={() => {
+                setSettingsOpen(true);
+                setSettingsSection("settings");
+              }}
             />
           </div>
         </>
@@ -237,153 +223,10 @@ function App() {
             No internet connection. Some features require internet access.
           </div>
         )}
-        {/* Toolbar */}
-        <nav aria-label="Toolbar" className="flex flex-wrap items-center gap-2 px-4 py-2 border-b border-border">
-          <button
-            onClick={() => setSidebarCollapsed((v) => !v)}
-            className="btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0"
-            aria-label={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
-            title={sidebarCollapsed ? "Show sidebar" : "Hide sidebar"}
-          >
-            <List size={16} />
-          </button>
-          {/* Zone 1: Mode + Backend */}
-          <div className="flex rounded-md border border-border-strong overflow-hidden text-xs flex-shrink-0">
-            <button
-              onClick={() => {
-                setMode("single");
-                setSelectedTemplate(null);
-              }}
-              aria-pressed={mode === "single"}
-              className={`px-3 py-1 transition-transform duration-100 ease-press active:scale-95 ${mode === "single" ? "bg-primary text-on-primary" : "hoverable:hover:bg-bubble"}`}
-            >
-              Single
-            </button>
-            <button
-              onClick={() => setMode("pipeline")}
-              aria-pressed={mode === "pipeline"}
-              className={`px-3 py-1 transition-transform duration-100 ease-press active:scale-95 ${mode === "pipeline" ? "bg-primary text-on-primary" : "hoverable:hover:bg-bubble"}`}
-            >
-              Pipeline
-            </button>
-          </div>
-
-          {mode === "single" && !activeConvMeta?.pipelineTemplateId && (
-            <>
-              <div className="flex-shrink-0"><BackendSwitcher value={backend} onChange={setBackend} refreshTrigger={backendRefresh} /></div>
-              <div className="flex-shrink-0"><ModelSelector provider={backend} value={model} onChange={setModel} /></div>
-            </>
-          )}
-
-          {(mode === "pipeline" || activeConvMeta?.pipelineTemplateId) && (
-            <select
-              className="text-xs border rounded px-2 py-1 bg-surface border-border-strong"
-              value={activePipelineTemplate?.id ?? ""}
-              onChange={(e) => {
-                const t = templates.find((x) => x.id === e.target.value);
-                setSelectedTemplate(t ?? null);
-              }}
-              disabled={!!activeConvMeta?.pipelineTemplateId}
-            >
-              <option value="">Select pipeline…</option>
-              {templates.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
-                </option>
-              ))}
-            </select>
-          )}
-
-          {/* Divider */}
-          <div className="w-px h-4 bg-border flex-shrink-0" />
-
-          {/* Zone 2: Sidebar tools */}
-          <button
-            onClick={() => {
-              setSearchMode((v) => !v);
-              setSidebarCollapsed(false);
-            }}
-            title="Search conversations (Ctrl+F)"
-            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${searchMode ? "bg-primary-ghost" : ""}`}
-            aria-label="Search conversations"
-            aria-pressed={searchMode}
-          >
-            <MagnifyingGlass size={16} />
-          </button>
-          <button
-            onClick={() => {
-              setShowCron((v) => !v);
-              setSidebarCollapsed(false);
-            }}
-            aria-label="Scheduled tasks"
-            title="Scheduled tasks"
-            aria-pressed={showCron}
-            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showCron ? "bg-primary-ghost" : ""}`}
-          >
-            Cron
-          </button>
-          <button
-            onClick={() => {
-              setShowMCP((v) => !v);
-              setSidebarCollapsed(false);
-            }}
-            aria-label="Model Context Protocol servers"
-            title="Model Context Protocol servers"
-            aria-pressed={showMCP}
-            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showMCP ? "bg-primary-ghost" : ""}`}
-          >
-            MCP
-          </button>
-          <button
-            onClick={() => {
-              setShowPlugins((v) => !v);
-              setSidebarCollapsed(false);
-            }}
-            aria-label="Plugins"
-            title="Plugins"
-            aria-pressed={showPlugins}
-            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showPlugins ? "bg-primary-ghost" : ""}`}
-          >
-            Plugins
-          </button>
-
-          {/* Spacer + Divider */}
-          <div className="flex-1" />
-          <div className="w-px h-4 bg-border flex-shrink-0" />
-
-          {/* Zone 3: Right panels */}
-          <button
-            onClick={() => togglePanel("personas")}
-            aria-label="Personas panel"
-            aria-pressed={showPersonas}
-            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showPersonas ? "bg-primary-ghost" : ""}`}
-          >
-            Personas
-          </button>
-          <button
-            onClick={() => togglePanel("pipelines")}
-            aria-label="Pipelines panel"
-            aria-pressed={showPipelines}
-            className={`btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0 ${showPipelines ? "bg-primary-ghost" : ""}`}
-          >
-            Pipelines
-          </button>
-          <button
-            onClick={() => togglePanel("settings")}
-            title="Settings"
-            className="btn-sm border border-border-strong hoverable:hover:bg-bubble flex-shrink-0"
-            aria-label="Settings"
-          >
-            <GearSix size={16} />
-          </button>
-        </nav>
-
         <main id="main-content" className="flex flex-1 min-h-0">
           {!activeConvId && mode === "single" ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-              <h2 className="text-sm font-semibold mb-2">
-                Welcome to MyRA
-              </h2>
+              <h2 className="text-sm font-semibold mb-2">Welcome to MyRA</h2>
               <p className="text-xs text-text-muted max-w-xs mb-4">
                 Claude Code is built in and ready. Create a conversation, pick a
                 backend, and ask your question.
@@ -399,7 +242,7 @@ function App() {
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
               <h2 className="text-sm font-semibold mb-2">Pipeline mode</h2>
               <p className="text-xs text-text-muted max-w-xs">
-                Select a pipeline template from the toolbar above, then type your
+                Select a pipeline template from the bottom bar, then type your
                 first message to begin.
               </p>
             </div>
@@ -415,57 +258,49 @@ function App() {
                   setActiveConvId(id);
                   setRefreshTrigger((n) => n + 1);
                 }}
+                bottomBar={
+                  <BottomBar
+                    mode={mode}
+                    setMode={setMode}
+                    backend={backend}
+                    setBackend={setBackend}
+                    model={model}
+                    setModel={setModel}
+                    personaId={personaId}
+                    setPersonaId={setPersonaId}
+                    templates={templates}
+                    selectedTemplate={selectedTemplate}
+                    onTemplateSelect={(t) => {
+                      setSelectedTemplate(t);
+                      if (t) setMode("pipeline");
+                    }}
+                    backendRefresh={backendRefresh}
+                  />
+                }
               />
             </div>
           )}
-          <div
-            className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${
-              showPersonas ? "border-l border-border" : ""
-            }`}
-            style={{ maxWidth: showPersonas ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0 }}
-          >
-            <div className="w-full overflow-y-auto h-full">
-              <PersonaPanel
-                activePersonaId={personaId}
-                onSelect={setPersonaId}
-                onClose={() => togglePanel("personas")}
-              />
-            </div>
-          </div>
-          <div
-            className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${
-              showPipelines ? "border-l border-border" : ""
-            }`}
-            style={{ maxWidth: showPipelines ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0 }}
-          >
-            <div className="w-full overflow-y-auto h-full">
-              <PipelinePanel
-                activeTemplateId={activePipelineTemplate?.id ?? null}
-                onSelect={(t) => {
-                  setSelectedTemplate(t);
-                  setMode("pipeline");
-                }}
-                onClose={() => togglePanel("pipelines")}
-              />
-            </div>
-          </div>
-          <div
-            className={`overflow-hidden transition-[max-width] duration-200 ease-drawer flex-shrink-0 ${
-              showSettings ? "border-l border-border" : ""
-            }`}
-            style={{ maxWidth: showSettings ? `min(${viewportLg ? 256 : 224}px, 80vw)` : 0 }}
-          >
-            <SettingsPanel
-              onClose={() => setShowSettings(false)}
-              onReRunWizard={() => {
-                localStorage.removeItem("wizardDone");
-                setWizardDone(false);
-                setSetting("wizard_done", "0");
-              }}
-            />
-          </div>
         </main>
       </div>
+      <SettingsModal
+        open={settingsOpen}
+        section={settingsSection}
+        onClose={() => setSettingsOpen(false)}
+        onSectionChange={setSettingsSection}
+        onReRunWizard={() => {
+          localStorage.removeItem("wizardDone");
+          setWizardDone(false);
+          setSetting("wizard_done", "0");
+          setSettingsOpen(false);
+        }}
+        activePersonaId={personaId}
+        onPersonaSelect={setPersonaId}
+        activeTemplateId={activePipelineTemplate?.id ?? null}
+        onTemplateSelect={(t) => {
+          setSelectedTemplate(t);
+          setMode("pipeline");
+        }}
+      />
       {securityEvents.length > 0 && (
         <SecurityDialog
           event={securityEvents[0]}
