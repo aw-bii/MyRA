@@ -54,11 +54,13 @@ beforeEach(() => {
   Object.defineProperty(window, "matchMedia", {
     writable: true,
     value: vi.fn((query: string) => ({
-      matches: query.includes("1024") ? true : false,
+      matches: query.includes("1024"),
       media: query,
+      onchange: null,
+      dispatchEvent: vi.fn(),
       addEventListener: vi.fn(),
       removeEventListener: vi.fn(),
-    })),
+    } as unknown as MediaQueryList)),
   });
   vi.mocked(Sidebar).mockReset();
   vi.mocked(Sidebar).mockImplementation(() => null);

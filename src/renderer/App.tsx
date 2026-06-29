@@ -58,7 +58,9 @@ function App() {
   const [settingsSection, setSettingsSection] = useState<SettingsSection>("settings");
   const [sidebarCollapsed, toggleSidebarCollapsed] = useSidebarCollapsed();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [viewportLg, setViewportLg] = useState(window.innerWidth >= 1024);
+  const [viewportLg, setViewportLg] = useState(
+    () => window.matchMedia("(min-width: 1024px)").matches
+  );
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [backendRefresh, setBackendRefresh] = useState(0);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
@@ -131,8 +133,11 @@ function App() {
         handleNew();
       }
       if (mod && e.key === "f") {
-        e.preventDefault();
-        document.querySelector<HTMLInputElement>('input[aria-label="Search conversations"]')?.focus();
+        const input = document.querySelector<HTMLInputElement>('input[aria-label="Search conversations"]');
+        if (input) {
+          e.preventDefault();
+          input.focus();
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
