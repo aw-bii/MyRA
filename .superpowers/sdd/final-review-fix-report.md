@@ -1,4 +1,61 @@
-# Final Review Fix Report
+# Final Review Fix Report — Phase 2 Nav Restructure (Round 2)
+
+**Status:** DONE  
+**Date:** 2026-06-29
+
+---
+
+## Fix 1: Store method names in `defaults.ts`
+
+**Store methods found in `ConvStore` (`src/main/store/index.ts`):**
+- Persona creation: `ConvStore.createPersona(p: Omit<Persona, "id">): Persona`
+- Pipeline template creation: `ConvStore.createPipelineTemplate(name, steps): PipelineTemplate`
+
+**`defaults.ts` verdict: CORRECT — no changes needed.**
+
+Both `defaults.ts` and `defaults.test.ts` already called `createPersona` and `createPipelineTemplate` with the exact correct signatures. No edits were made to either file.
+
+---
+
+## Fix 2: BottomBar added to pipeline empty-state
+
+**File changed:** `src/renderer/App.tsx`
+
+The `!activeConvId && mode === "pipeline"` branch previously rendered only hint text with no BottomBar, making template selection unreachable. The fix adds a `<BottomBar>` with the same props as in the ChatView branch (mode, setMode, backend, setBackend, model, setModel, personaId, setPersonaId, templates, selectedTemplate, onTemplateSelect, backendRefresh) inside the pipeline empty-state div. The hint copy was updated to "Select a pipeline template below, then create a new conversation to begin."
+
+---
+
+## Fix 3: `onTemplateSelect` type in SettingsModal.Props
+
+**File changed:** `src/renderer/components/Settings/SettingsModal.tsx`
+
+Changed line 35 of the `Props` interface from:
+```ts
+onTemplateSelect: (t: PipelineTemplate) => void;
+```
+to:
+```ts
+onTemplateSelect: (t: PipelineTemplate | null) => void;
+```
+This aligns the type with `BottomBarProps.onTemplateSelect` and the actual usage in `App.tsx`.
+
+---
+
+## Build and Test Results
+
+- `npm run build`: exit 0 — all three bundles compiled cleanly
+- `npm test`: **265 tests passed** across 50 test files — no regressions
+- `npm run lint`: 0 errors — only pre-existing prettier formatting warnings
+
+---
+
+## Commit
+
+SHA recorded below after commit.
+
+---
+
+# Previous Report (fix(review) round 1)
 
 **Status:** DONE  
 **Date:** 2026-06-29

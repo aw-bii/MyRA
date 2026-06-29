@@ -241,10 +241,26 @@ function App() {
           ) : !activeConvId && mode === "pipeline" ? (
             <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
               <h2 className="text-sm font-semibold mb-2">Pipeline mode</h2>
-              <p className="text-xs text-text-muted max-w-xs">
-                Select a pipeline template from the bottom bar, then type your
-                first message to begin.
+              <p className="text-xs text-text-muted max-w-xs mb-6">
+                Select a pipeline template below, then create a new conversation to begin.
               </p>
+              <BottomBar
+                mode={mode}
+                setMode={setMode}
+                backend={backend}
+                setBackend={setBackend}
+                model={model}
+                setModel={setModel}
+                personaId={personaId}
+                setPersonaId={setPersonaId}
+                templates={templates}
+                selectedTemplate={selectedTemplate}
+                onTemplateSelect={(t) => {
+                  setSelectedTemplate(t);
+                  if (t) setMode("pipeline");
+                }}
+                backendRefresh={backendRefresh}
+              />
             </div>
           ) : (
             <div className="flex-1 min-w-0 overflow-hidden">

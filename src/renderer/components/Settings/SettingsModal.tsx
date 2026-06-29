@@ -32,7 +32,7 @@ interface Props {
   activePersonaId: string | null;
   onPersonaSelect: (id: string | null) => void;
   activeTemplateId: string | null;
-  onTemplateSelect: (t: PipelineTemplate) => void;
+  onTemplateSelect: (t: PipelineTemplate | null) => void;
 }
 
 export function SettingsModal({
