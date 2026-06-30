@@ -1,8 +1,16 @@
-import { render, screen, act, waitFor, fireEvent } from "@testing-library/react";
+import {
+  render,
+  screen,
+  act,
+  waitFor,
+  fireEvent,
+} from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock all hooks to avoid rendering full App dependencies
-vi.mock("./hooks/usePipelines", () => ({ usePipelines: () => ({ templates: [] }) }));
+vi.mock("./hooks/usePipelines", () => ({
+  usePipelines: () => ({ templates: [] }),
+}));
 vi.mock("./hooks/useConversations", () => ({
   useConversations: () => ({ conversations: [], loading: false }),
 }));
@@ -10,21 +18,32 @@ vi.mock("./hooks/useBackends", () => ({
   useBackends: () => ({ backends: [], loading: false }),
 }));
 vi.mock("./hooks/usePersonas", () => ({
-  usePersonas: () => ({ personas: [], loading: false, save: vi.fn(), remove: vi.fn() }),
+  usePersonas: () => ({
+    personas: [],
+    loading: false,
+    save: vi.fn(),
+    remove: vi.fn(),
+  }),
 }));
 
 // Mock components that have complex dependencies
 vi.mock("./components/UpdateBanner", () => ({ UpdateBanner: () => null }));
-vi.mock("./components/DiagnosticBanner", () => ({ DiagnosticBanner: () => null }));
+vi.mock("./components/DiagnosticBanner", () => ({
+  DiagnosticBanner: () => null,
+}));
 vi.mock("./components/SecurityDialog", () => ({ SecurityDialog: () => null }));
 vi.mock("./components/Chat/ChatView", () => ({
-  ChatView: vi.fn(({ bottomBar }: { bottomBar?: React.ReactNode }) => <>{bottomBar}</>),
+  ChatView: vi.fn(({ bottomBar }: { bottomBar?: React.ReactNode }) => (
+    <>{bottomBar}</>
+  )),
 }));
 vi.mock("./components/Sidebar/Sidebar", () => ({ Sidebar: vi.fn(() => null) }));
 vi.mock("./components/Settings/SettingsModal", () => ({
   SettingsModal: vi.fn(() => null),
 }));
-vi.mock("./components/Chat/BottomBar", () => ({ BottomBar: vi.fn(() => null) }));
+vi.mock("./components/Chat/BottomBar", () => ({
+  BottomBar: vi.fn(() => null),
+}));
 
 // Mock domain ipc modules so App functions can be controlled per-test
 vi.mock("./ipc/conversation", () => ({
@@ -60,21 +79,26 @@ beforeEach(() => {
   // jsdom doesn't implement matchMedia; provide a minimal stub
   Object.defineProperty(window, "matchMedia", {
     writable: true,
-    value: vi.fn((query: string) => ({
-      matches: query.includes("1024"),
-      media: query,
-      onchange: null,
-      dispatchEvent: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    } as unknown as MediaQueryList)),
+    value: vi.fn(
+      (query: string) =>
+        ({
+          matches: query.includes("1024"),
+          media: query,
+          onchange: null,
+          dispatchEvent: vi.fn(),
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        }) as unknown as MediaQueryList,
+    ),
   });
   vi.mocked(Sidebar).mockReset();
   vi.mocked(Sidebar).mockImplementation(() => <></>);
   vi.mocked(SettingsModal).mockReset();
   vi.mocked(SettingsModal).mockImplementation(() => <></>);
   vi.mocked(ChatView).mockReset();
-  vi.mocked(ChatView).mockImplementation(({ bottomBar }: { bottomBar?: React.ReactNode }) => <>{bottomBar}</>);
+  vi.mocked(ChatView).mockImplementation(
+    ({ bottomBar }: { bottomBar?: React.ReactNode }) => <>{bottomBar}</>,
+  );
   vi.mocked(BottomBar).mockReset();
   vi.mocked(BottomBar).mockImplementation(() => <></>);
 });
@@ -82,13 +106,19 @@ beforeEach(() => {
 describe("App layout", () => {
   it("renders the welcome screen in single mode with no active conversation", () => {
     render(<App />);
-    expect(screen.getByRole("heading", { name: /welcome to myra/i })).toBeTruthy();
-    expect(screen.getByRole("button", { name: /new conversation/i })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: /welcome to myra/i }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: /new conversation/i }),
+    ).toBeTruthy();
   });
 
   it("renders a skip-to-main-content link for keyboard accessibility", () => {
     render(<App />);
-    expect(screen.getByRole("link", { name: /skip to main content/i })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: /skip to main content/i }),
+    ).toBeTruthy();
   });
 
   it("opens SettingsModal when Sidebar calls onOpenSettings", async () => {
@@ -101,7 +131,7 @@ describe("App layout", () => {
 
     // Render a visible marker when SettingsModal is open
     vi.mocked(SettingsModal).mockImplementation(({ open }) =>
-      open ? <div data-testid="settings-modal-open" /> : <></>
+      open ? <div data-testid="settings-modal-open" /> : <></>,
     );
 
     render(<App />);
@@ -123,7 +153,9 @@ describe("App layout", () => {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
-    vi.mocked(createConversation).mockResolvedValueOnce(fakeConv as Awaited<ReturnType<typeof createConversation>>);
+    vi.mocked(createConversation).mockResolvedValueOnce(
+      fakeConv as Awaited<ReturnType<typeof createConversation>>,
+    );
 
     // Render a visible marker when BottomBar is mounted
     vi.mocked(BottomBar).mockImplementation(() => (
@@ -137,7 +169,9 @@ describe("App layout", () => {
 
     // Click "New conversation" to trigger handleNew → sets activeConvId
     await act(async () => {
-      fireEvent.click(screen.getByRole("button", { name: /new conversation/i }));
+      fireEvent.click(
+        screen.getByRole("button", { name: /new conversation/i }),
+      );
     });
 
     await waitFor(() => {

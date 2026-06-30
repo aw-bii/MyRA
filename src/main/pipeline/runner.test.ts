@@ -1,16 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Hoist mock variables so they are available when vi.mock factory is evaluated
-const { mockAbort, mockGet, mockGetAllWindows, mockSecurityMiddleware } = vi.hoisted(() => ({
-  mockAbort: vi.fn(),
-  mockGet: vi.fn(),
-  mockGetAllWindows: vi.fn(() => []),
-  mockSecurityMiddleware: vi.fn(async function* (
-    source: AsyncIterable<unknown>,
-  ) {
-    yield* source as AsyncIterable<any>;
-  }),
-}));
+const { mockAbort, mockGet, mockGetAllWindows, mockSecurityMiddleware } =
+  vi.hoisted(() => ({
+    mockAbort: vi.fn(),
+    mockGet: vi.fn(),
+    mockGetAllWindows: vi.fn(() => []),
+    mockSecurityMiddleware: vi.fn(async function* (
+      source: AsyncIterable<unknown>,
+    ) {
+      yield* source as AsyncIterable<any>;
+    }),
+  }));
 
 vi.mock("../adapters/manager", () => ({
   AdapterManager: {
