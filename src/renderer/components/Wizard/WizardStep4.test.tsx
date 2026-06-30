@@ -9,7 +9,10 @@ vi.mock("../../ipc/backend");
 
 beforeEach(() => {
   vi.mocked(keyIpc.storeKey).mockResolvedValue(undefined);
-  vi.mocked(backendIpc.probeBackend).mockResolvedValue({ available: true, authenticated: true });
+  vi.mocked(backendIpc.probeBackend).mockResolvedValue({
+    available: true,
+    authenticated: true,
+  });
 });
 
 describe("WizardStep4", () => {
@@ -25,7 +28,9 @@ describe("WizardStep4", () => {
     fireEvent.change(screen.getByLabelText("Claude API Key"), {
       target: { value: "sk-ant-test" },
     });
-    fireEvent.click(screen.getByRole("button", { name: /Save Claude API Key/i }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /Save Claude API Key/i }),
+    );
     await waitFor(() => {
       expect(keyIpc.storeKey).toHaveBeenCalledWith("claude-api", "sk-ant-test");
     });

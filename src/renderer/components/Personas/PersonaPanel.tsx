@@ -192,7 +192,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
               </label>
               <input
                 id={`var-${v.name}`}
-              className="text-sm border rounded-lg px-2 py-1.5 bg-surface border-border-strong focus:outline-none focus:ring-2 focus:ring-primary"
+                className="text-sm border rounded-lg px-2 py-1.5 bg-surface border-border-strong focus:outline-none focus:ring-2 focus:ring-primary"
                 placeholder={v.placeholder}
                 value={variableValues[v.name] ?? ""}
                 onChange={(e) =>
@@ -225,9 +225,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
       )}
 
       {/* Separator */}
-      {userPersonas.length > 0 && (
-        <div className="border-t border-border" />
-      )}
+      {userPersonas.length > 0 && <div className="border-t border-border" />}
 
       {/* User personas */}
       <button
@@ -275,7 +273,10 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
             </button>
             {confirmDeleteId === p.id ? (
               <button
-                onClick={() => { remove(p.id); setConfirmDeleteId(null); }}
+                onClick={() => {
+                  remove(p.id);
+                  setConfirmDeleteId(null);
+                }}
                 className="text-xs text-danger hoverable:hover:text-danger-dark px-1 font-medium"
                 aria-label={`Confirm delete persona ${p.name}`}
               >
@@ -301,9 +302,7 @@ export function PersonaPanel({ activePersonaId, onSelect, onClose }: Props) {
           className="flex flex-col gap-2 border border-border rounded-lg p-3"
         >
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-text-base">
-              Name
-            </label>
+            <label className="text-sm font-medium text-text-base">Name</label>
             <input
               className="text-sm border rounded-lg px-2 py-1.5 bg-surface border-border-strong focus:outline-none focus:ring-2 focus:ring-primary"
               placeholder="e.g. Code Reviewer"

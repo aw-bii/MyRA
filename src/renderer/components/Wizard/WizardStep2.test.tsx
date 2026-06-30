@@ -6,7 +6,9 @@ import { relaunchApp } from "../../ipc/app";
 
 vi.mock("../../ipc/backend", () => ({
   installBackend: vi.fn().mockResolvedValue({ success: false }),
-  probeBackend: vi.fn().mockResolvedValue({ available: false, authenticated: false }),
+  probeBackend: vi
+    .fn()
+    .mockResolvedValue({ available: false, authenticated: false }),
 }));
 
 vi.mock("../../ipc/app", () => ({
@@ -42,7 +44,10 @@ describe("WizardStep2", () => {
 describe("WizardStep2 install error", () => {
   it("shows an error message when installation fails", async () => {
     // Mock probeBackend to return unavailable so gemini is shown for install
-    vi.mocked(probeBackend).mockResolvedValue({ available: false, authenticated: false });
+    vi.mocked(probeBackend).mockResolvedValue({
+      available: false,
+      authenticated: false,
+    });
     (window as unknown as { ipc: { on: ReturnType<typeof vi.fn> } }).ipc = {
       on: vi.fn().mockReturnValue(() => {}),
     };
@@ -65,7 +70,10 @@ describe("WizardStep2 install error", () => {
 describe("WizardStep2 - Labels and Ollama", () => {
   it("shows a label for every missing backend including ollama and codex", async () => {
     // Mock probeBackend to return unavailable so all backends are shown
-    vi.mocked(probeBackend).mockResolvedValue({ available: false, authenticated: false });
+    vi.mocked(probeBackend).mockResolvedValue({
+      available: false,
+      authenticated: false,
+    });
     render(
       <WizardStep2
         missing={["ollama", "codex", "claude", "openrouter"]}
@@ -83,13 +91,12 @@ describe("WizardStep2 - Labels and Ollama", () => {
 
   it("shows a Start Ollama button for the ollama backend", async () => {
     // Mock probeBackend to return unavailable so ollama is shown
-    vi.mocked(probeBackend).mockResolvedValue({ available: false, authenticated: false });
+    vi.mocked(probeBackend).mockResolvedValue({
+      available: false,
+      authenticated: false,
+    });
     render(
-      <WizardStep2
-        missing={["ollama"]}
-        onNext={vi.fn()}
-        onBack={vi.fn()}
-      />,
+      <WizardStep2 missing={["ollama"]} onNext={vi.fn()} onBack={vi.fn()} />,
     );
     await waitFor(() => {
       expect(screen.getByText("Start Ollama")).toBeTruthy();
@@ -99,8 +106,13 @@ describe("WizardStep2 - Labels and Ollama", () => {
 
 describe("WizardStep2 - Re-probe on mount", () => {
   it("hides backends that are now available when re-probing on mount", async () => {
-    vi.mocked(probeBackend).mockResolvedValue({ available: true, authenticated: false });
-    render(<WizardStep2 missing={["gemini"]} onNext={vi.fn()} onBack={vi.fn()} />);
+    vi.mocked(probeBackend).mockResolvedValue({
+      available: true,
+      authenticated: false,
+    });
+    render(
+      <WizardStep2 missing={["gemini"]} onNext={vi.fn()} onBack={vi.fn()} />,
+    );
     // After re-probe resolves, gemini is available → should not show Install button
     await waitFor(() => {
       expect(screen.queryByRole("button", { name: /Install/i })).toBeNull();
@@ -122,13 +134,17 @@ describe("WizardStep2 - Spinner and status line", () => {
     (window as unknown as { ipc: { on: ReturnType<typeof vi.fn> } }).ipc = {
       on: vi.fn().mockReturnValue(() => {}),
     };
-    render(<WizardStep2 missing={["gemini"]} onNext={vi.fn()} onBack={vi.fn()} />);
+    render(
+      <WizardStep2 missing={["gemini"]} onNext={vi.fn()} onBack={vi.fn()} />,
+    );
     await waitFor(() => screen.getByRole("button", { name: /^Install$/ }));
     fireEvent.click(screen.getByRole("button", { name: /^Install$/ }));
     expect(screen.getByTestId("install-spinner-gemini")).toBeInTheDocument();
     expect(screen.queryByRole("log")).toBeNull(); // no <pre> terminal
     await waitFor(() => {
-      expect(screen.getByText(/Installed and detected on PATH/)).toBeInTheDocument();
+      expect(
+        screen.getByText(/Installed and detected on PATH/),
+      ).toBeInTheDocument();
     });
   });
 });
@@ -145,9 +161,13 @@ describe("WizardStep2 - Restart banner", () => {
     (window as unknown as { ipc: { on: ReturnType<typeof vi.fn> } }).ipc = {
       on: vi.fn().mockReturnValue(() => {}),
     };
-    render(<WizardStep2 missing={["gemini"]} onNext={vi.fn()} onBack={vi.fn()} />);
+    render(
+      <WizardStep2 missing={["gemini"]} onNext={vi.fn()} onBack={vi.fn()} />,
+    );
     await waitFor(() => screen.getByRole("button", { name: /^Install$/ }));
     fireEvent.click(screen.getByRole("button", { name: /^Install$/ }));
-    expect(await screen.findByTestId("path-restart-banner")).toBeInTheDocument();
+    expect(
+      await screen.findByTestId("path-restart-banner"),
+    ).toBeInTheDocument();
   });
 });

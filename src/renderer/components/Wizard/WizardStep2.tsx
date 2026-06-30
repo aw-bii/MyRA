@@ -50,7 +50,9 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
         setReprobing(false);
       }
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [missing]);
 
   const install = async (id: string) => {
@@ -91,7 +93,9 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
     } else {
       setErrors((prev) => ({
         ...prev,
-        [id]: result.error ?? "Installation failed. Check your internet connection.",
+        [id]:
+          result.error ??
+          "Installation failed. Check your internet connection.",
       }));
     }
   };
@@ -119,8 +123,12 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
     return (
       <div className="flex flex-col gap-6">
         <div>
-          <h2 className="text-sm font-semibold mb-1">Checking installed tools…</h2>
-          <p className="text-xs text-text-muted">Re-checking which tools are already available.</p>
+          <h2 className="text-sm font-semibold mb-1">
+            Checking installed tools…
+          </h2>
+          <p className="text-xs text-text-muted">
+            Re-checking which tools are already available.
+          </p>
         </div>
         <div className="flex justify-center py-6">
           <div className="w-6 h-6 rounded-full border-2 border-border border-t-primary animate-spin" />
@@ -141,12 +149,12 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
         <button
           onClick={onNext}
           className="btn-lg bg-primary text-on-primary hoverable:hover:bg-primary-dark"
-          >
-            Next
-          </button>
-          <button
-            onClick={onBack}
-            className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
+        >
+          Next
+        </button>
+        <button
+          onClick={onBack}
+          className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
         >
           Back
         </button>
@@ -220,13 +228,20 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
                 </div>
               </div>
               {installing[id] && (
-                <div className="flex items-center gap-2 text-xs text-text-muted" data-testid={`install-spinner-${id}`}>
+                <div
+                  className="flex items-center gap-2 text-xs text-text-muted"
+                  data-testid={`install-spinner-${id}`}
+                >
                   <div className="w-4 h-4 rounded-full border-2 border-border border-t-primary animate-spin flex-shrink-0" />
-                  <span className="truncate">{logs[id]?.at(-1) ?? "Installing…"}</span>
+                  <span className="truncate">
+                    {logs[id]?.at(-1) ?? "Installing…"}
+                  </span>
                 </div>
               )}
               {!installing[id] && done[id] && verified[id] && (
-                <p className="text-xs text-primary">Installed and detected on PATH ✓</p>
+                <p className="text-xs text-primary">
+                  Installed and detected on PATH ✓
+                </p>
               )}
               {errors[id] && (
                 <p className="text-xs text-red-500">{errors[id]}</p>
@@ -254,12 +269,12 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
       <button
         onClick={onNext}
         className="btn-lg bg-primary text-on-primary hoverable:hover:bg-primary-dark"
-        >
-          Continue
-        </button>
-        <button
-          onClick={onBack}
-          className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
+      >
+        Continue
+      </button>
+      <button
+        onClick={onBack}
+        className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
       >
         Back
       </button>

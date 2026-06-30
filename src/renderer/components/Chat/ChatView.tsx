@@ -67,7 +67,9 @@ function SingleChatView({
       const newId = await send(message, backend, personaId, messageId, model);
       if (!conversationId && newId) onNewConversation(newId);
     } catch (err) {
-      setSendError(err instanceof Error ? err.message : "Failed to send message");
+      setSendError(
+        err instanceof Error ? err.message : "Failed to send message",
+      );
     }
   };
 
@@ -88,12 +90,17 @@ function SingleChatView({
       {bottomBar}
       {sendError && (
         <div className="px-4 pt-2">
-          <ErrorToast message={sendError} onDismiss={() => setSendError(null)} />
+          <ErrorToast
+            message={sendError}
+            onDismiss={() => setSendError(null)}
+          />
         </div>
       )}
       <InputBar onSend={handleSend} onAbort={abort} streaming={streaming} />
       <StreamingAnnouncer
-        content={streaming ? (messages[messages.length - 1]?.content ?? "") : ""}
+        content={
+          streaming ? (messages[messages.length - 1]?.content ?? "") : ""
+        }
       />
     </div>
   );
@@ -195,7 +202,12 @@ function PipelineChatView({
 
 function StreamingAnnouncer({ content }: { content: string }) {
   return (
-    <div role="status" aria-live="polite" aria-atomic="false" className="sr-only">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-atomic="false"
+      className="sr-only"
+    >
       {content}
     </div>
   );

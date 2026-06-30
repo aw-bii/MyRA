@@ -27,4 +27,4 @@ module.exports = {
     repo: "MyRA",
     releaseType: "release",
   },
-}
+};

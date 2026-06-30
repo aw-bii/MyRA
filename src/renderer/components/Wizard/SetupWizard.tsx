@@ -50,13 +50,21 @@ export function SetupWizard({ onComplete }: Props) {
           Step {step} of 4 — {STEP_LABELS[step]}
         </div>
         {step === 1 && (
-          <WizardStep1 onNext={(s) => { setStatuses(s); setStep(2); }} />
+          <WizardStep1
+            onNext={(s) => {
+              setStatuses(s);
+              setStep(2);
+            }}
+          />
         )}
         {step === 2 && (
           <WizardStep2
             missing={missing}
             onNext={() => setStep(3)}
-            onBack={() => { setStatuses([]); setStep(1); }}
+            onBack={() => {
+              setStatuses([]);
+              setStep(1);
+            }}
           />
         )}
         {step === 3 && (
@@ -67,10 +75,7 @@ export function SetupWizard({ onComplete }: Props) {
           />
         )}
         {step === 4 && (
-          <WizardStep4
-            onComplete={handleComplete}
-            onBack={() => setStep(3)}
-          />
+          <WizardStep4 onComplete={handleComplete} onBack={() => setStep(3)} />
         )}
       </div>
     </div>

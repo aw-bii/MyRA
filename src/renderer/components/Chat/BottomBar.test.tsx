@@ -14,7 +14,9 @@ vi.mock("../../ipc/backend", () => ({
       authenticated: true,
     },
   ]),
-  probeBackend: vi.fn().mockResolvedValue({ available: true, authenticated: true }),
+  probeBackend: vi
+    .fn()
+    .mockResolvedValue({ available: true, authenticated: true }),
 }));
 vi.mock("../../ipc/persona", () => ({
   listPersonas: vi.fn().mockResolvedValue([]),

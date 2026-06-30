@@ -14,9 +14,16 @@ export function ErrorToast({ message, onDismiss, duration = 8000 }: Props) {
   }, [onDismiss, duration]);
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 bg-danger text-on-primary text-sm rounded-xl shadow-lg" role="alert">
+    <div
+      className="flex items-center gap-2 px-4 py-2 bg-danger text-on-primary text-sm rounded-xl shadow-lg"
+      role="alert"
+    >
       <span className="flex-1">{message}</span>
-      <button onClick={onDismiss} aria-label="Dismiss error" className="p-0.5 hoverable:hover:opacity-80">
+      <button
+        onClick={onDismiss}
+        aria-label="Dismiss error"
+        className="p-0.5 hoverable:hover:opacity-80"
+      >
         <X size={16} />
       </button>
     </div>

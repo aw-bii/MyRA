@@ -94,14 +94,15 @@ describe("WizardStep3 all-signed-in state", () => {
     const statuses = [
       { id: "claude", available: true, authenticated: true, loading: false },
       { id: "gemini", available: true, authenticated: true, loading: false },
-      { id: "opencode", available: false, authenticated: false, loading: false },
+      {
+        id: "opencode",
+        available: false,
+        authenticated: false,
+        loading: false,
+      },
     ];
     render(
-      <WizardStep3
-        statuses={statuses}
-        onComplete={vi.fn()}
-        onBack={vi.fn()}
-      />,
+      <WizardStep3 statuses={statuses} onComplete={vi.fn()} onBack={vi.fn()} />,
     );
     expect(screen.getByText("Claude Code")).toBeInTheDocument();
     expect(screen.getByText("Gemini CLI")).toBeInTheDocument();

@@ -2,9 +2,24 @@ import { useState } from "react";
 import { storeKey } from "../../ipc/key";
 
 const API_BACKENDS = [
-  { id: "claude-api", label: "Claude API Key", placeholder: "sk-ant-api03-…", keyName: "claude-api" },
-  { id: "gemini-api", label: "Gemini API Key", placeholder: "AIza…", keyName: "gemini-api" },
-  { id: "openrouter", label: "OpenRouter API Key", placeholder: "sk-or-v1-…", keyName: "openrouter" },
+  {
+    id: "claude-api",
+    label: "Claude API Key",
+    placeholder: "sk-ant-api03-…",
+    keyName: "claude-api",
+  },
+  {
+    id: "gemini-api",
+    label: "Gemini API Key",
+    placeholder: "AIza…",
+    keyName: "gemini-api",
+  },
+  {
+    id: "openrouter",
+    label: "OpenRouter API Key",
+    placeholder: "sk-or-v1-…",
+    keyName: "openrouter",
+  },
 ];
 
 interface Props {
@@ -25,7 +40,11 @@ export function WizardStep4({ onComplete, onBack }: Props) {
       return;
     }
     setSaving((prev) => ({ ...prev, [id]: true }));
-    setErrors((prev) => { const n = { ...prev }; delete n[id]; return n; });
+    setErrors((prev) => {
+      const n = { ...prev };
+      delete n[id];
+      return n;
+    });
     try {
       await storeKey(keyName, val);
       setSaved((prev) => ({ ...prev, [id]: true }));
@@ -41,19 +60,27 @@ export function WizardStep4({ onComplete, onBack }: Props) {
       <div>
         <h2 className="text-sm font-semibold mb-1">Enter API keys</h2>
         <p className="text-xs text-text-muted">
-          Optional — skip any you don't use. Keys are encrypted and stored locally.
+          Optional — skip any you don't use. Keys are encrypted and stored
+          locally.
         </p>
       </div>
       {API_BACKENDS.map(({ id, label, placeholder, keyName }) => (
-        <div key={id} className="flex flex-col gap-2 border border-border rounded-xl p-4">
-          <label htmlFor={`key-${id}`} className="font-medium text-sm">{label}</label>
+        <div
+          key={id}
+          className="flex flex-col gap-2 border border-border rounded-xl p-4"
+        >
+          <label htmlFor={`key-${id}`} className="font-medium text-sm">
+            {label}
+          </label>
           <div className="flex gap-2">
             <input
               id={`key-${id}`}
               type="password"
               placeholder={placeholder}
               value={values[id] ?? ""}
-              onChange={(e) => setValues((prev) => ({ ...prev, [id]: e.target.value }))}
+              onChange={(e) =>
+                setValues((prev) => ({ ...prev, [id]: e.target.value }))
+              }
               disabled={saved[id]}
               className="flex-1 text-xs border rounded-lg px-3 py-1.5 bg-surface border-border-strong font-mono disabled:opacity-50"
             />

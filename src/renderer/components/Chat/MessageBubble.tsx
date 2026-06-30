@@ -64,9 +64,7 @@ export const MessageBubble = memo(function MessageBubble({ message }: Props) {
         role="article"
         aria-label={isUser ? "Your message" : "Assistant message"}
         className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm ${
-          isUser
-            ? "bg-primary text-on-primary"
-            : "bg-bubble text-text-base"
+          isUser ? "bg-primary text-on-primary" : "bg-bubble text-text-base"
         }`}
       >
         {isUser ? (
