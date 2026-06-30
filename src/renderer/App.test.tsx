@@ -70,13 +70,13 @@ beforeEach(() => {
     } as unknown as MediaQueryList)),
   });
   vi.mocked(Sidebar).mockReset();
-  vi.mocked(Sidebar).mockImplementation(() => null);
+  vi.mocked(Sidebar).mockImplementation(() => <></>);
   vi.mocked(SettingsModal).mockReset();
-  vi.mocked(SettingsModal).mockImplementation(() => null);
+  vi.mocked(SettingsModal).mockImplementation(() => <></>);
   vi.mocked(ChatView).mockReset();
   vi.mocked(ChatView).mockImplementation(({ bottomBar }: { bottomBar?: React.ReactNode }) => <>{bottomBar}</>);
   vi.mocked(BottomBar).mockReset();
-  vi.mocked(BottomBar).mockImplementation(() => null);
+  vi.mocked(BottomBar).mockImplementation(() => <></>);
 });
 
 describe("App layout", () => {
@@ -96,12 +96,12 @@ describe("App layout", () => {
     let capturedOnOpenSettings: (() => void) | null = null;
     vi.mocked(Sidebar).mockImplementation(({ onOpenSettings }) => {
       capturedOnOpenSettings = onOpenSettings;
-      return null;
+      return <></>;
     });
 
     // Render a visible marker when SettingsModal is open
     vi.mocked(SettingsModal).mockImplementation(({ open }) =>
-      open ? <div data-testid="settings-modal-open" /> : null
+      open ? <div data-testid="settings-modal-open" /> : <></>
     );
 
     render(<App />);
