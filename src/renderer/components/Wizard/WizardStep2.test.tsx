@@ -105,10 +105,15 @@ describe("WizardStep2 - Re-probe on mount", () => {
 
 describe("WizardStep2 - Spinner and status line", () => {
   it("shows a spinner while installing and hides the terminal pre block", async () => {
+    let probeCallCount = 0;
+    vi.mocked(probeBackend).mockImplementation(async () => {
+      probeCallCount++;
+      // First call (initial reprobing) returns unavailable, subsequent calls return available
+      return { available: probeCallCount > 1, authenticated: false };
+    });
     vi.mocked(installBackend).mockImplementation(
       () => new Promise((res) => setTimeout(() => res({ success: true }), 100)),
     );
-    vi.mocked(probeBackend).mockResolvedValue({ available: false, authenticated: false });
     (window as unknown as { ipc: { on: ReturnType<typeof vi.fn> } }).ipc = {
       on: vi.fn().mockReturnValue(() => {}),
     };
@@ -117,5 +122,8 @@ describe("WizardStep2 - Spinner and status line", () => {
     fireEvent.click(screen.getByRole("button", { name: /^Install$/ }));
     expect(screen.getByTestId("install-spinner-gemini")).toBeInTheDocument();
     expect(screen.queryByRole("log")).toBeNull(); // no <pre> terminal
+    await waitFor(() => {
+      expect(screen.getByText(/Installed and detected on PATH/)).toBeInTheDocument();
+    });
   });
 });
