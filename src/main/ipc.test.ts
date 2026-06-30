@@ -98,7 +98,9 @@ describe("CHAT_SEND", () => {
       AdapterManager.setActive(adapter.id);
 
       const persona = null; // no persona
-      let conv = conversationId ? ConvStore.getConversation(conversationId) : undefined;
+      let conv = conversationId
+        ? ConvStore.getConversation(conversationId)
+        : undefined;
       if (!conv) {
         conv = ConvStore.createConversation(
           message.slice(0, 60),
@@ -154,8 +156,12 @@ describe("CHAT_SEND", () => {
 
     // Check what was passed to ConvStore.createMessage for the assistant message
     const calls = (ConvStore.createMessage as any).mock.calls;
-    const assistantMessageCall = calls.find((call: any) => call[0].role === "assistant");
+    const assistantMessageCall = calls.find(
+      (call: any) => call[0].role === "assistant",
+    );
 
-    expect(assistantMessageCall[0].content).toBe("⚠ Error: spawn claude ENOENT");
+    expect(assistantMessageCall[0].content).toBe(
+      "⚠ Error: spawn claude ENOENT",
+    );
   });
 });

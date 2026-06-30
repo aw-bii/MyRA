@@ -11,7 +11,14 @@ interface Props {
   role?: string;
 }
 
-export const MessageList = memo(function MessageList({ messages, streaming, conversationId, id, "aria-labelledby": ariaLabelledBy, role = "log" }: Props) {
+export const MessageList = memo(function MessageList({
+  messages,
+  streaming,
+  conversationId,
+  id,
+  "aria-labelledby": ariaLabelledBy,
+  role = "log",
+}: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Track which message IDs have been shown. Seeded with all current IDs

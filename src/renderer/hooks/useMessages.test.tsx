@@ -23,9 +23,7 @@ vi.mock("../ipc/chat", () => ({
 }));
 
 vi.mock("../ipc/conversation", () => ({
-  getConversation: vi.fn(() =>
-    Promise.resolve({ messages: [] }),
-  ),
+  getConversation: vi.fn(() => Promise.resolve({ messages: [] })),
 }));
 
 describe("useMessages", () => {
@@ -34,7 +32,9 @@ describe("useMessages", () => {
   });
 
   it("clears streaming state if sendChat throws", async () => {
-    vi.mocked(chatIpc.sendChat).mockRejectedValueOnce(new Error("network error"));
+    vi.mocked(chatIpc.sendChat).mockRejectedValueOnce(
+      new Error("network error"),
+    );
     const { result } = renderHook(() => useMessages(null));
 
     await act(async () => {

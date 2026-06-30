@@ -123,7 +123,10 @@ export function BottomBar({
               </option>
             ))}
           </select>
-          <div className="flex items-center gap-2 opacity-50 pointer-events-none" title="Backend is set per pipeline step">
+          <div
+            className="flex items-center gap-2 opacity-50 pointer-events-none"
+            title="Backend is set per pipeline step"
+          >
             <div className="flex-shrink-0">
               <BackendSwitcher
                 value={backend}

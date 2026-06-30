@@ -4,7 +4,9 @@ import { WizardStep2 } from "./WizardStep2";
 
 vi.mock("../../ipc/backend", () => ({
   installBackend: vi.fn().mockResolvedValue({ success: false }),
-  probeBackend: vi.fn().mockResolvedValue({ available: false, authenticated: false }),
+  probeBackend: vi
+    .fn()
+    .mockResolvedValue({ available: false, authenticated: false }),
 }));
 
 describe("WizardStep2", () => {
@@ -58,11 +60,7 @@ describe("WizardStep2 - Labels and Ollama", () => {
 
   it("shows a Start Ollama button for the ollama backend", () => {
     render(
-      <WizardStep2
-        missing={["ollama"]}
-        onNext={vi.fn()}
-        onBack={vi.fn()}
-      />,
+      <WizardStep2 missing={["ollama"]} onNext={vi.fn()} onBack={vi.fn()} />,
     );
     expect(screen.getByText("Start Ollama")).toBeTruthy();
   });

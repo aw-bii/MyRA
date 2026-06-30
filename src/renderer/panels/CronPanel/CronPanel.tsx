@@ -24,7 +24,12 @@ export function CronPanel() {
     refresh();
   }, [refresh]);
 
-  const handleCreate = async (input: { name: string; cronExpression: string; prompt: string; backend: string }) => {
+  const handleCreate = async (input: {
+    name: string;
+    cronExpression: string;
+    prompt: string;
+    backend: string;
+  }) => {
     await createCronJob(input);
     setShowForm(false);
     await refresh();

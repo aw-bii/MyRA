@@ -23,7 +23,9 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
   const [apiKeys, setApiKeys] = useState<Record<string, string>>({});
   const [keyStates, setKeyStates] = useState<Record<string, boolean>>({});
   const [testing, setTesting] = useState<Record<string, boolean>>({});
-  const [testResults, setTestResults] = useState<Record<string, { success: boolean; message: string } | null>>({});
+  const [testResults, setTestResults] = useState<
+    Record<string, { success: boolean; message: string } | null>
+  >({});
   const [proxyHttp, setProxyHttp] = useState("");
   const [proxyHttps, setProxyHttps] = useState("");
   const [proxyNo, setProxyNo] = useState("");
@@ -164,7 +166,10 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
                         <button
                           onClick={async () => {
                             await deleteKey(p.id);
-                            setKeyStates((prev) => ({ ...prev, [p.id]: false }));
+                            setKeyStates((prev) => ({
+                              ...prev,
+                              [p.id]: false,
+                            }));
                           }}
                           className="btn-sm border border-danger-muted text-danger hoverable:hover:bg-danger-subtle text-xs px-2"
                         >
@@ -201,7 +206,9 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
                       </button>
                     </div>
                     {testResults[p.id] && (
-                      <span className={`text-xs mt-1 block ${testResults[p.id]!.success ? "text-success" : "text-danger"}`}>
+                      <span
+                        className={`text-xs mt-1 block ${testResults[p.id]!.success ? "text-success" : "text-danger"}`}
+                      >
                         {testResults[p.id]!.message}
                       </span>
                     )}

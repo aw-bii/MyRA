@@ -17,7 +17,9 @@ describe("ErrorToast", () => {
   it("calls onDismiss when dismiss button is clicked", async () => {
     const onDismiss = vi.fn();
     render(<ErrorToast message="Error" onDismiss={onDismiss} />);
-    await userEvent.click(screen.getByRole("button", { name: /dismiss error/i }));
+    await userEvent.click(
+      screen.getByRole("button", { name: /dismiss error/i }),
+    );
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 });
@@ -33,7 +35,9 @@ describe("ErrorToast auto-dismiss", () => {
 
   it("auto-dismisses after the duration timeout", () => {
     const onDismiss = vi.fn();
-    render(<ErrorToast message="Error" onDismiss={onDismiss} duration={3000} />);
+    render(
+      <ErrorToast message="Error" onDismiss={onDismiss} duration={3000} />,
+    );
     expect(onDismiss).not.toHaveBeenCalled();
     vi.advanceTimersByTime(3000);
     expect(onDismiss).toHaveBeenCalledTimes(1);

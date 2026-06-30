@@ -182,13 +182,8 @@ export function McpPanel() {
                 </summary>
                 <ul className="mt-0.5 space-y-0.5">
                   {s.tools.map((t) => (
-                    <li
-                      key={t.name}
-                      className="text-[10px] text-text-muted"
-                    >
-                      <code className="bg-bubble px-1 rounded">
-                        {t.name}
-                      </code>{" "}
+                    <li key={t.name} className="text-[10px] text-text-muted">
+                      <code className="bg-bubble px-1 rounded">{t.name}</code>{" "}
                       {t.description}
                     </li>
                   ))}

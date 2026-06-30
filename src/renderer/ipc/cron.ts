@@ -5,10 +5,23 @@ import { ipcInvoke } from "./index";
 export async function getCronJobs(): Promise<CronJob[]> {
   return ipcInvoke<CronJob[]>(IPC.CRON_LIST);
 }
-export async function createCronJob(input: { name: string; cronExpression: string; prompt: string; backend: string }): Promise<CronJob> {
+export async function createCronJob(input: {
+  name: string;
+  cronExpression: string;
+  prompt: string;
+  backend: string;
+}): Promise<CronJob> {
   return ipcInvoke<CronJob>(IPC.CRON_CREATE, input);
 }
-export async function updateCronJob(id: string, changes: Partial<{ name: string; cronExpression: string; prompt: string; backend: string }>): Promise<CronJob> {
+export async function updateCronJob(
+  id: string,
+  changes: Partial<{
+    name: string;
+    cronExpression: string;
+    prompt: string;
+    backend: string;
+  }>,
+): Promise<CronJob> {
   return ipcInvoke<CronJob>(IPC.CRON_UPDATE, { id, ...changes });
 }
 export async function deleteCronJob(id: string): Promise<void> {

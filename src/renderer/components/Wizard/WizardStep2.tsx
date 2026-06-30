@@ -66,7 +66,9 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
     } else {
       setErrors((prev) => ({
         ...prev,
-        [id]: result.error ?? "Installation failed. Check your internet connection.",
+        [id]:
+          result.error ??
+          "Installation failed. Check your internet connection.",
       }));
     }
   };
@@ -102,12 +104,12 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
         <button
           onClick={onNext}
           className="btn-lg bg-primary text-on-primary hoverable:hover:bg-primary-dark"
-          >
-            Next
-          </button>
-          <button
-            onClick={onBack}
-            className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
+        >
+          Next
+        </button>
+        <button
+          onClick={onBack}
+          className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
         >
           Back
         </button>
@@ -195,12 +197,12 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
       <button
         onClick={onNext}
         className="btn-lg bg-primary text-on-primary hoverable:hover:bg-primary-dark"
-        >
-          Continue
-        </button>
-        <button
-          onClick={onBack}
-          className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
+      >
+        Continue
+      </button>
+      <button
+        onClick={onBack}
+        className="btn-md w-full text-text-muted hoverable:hover:text-text-base transition-transform duration-100 ease-press active:scale-95"
       >
         Back
       </button>

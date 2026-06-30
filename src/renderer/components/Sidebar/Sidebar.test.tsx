@@ -23,7 +23,9 @@ const base = {
 describe("Sidebar", () => {
   it("renders the settings gear button", () => {
     render(<Sidebar {...base} />);
-    expect(screen.getByRole("button", { name: /settings/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /settings/i }),
+    ).toBeInTheDocument();
   });
 
   it("calls onOpenSettings when gear clicked", () => {

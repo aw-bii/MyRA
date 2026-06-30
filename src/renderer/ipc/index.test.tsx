@@ -10,7 +10,9 @@ it("calls window.ipc.invoke and returns result", async () => {
   (window as any).ipc = { invoke: vi.fn().mockResolvedValue("ok") };
   const result = await ipcInvoke<string>("test:chan", { x: 1 });
   expect(result).toBe("ok");
-  expect((window as any).ipc.invoke).toHaveBeenCalledWith("test:chan", { x: 1 });
+  expect((window as any).ipc.invoke).toHaveBeenCalledWith("test:chan", {
+    x: 1,
+  });
 });
 
 it("sets lastIpcError on failure", async () => {

@@ -26,8 +26,18 @@ export function ConvList({
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMounted = useRef(true);
 
-  useEffect(() => () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); }, []);
-  useEffect(() => () => { isMounted.current = false; }, []);
+  useEffect(
+    () => () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    },
+    [],
+  );
+  useEffect(
+    () => () => {
+      isMounted.current = false;
+    },
+    [],
+  );
 
   const handleSearch = (q: string) => {
     setQuery(q);
