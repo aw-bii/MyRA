@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import { getSetting, setSetting, getAppVersion } from "../../ipc/settings";
 import { storeKey, deleteKey, hasKey } from "../../ipc/key";
 import { probeBackend } from "../../ipc/backend";
-import { getProxySettings, setProxySettings } from "../../ipc/net";
+import {
+  getProxySettings,
+  setProxySettings,
+  openExternal,
+} from "../../ipc/net";
 
 const API_PROVIDERS = [
   { id: "openai", label: "OpenAI" },
-  { id: "openrouter", label: "OpenRouter" },
   { id: "claude-api", label: "Claude API" },
   { id: "gemini-api", label: "Gemini API" },
   { id: "ollama", label: "Ollama" },
@@ -216,6 +219,8 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
                 )}
               </div>
             ))}
+            {/* OpenRouter */}
+            <OpenRouterSignIn />
           </div>
         </div>
 
@@ -278,6 +283,98 @@ export function SettingsPanel({ onClose, onReRunWizard }: Props) {
           Version {version || "0.2.0"}
         </div>
       </div>
+    </div>
+  );
+}
+
+function OpenRouterSignIn() {
+  const [showPaste, setShowPaste] = useState(false);
+  const [value, setValue] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    hasKey("openrouter")
+      .then((has) => {
+        if (has) setSaved(true);
+      })
+      .catch(() => {});
+  }, []);
+
+  const openSignIn = async () => {
+    await openExternal("https://openrouter.ai/keys");
+    setShowPaste(true);
+  };
+
+  const save = async () => {
+    if (!value.trim()) {
+      setError("Paste your key first.");
+      return;
+    }
+    try {
+      await storeKey("openrouter", value.trim());
+      setSaved(true);
+      setShowPaste(false);
+      setValue("");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-xs font-medium text-text-base">OpenRouter</label>
+      {saved ? (
+        <p className="text-xs text-primary">
+          Signed in ✓
+          <button
+            onClick={async () => {
+              await deleteKey("openrouter");
+              setSaved(false);
+              setShowPaste(false);
+            }}
+            className="ml-2 text-text-muted underline text-xs"
+          >
+            Remove
+          </button>
+        </p>
+      ) : (
+        <button
+          onClick={openSignIn}
+          aria-label="Sign in to OpenRouter"
+          className="btn-sm border border-border-strong hoverable:hover:bg-bubble w-fit"
+        >
+          Sign in to OpenRouter
+        </button>
+      )}
+      {showPaste && !saved && (
+        <div className="flex flex-col gap-1">
+          <p className="text-xs text-text-muted">
+            Copy your API key from the browser tab that just opened, then paste
+            it here.
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              placeholder="sk-or-v1-…"
+              value={value}
+              onChange={(e) => {
+                setValue(e.target.value);
+                setError("");
+              }}
+              className="flex-1 text-xs border rounded-lg px-3 py-1.5 bg-surface border-border-strong font-mono"
+              aria-label="Paste OpenRouter key"
+            />
+            <button
+              onClick={save}
+              className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark"
+            >
+              Save
+            </button>
+          </div>
+          {error && <p className="text-xs text-red-500">{error}</p>}
+        </div>
+      )}
     </div>
   );
 }

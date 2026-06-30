@@ -41,6 +41,7 @@ vi.mock("../../../ipc/settings", () => ({
 vi.mock("../../../ipc/net", () => ({
   getProxySettings: mockGetProxySettings,
   setProxySettings: vi.fn(),
+  openExternal: vi.fn(),
 }));
 vi.mock("../../../ipc/backend", () => ({
   probeBackend: vi.fn(),
@@ -66,10 +67,21 @@ describe("SettingsPanel mount IPC calls", () => {
     await vi.waitFor(() => {
       expect(mockGetAppVersion).toHaveBeenCalledTimes(1);
       expect(mockGetSetting).toHaveBeenCalledWith("theme");
+      // 4 API_PROVIDERS + 1 from OpenRouterSignIn.useEffect on mount
       expect(mockHasKey).toHaveBeenCalledTimes(5);
       expect(mockGetProxySettings).toHaveBeenCalledTimes(1);
       expect(screen.getByText(/1\.0\.0/)).toBeTruthy();
     });
+  });
+
+  it("shows Sign In button for OpenRouter instead of a persistent key input", () => {
+    render(<SettingsPanel onClose={vi.fn()} onReRunWizard={vi.fn()} />);
+    // Should NOT have a visible password input labeled "OpenRouter API Key"
+    expect(screen.queryByLabelText(/OpenRouter API Key/i)).toBeNull();
+    // Should have a sign-in button
+    expect(
+      screen.getByRole("button", { name: /Sign in to OpenRouter/i }),
+    ).toBeInTheDocument();
   });
 
   it("renders with defaults when getAppVersion rejects — other fields still load", async () => {

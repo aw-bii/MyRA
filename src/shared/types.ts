@@ -160,6 +160,7 @@ export interface McpServerConfig {
   enabled: boolean;
   tools: McpTool[];
   lastSeen: number | null;
+  backendId?: string;
 }
 
 export interface McpTool {

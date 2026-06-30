@@ -142,7 +142,23 @@ describe("SettingsModal", () => {
       />,
     );
     const closeBtn = screen.getByRole("button", { name: /Close settings/i });
-    // The button must NOT have 'absolute' in its className
     expect(closeBtn.className).not.toMatch(/\babsolute\b/);
+  });
+
+  it("does not show a Plugins nav item", () => {
+    render(
+      <SettingsModal
+        open={true}
+        section="settings"
+        onClose={vi.fn()}
+        onSectionChange={vi.fn()}
+        onReRunWizard={vi.fn()}
+        activePersonaId={null}
+        onPersonaSelect={vi.fn()}
+        activeTemplateId={null}
+        onTemplateSelect={vi.fn()}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: /Plugins/i })).toBeNull();
   });
 });

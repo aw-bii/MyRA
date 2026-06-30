@@ -139,4 +139,22 @@ describe("McpPanel", () => {
       expect(toggleMcpServer).toHaveBeenCalledWith("s1");
     });
   });
+
+  it("shows backend badge when server has backendId", async () => {
+    vi.mocked(listMcpServers).mockResolvedValue([
+      {
+        id: "srv1",
+        name: "filesystem",
+        command: "npx",
+        args: ["-y", "@modelcontextprotocol/server-filesystem"],
+        enabled: true,
+        tools: [],
+        lastSeen: null,
+        backendId: "claude",
+      },
+    ]);
+    vi.mocked(listMcpTools).mockResolvedValue([]);
+    render(<McpPanel />);
+    expect(await screen.findByText("claude")).toBeInTheDocument();
+  });
 });

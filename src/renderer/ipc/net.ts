@@ -20,3 +20,6 @@ export async function setProxySettings(settings: {
 }): Promise<void> {
   await ipcInvoke(IPC.NET_SET_PROXY, settings);
 }
+export async function openExternal(url: string): Promise<void> {
+  await ipcInvoke<void>(IPC.NET_OPEN_EXTERNAL, { url });
+}
