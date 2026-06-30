@@ -147,7 +147,14 @@ export function McpPanel() {
             className="mx-1 mb-2 p-2 rounded border border-border bg-surface text-xs"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="font-medium truncate">{s.name}</span>
+              <div className="flex items-center gap-1">
+                <span className="font-medium truncate">{s.name}</span>
+                {s.backendId && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-bubble text-text-muted font-mono leading-none">
+                    {s.backendId}
+                  </span>
+                )}
+              </div>
               <span
                 className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] ${
                   s.enabled
