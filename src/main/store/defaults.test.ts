@@ -23,10 +23,10 @@ describe("seedDefaults", () => {
       undefined,
     );
     seedDefaults();
-    expect(ConvStore.createPersona).toHaveBeenCalledTimes(2);
-    expect(ConvStore.createPipelineTemplate).toHaveBeenCalledTimes(1);
+    expect(ConvStore.createPersona).toHaveBeenCalledTimes(5);
+    expect(ConvStore.createPipelineTemplate).toHaveBeenCalledTimes(3);
     expect(ConvStore.setSetting).toHaveBeenCalledWith(
-      "defaults_seeded",
+      "defaults_seeded_v2",
       "true",
     );
 
@@ -57,6 +57,41 @@ describe("seedDefaults", () => {
   });
 
   it("does nothing when already seeded", () => {
+    (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockReturnValue("true");
+    seedDefaults();
+    expect(ConvStore.createPersona).not.toHaveBeenCalled();
+    expect(ConvStore.createPipelineTemplate).not.toHaveBeenCalled();
+    expect(ConvStore.setSetting).not.toHaveBeenCalled();
+  });
+
+  it("re-seeds when only the v1 key is set", () => {
+    const getSetting = vi.fn((key: string) => {
+      if (key === "defaults_seeded") return "true";
+      if (key === "defaults_seeded_v2") return undefined;
+      return undefined;
+    });
+    (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockImplementation(
+      getSetting,
+    );
+
+    seedDefaults();
+
+    // Should call setSetting with v2 key to mark seeding as complete
+    expect(ConvStore.setSetting).toHaveBeenCalledWith(
+      "defaults_seeded_v2",
+      "true",
+    );
+
+    // Should have created new personas including Researcher and Summariser
+    expect(ConvStore.createPersona).toHaveBeenCalled();
+    const personaCalls = (ConvStore.createPersona as ReturnType<typeof vi.fn>)
+      .mock.calls;
+    const personaNames = personaCalls.map((call) => call[0].name);
+    expect(personaNames).toContain("Researcher");
+    expect(personaNames).toContain("Summariser");
+  });
+
+  it("does not re-seed if v2 key is already set", () => {
     (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockReturnValue("true");
     seedDefaults();
     expect(ConvStore.createPersona).not.toHaveBeenCalled();
