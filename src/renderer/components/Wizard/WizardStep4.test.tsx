@@ -2,17 +2,11 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { WizardStep4 } from "./WizardStep4";
 import * as keyIpc from "../../ipc/key";
-import * as backendIpc from "../../ipc/backend";
 
 vi.mock("../../ipc/key");
-vi.mock("../../ipc/backend");
 
 beforeEach(() => {
   vi.mocked(keyIpc.storeKey).mockResolvedValue(undefined);
-  vi.mocked(backendIpc.probeBackend).mockResolvedValue({
-    available: true,
-    authenticated: true,
-  });
 });
 
 describe("WizardStep4", () => {
