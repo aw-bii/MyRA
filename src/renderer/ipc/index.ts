@@ -21,6 +21,9 @@ export function ipcInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
   }) as Promise<T>;
 }
 
-export function onIpcEvent<T>(channel: string, cb: (data: T) => void): () => void {
+export function onIpcEvent<T>(
+  channel: string,
+  cb: (data: T) => void,
+): () => void {
   return window.ipc.on(channel, cb as any);
 }

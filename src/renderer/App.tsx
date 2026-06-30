@@ -54,14 +54,19 @@ function App() {
     useState<PipelineTemplate | null>(null);
   const { templates } = usePipelines();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [settingsSection, setSettingsSection] = useState<SettingsSection>("settings");
+  const [settingsSection, setSettingsSection] =
+    useState<SettingsSection>("settings");
   const [sidebarCollapsed, toggleSidebarCollapsed] = useSidebarCollapsed();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const mobileSidebarRef = useRef<HTMLDivElement>(null);
   const [viewportLg, setViewportLg] = useState(
-    () => window.matchMedia("(min-width: 1024px)").matches
+    () => window.matchMedia("(min-width: 1024px)").matches,
   );
-  useFocusTrap(mobileSidebarRef, mobileSidebarOpen && !viewportLg, !mobileSidebarOpen);
+  useFocusTrap(
+    mobileSidebarRef,
+    mobileSidebarOpen && !viewportLg,
+    !mobileSidebarOpen,
+  );
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [backendRefresh, setBackendRefresh] = useState(0);
   const [securityEvents, setSecurityEvents] = useState<SecurityEvent[]>([]);
@@ -134,7 +139,9 @@ function App() {
         handleNew();
       }
       if (mod && e.key === "f") {
-        const input = document.querySelector<HTMLInputElement>('input[aria-label="Search conversations"]');
+        const input = document.querySelector<HTMLInputElement>(
+          'input[aria-label="Search conversations"]',
+        );
         if (input) {
           e.preventDefault();
           input.focus();
@@ -152,7 +159,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    checkConnectivity().then((r) => setOnline(r.online)).catch(() => setOnline(false));
+    checkConnectivity()
+      .then((r) => setOnline(r.online))
+      .catch(() => setOnline(false));
   }, []);
 
   useEffect(() => {
@@ -184,186 +193,195 @@ function App() {
       </a>
       <div className="flex h-screen overflow-hidden bg-surface text-text-base relative">
         <DiagnosticBanner />
-      {viewportLg ? (
-        <Sidebar
-          collapsed={sidebarCollapsed}
-          activeId={activeConvId}
-          onSelect={(id) => {
-            setActiveConvId(id);
-          }}
-          onNew={handleNew}
-          onDelete={handleDelete}
-          onRename={handleRename}
-          refreshTrigger={refreshTrigger}
-          onOpenSettings={() => {
-            setSettingsOpen(true);
-            setSettingsSection("settings");
-          }}
-        />
-      ) : (
-        <>
-          {mobileSidebarOpen && (
+        {viewportLg ? (
+          <Sidebar
+            collapsed={sidebarCollapsed}
+            activeId={activeConvId}
+            onSelect={(id) => {
+              setActiveConvId(id);
+            }}
+            onNew={handleNew}
+            onDelete={handleDelete}
+            onRename={handleRename}
+            refreshTrigger={refreshTrigger}
+            onOpenSettings={() => {
+              setSettingsOpen(true);
+              setSettingsSection("settings");
+            }}
+          />
+        ) : (
+          <>
+            {mobileSidebarOpen && (
+              <div
+                className="fixed inset-0 z-30 bg-surface-darker/50"
+                onClick={() => setMobileSidebarOpen(false)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setMobileSidebarOpen(false);
+                }}
+                role="presentation"
+              />
+            )}
             <div
-              className="fixed inset-0 z-30 bg-surface-darker/50"
-              onClick={() => setMobileSidebarOpen(false)}
-              onKeyDown={(e) => { if (e.key === "Escape") setMobileSidebarOpen(false); }}
-              role="presentation"
-            />
-          )}
-          <div
-            ref={mobileSidebarRef}
-            className={`fixed left-0 top-0 z-40 h-full transition-transform duration-200 ease-drawer ${
-              mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
-          >
-            <Sidebar
-              collapsed={false}
-              activeId={activeConvId}
-              onSelect={(id) => {
-                setMobileSidebarOpen(false);
-                setActiveConvId(id);
-              }}
-              onNew={() => { handleNew(); setMobileSidebarOpen(false); }}
-              onDelete={handleDelete}
-              onRename={handleRename}
-              refreshTrigger={refreshTrigger}
-              onOpenSettings={() => {
-                setSettingsOpen(true);
-                setSettingsSection("settings");
-              }}
-            />
-          </div>
-        </>
-      )}
-      {viewportLg && (
-        <button
-          onClick={toggleSidebarCollapsed}
-          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          aria-expanded={!sidebarCollapsed}
-          className={`absolute top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-4 h-8 rounded-r-md bg-surface-subtle border border-l-0 border-border text-text-muted hoverable:hover:text-text-base hoverable:hover:bg-surface transition-[left,colors] duration-200 ease-press ${sidebarCollapsed ? "left-0" : "left-48 lg:left-64"}`}
-        >
-          {sidebarCollapsed
-            ? <CaretRight size={10} weight="bold" />
-            : <CaretLeft size={10} weight="bold" />
-          }
-        </button>
-      )}
-
-      <div className="flex flex-col flex-1 min-w-0 overflow-x-hidden">
-        <UpdateBanner />
-        {!online && (
-          <div className="px-4 py-1 bg-danger-subtle text-xs text-danger border-b border-danger/30">
-            No internet connection. Some features require internet access.
-          </div>
-        )}
-        <main id="main-content" className="flex flex-1 min-h-0">
-          {!activeConvId && mode === "single" ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-              <h2 className="text-sm font-semibold mb-2">Welcome to MyRA</h2>
-              <p className="text-xs text-text-muted max-w-xs mb-4">
-                Claude Code is built in and ready. Create a conversation, pick a
-                backend, and ask your question.
-              </p>
-              <button
-                onClick={handleNew}
-                className="px-4 py-2 rounded-xl bg-primary text-on-primary text-sm hoverable:hover:bg-primary-dark transition-transform duration-100 ease-press active:scale-95"
-              >
-                New conversation
-              </button>
-            </div>
-          ) : !activeConvId && mode === "pipeline" ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
-              <h2 className="text-sm font-semibold mb-2">Pipeline mode</h2>
-              <p className="text-xs text-text-muted max-w-xs mb-6">
-                Select a pipeline template below, then create a new conversation to begin.
-              </p>
-              <BottomBar
-                mode={mode}
-                setMode={setMode}
-                backend={backend}
-                setBackend={setBackend}
-                model={model}
-                setModel={setModel}
-                personaId={personaId}
-                setPersonaId={setPersonaId}
-                templates={templates}
-                selectedTemplate={selectedTemplate}
-                onTemplateSelect={(t) => {
-                  setSelectedTemplate(t);
-                  if (t) setMode("pipeline");
-                }}
-                backendRefresh={backendRefresh}
-              />
-            </div>
-          ) : (
-            <div className="flex-1 min-w-0 overflow-hidden">
-              <ChatView
-                conversationId={activeConvId}
-                backend={backend}
-                model={model}
-                personaId={personaId ?? undefined}
-                pipelineTemplate={activePipelineTemplate}
-                onNewConversation={(id) => {
+              ref={mobileSidebarRef}
+              className={`fixed left-0 top-0 z-40 h-full transition-transform duration-200 ease-drawer ${
+                mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
+            >
+              <Sidebar
+                collapsed={false}
+                activeId={activeConvId}
+                onSelect={(id) => {
+                  setMobileSidebarOpen(false);
                   setActiveConvId(id);
-                  setRefreshTrigger((n) => n + 1);
                 }}
-                bottomBar={
-                  <BottomBar
-                    mode={mode}
-                    setMode={setMode}
-                    backend={backend}
-                    setBackend={setBackend}
-                    model={model}
-                    setModel={setModel}
-                    personaId={personaId}
-                    setPersonaId={setPersonaId}
-                    templates={templates}
-                    selectedTemplate={selectedTemplate}
-                    onTemplateSelect={(t) => {
-                      setSelectedTemplate(t);
-                      if (t) setMode("pipeline");
-                    }}
-                    backendRefresh={backendRefresh}
-                    disabled={!!activeConvId}
-                  />
-                }
+                onNew={() => {
+                  handleNew();
+                  setMobileSidebarOpen(false);
+                }}
+                onDelete={handleDelete}
+                onRename={handleRename}
+                refreshTrigger={refreshTrigger}
+                onOpenSettings={() => {
+                  setSettingsOpen(true);
+                  setSettingsSection("settings");
+                }}
               />
             </div>
-          )}
-        </main>
-      </div>
-      <SettingsModal
-        open={settingsOpen}
-        section={settingsSection}
-        onClose={() => setSettingsOpen(false)}
-        onSectionChange={setSettingsSection}
-        onReRunWizard={() => {
-          localStorage.removeItem("wizardDone");
-          setWizardDone(false);
-          setSetting("wizard_done", "0");
-          setSettingsOpen(false);
-        }}
-        activePersonaId={personaId}
-        onPersonaSelect={setPersonaId}
-        activeTemplateId={activePipelineTemplate?.id ?? null}
-        onTemplateSelect={(t) => {
-          setSelectedTemplate(t);
-          setMode("pipeline");
-        }}
-      />
-      {securityEvents.length > 0 && (
-        <SecurityDialog
-          event={securityEvents[0]}
-          onRespond={(approved) => {
-            const eventId = securityEvents[0]?.id;
-            if (eventId) {
-              respondSecurity({ id: eventId, approved });
+          </>
+        )}
+        {viewportLg && (
+          <button
+            onClick={toggleSidebarCollapsed}
+            aria-label={
+              sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
             }
-            setSecurityEvents((prev) => prev.slice(1));
+            aria-expanded={!sidebarCollapsed}
+            className={`absolute top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-4 h-8 rounded-r-md bg-surface-subtle border border-l-0 border-border text-text-muted hoverable:hover:text-text-base hoverable:hover:bg-surface transition-[left,colors] duration-200 ease-press ${sidebarCollapsed ? "left-0" : "left-48 lg:left-64"}`}
+          >
+            {sidebarCollapsed ? (
+              <CaretRight size={10} weight="bold" />
+            ) : (
+              <CaretLeft size={10} weight="bold" />
+            )}
+          </button>
+        )}
+
+        <div className="flex flex-col flex-1 min-w-0 overflow-x-hidden">
+          <UpdateBanner />
+          {!online && (
+            <div className="px-4 py-1 bg-danger-subtle text-xs text-danger border-b border-danger/30">
+              No internet connection. Some features require internet access.
+            </div>
+          )}
+          <main id="main-content" className="flex flex-1 min-h-0">
+            {!activeConvId && mode === "single" ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+                <h2 className="text-sm font-semibold mb-2">Welcome to MyRA</h2>
+                <p className="text-xs text-text-muted max-w-xs mb-4">
+                  Claude Code is built in and ready. Create a conversation, pick
+                  a backend, and ask your question.
+                </p>
+                <button
+                  onClick={handleNew}
+                  className="px-4 py-2 rounded-xl bg-primary text-on-primary text-sm hoverable:hover:bg-primary-dark transition-transform duration-100 ease-press active:scale-95"
+                >
+                  New conversation
+                </button>
+              </div>
+            ) : !activeConvId && mode === "pipeline" ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center px-8">
+                <h2 className="text-sm font-semibold mb-2">Pipeline mode</h2>
+                <p className="text-xs text-text-muted max-w-xs mb-6">
+                  Select a pipeline template below, then create a new
+                  conversation to begin.
+                </p>
+                <BottomBar
+                  mode={mode}
+                  setMode={setMode}
+                  backend={backend}
+                  setBackend={setBackend}
+                  model={model}
+                  setModel={setModel}
+                  personaId={personaId}
+                  setPersonaId={setPersonaId}
+                  templates={templates}
+                  selectedTemplate={selectedTemplate}
+                  onTemplateSelect={(t) => {
+                    setSelectedTemplate(t);
+                    if (t) setMode("pipeline");
+                  }}
+                  backendRefresh={backendRefresh}
+                />
+              </div>
+            ) : (
+              <div className="flex-1 min-w-0 overflow-hidden">
+                <ChatView
+                  conversationId={activeConvId}
+                  backend={backend}
+                  model={model}
+                  personaId={personaId ?? undefined}
+                  pipelineTemplate={activePipelineTemplate}
+                  onNewConversation={(id) => {
+                    setActiveConvId(id);
+                    setRefreshTrigger((n) => n + 1);
+                  }}
+                  bottomBar={
+                    <BottomBar
+                      mode={mode}
+                      setMode={setMode}
+                      backend={backend}
+                      setBackend={setBackend}
+                      model={model}
+                      setModel={setModel}
+                      personaId={personaId}
+                      setPersonaId={setPersonaId}
+                      templates={templates}
+                      selectedTemplate={selectedTemplate}
+                      onTemplateSelect={(t) => {
+                        setSelectedTemplate(t);
+                        if (t) setMode("pipeline");
+                      }}
+                      backendRefresh={backendRefresh}
+                      disabled={!!activeConvId}
+                    />
+                  }
+                />
+              </div>
+            )}
+          </main>
+        </div>
+        <SettingsModal
+          open={settingsOpen}
+          section={settingsSection}
+          onClose={() => setSettingsOpen(false)}
+          onSectionChange={setSettingsSection}
+          onReRunWizard={() => {
+            localStorage.removeItem("wizardDone");
+            setWizardDone(false);
+            setSetting("wizard_done", "0");
+            setSettingsOpen(false);
+          }}
+          activePersonaId={personaId}
+          onPersonaSelect={setPersonaId}
+          activeTemplateId={activePipelineTemplate?.id ?? null}
+          onTemplateSelect={(t) => {
+            setSelectedTemplate(t);
+            setMode("pipeline");
           }}
         />
-      )}
-    </div>
+        {securityEvents.length > 0 && (
+          <SecurityDialog
+            event={securityEvents[0]}
+            onRespond={(approved) => {
+              const eventId = securityEvents[0]?.id;
+              if (eventId) {
+                respondSecurity({ id: eventId, approved });
+              }
+              setSecurityEvents((prev) => prev.slice(1));
+            }}
+          />
+        )}
+      </div>
     </>
   );
 }

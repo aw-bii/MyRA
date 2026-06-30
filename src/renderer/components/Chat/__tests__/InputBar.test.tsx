@@ -7,8 +7,12 @@ vi.mock("../../ipc/attachment", () => ({
 }));
 vi.mock("../../hooks/useAttachments", () => ({
   useAttachments: () => ({
-    pending: [], errors: [], ingesting: false,
-    addFiles: vi.fn(), removeFile: vi.fn(), clear: vi.fn(),
+    pending: [],
+    errors: [],
+    ingesting: false,
+    addFiles: vi.fn(),
+    removeFile: vi.fn(),
+    clear: vi.fn(),
   }),
 }));
 

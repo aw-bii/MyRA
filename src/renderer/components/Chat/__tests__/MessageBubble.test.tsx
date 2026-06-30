@@ -10,7 +10,9 @@ vi.mock("react-markdown", () => ({
 const { mockListAttachments } = vi.hoisted(() => ({
   mockListAttachments: vi.fn().mockResolvedValue([]),
 }));
-vi.mock("../../../ipc/attachment", () => ({ listAttachments: mockListAttachments }));
+vi.mock("../../../ipc/attachment", () => ({
+  listAttachments: mockListAttachments,
+}));
 
 beforeEach(() => {
   mockListAttachments.mockClear();
@@ -88,7 +90,9 @@ describe("MessageBubble accessibility", () => {
 
   it("assistant bubble has aria-label identifying sender", () => {
     render(<MessageBubble message={assistantMsg} />);
-    expect(screen.getByRole("article", { name: /assistant message/i })).toBeTruthy();
+    expect(
+      screen.getByRole("article", { name: /assistant message/i }),
+    ).toBeTruthy();
   });
 
   it("timestamp uses <time> element with datetime attribute", () => {
@@ -96,7 +100,7 @@ describe("MessageBubble accessibility", () => {
     const timeEl = container.querySelector("time");
     expect(timeEl).not.toBeNull();
     expect(timeEl?.getAttribute("dateTime")).toBe(
-      new Date(userMsg.createdAt).toISOString()
+      new Date(userMsg.createdAt).toISOString(),
     );
   });
 });

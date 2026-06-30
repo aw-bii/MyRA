@@ -13,11 +13,22 @@ it("renders all form fields", () => {
 it("calls onCreate with form values when submitted", () => {
   const onCreate = vi.fn();
   render(<CronJobForm onCreate={onCreate} />);
-  fireEvent.change(screen.getByPlaceholderText("e.g., Daily standup"), { target: { value: "My Job" } });
-  fireEvent.change(screen.getByPlaceholderText("e.g., 0 9 * * 1-5"), { target: { value: "* * * * *" } });
-  fireEvent.change(screen.getByPlaceholderText("Message to execute"), { target: { value: "do thing" } });
+  fireEvent.change(screen.getByPlaceholderText("e.g., Daily standup"), {
+    target: { value: "My Job" },
+  });
+  fireEvent.change(screen.getByPlaceholderText("e.g., 0 9 * * 1-5"), {
+    target: { value: "* * * * *" },
+  });
+  fireEvent.change(screen.getByPlaceholderText("Message to execute"), {
+    target: { value: "do thing" },
+  });
   fireEvent.click(screen.getByText("Create Job"));
-  expect(onCreate).toHaveBeenCalledWith({ name: "My Job", cronExpression: "* * * * *", prompt: "do thing", backend: "claude" });
+  expect(onCreate).toHaveBeenCalledWith({
+    name: "My Job",
+    cronExpression: "* * * * *",
+    prompt: "do thing",
+    backend: "claude",
+  });
 });
 
 it("does not call onCreate when fields are empty", () => {

@@ -106,9 +106,7 @@ export function SearchPanel({ onSelect, onClose }: Props) {
         )}
 
         {!loading && results && results.length === 0 && (
-          <p className="text-xs text-text-muted text-center py-8">
-            No results
-          </p>
+          <p className="text-xs text-text-muted text-center py-8">No results</p>
         )}
 
         {!loading && results && results.length > 0 && (

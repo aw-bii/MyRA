@@ -18,12 +18,15 @@ beforeAll(() => {
   });
 });
 
-const { mockGetAppVersion, mockGetSetting, mockHasKey, mockGetProxySettings } = vi.hoisted(() => ({
-  mockGetAppVersion: vi.fn().mockResolvedValue("1.0.0"),
-  mockGetSetting: vi.fn().mockResolvedValue(null),
-  mockHasKey: vi.fn().mockResolvedValue(false),
-  mockGetProxySettings: vi.fn().mockResolvedValue({ httpProxy: "", httpsProxy: "", noProxy: "" }),
-}));
+const { mockGetAppVersion, mockGetSetting, mockHasKey, mockGetProxySettings } =
+  vi.hoisted(() => ({
+    mockGetAppVersion: vi.fn().mockResolvedValue("1.0.0"),
+    mockGetSetting: vi.fn().mockResolvedValue(null),
+    mockHasKey: vi.fn().mockResolvedValue(false),
+    mockGetProxySettings: vi
+      .fn()
+      .mockResolvedValue({ httpProxy: "", httpsProxy: "", noProxy: "" }),
+  }));
 
 vi.mock("../../../ipc/key", () => ({
   hasKey: mockHasKey,
@@ -51,7 +54,11 @@ describe("SettingsPanel mount IPC calls", () => {
     mockGetAppVersion.mockResolvedValue("1.0.0");
     mockGetSetting.mockResolvedValue(null);
     mockHasKey.mockResolvedValue(false);
-    mockGetProxySettings.mockResolvedValue({ httpProxy: "", httpsProxy: "", noProxy: "" });
+    mockGetProxySettings.mockResolvedValue({
+      httpProxy: "",
+      httpsProxy: "",
+      noProxy: "",
+    });
   });
 
   it("all IPC calls resolve and their results render", async () => {

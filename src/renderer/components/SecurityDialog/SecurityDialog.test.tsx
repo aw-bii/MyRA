@@ -116,7 +116,9 @@ describe("SecurityDialog focus trap", () => {
       source: "claude",
     };
 
-    const { rerender } = render(<SecurityDialog event={eventA} onRespond={vi.fn()} />);
+    const { rerender } = render(
+      <SecurityDialog event={eventA} onRespond={vi.fn()} />,
+    );
 
     // Event A: dialog is open, Dismiss receives focus
     const dismissA = screen.getByRole("button", { name: /dismiss/i });
@@ -130,7 +132,9 @@ describe("SecurityDialog focus trap", () => {
 
     // Focus should return to the first button of the updated dialog
     await vi.waitFor(() => {
-      expect(document.activeElement).toBe(screen.getByRole("button", { name: /dismiss/i }));
+      expect(document.activeElement).toBe(
+        screen.getByRole("button", { name: /dismiss/i }),
+      );
     });
   });
 });

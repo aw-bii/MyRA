@@ -51,7 +51,9 @@ export function SettingsModal({
       data-testid="settings-backdrop"
       role="presentation"
       onClick={onClose}
-      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
     >
       <div
         role="dialog"

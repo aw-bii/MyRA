@@ -19,7 +19,10 @@ export async function listProviders(): Promise<string[]> {
 export async function getDefaultModel(provider: string): Promise<string> {
   return ipcInvoke<string>(IPC.MODEL_GET_DEFAULT, { provider });
 }
-export async function setDefaultModel(provider: string, model: string): Promise<void> {
+export async function setDefaultModel(
+  provider: string,
+  model: string,
+): Promise<void> {
   await ipcInvoke<void>(IPC.MODEL_SET_DEFAULT, { provider, model });
 }
 export async function listModels(provider: string): Promise<string[]> {
