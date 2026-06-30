@@ -14,3 +14,6 @@ export async function installBackend(backend: string): Promise<{ success: boolea
 export async function markWizardDone(): Promise<void> {
   await ipcInvoke<void>(IPC.WIZARD_DONE);
 }
+export async function listAvailableBackends(): Promise<BackendInfo[]> {
+  return ipcInvoke<BackendInfo[]>(IPC.BACKEND_LIST);
+}
