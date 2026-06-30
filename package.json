@@ -1,6 +1,6 @@
 {
   "name": "myra",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "MyRA - Native Electron desktop chat app wrapping Claude Code, Gemini CLI, and Opencode CLI",
   "main": "./out/main/index.js",
   "author": "Bertelsmann India Investment",
