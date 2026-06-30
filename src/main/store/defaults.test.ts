@@ -7,6 +7,7 @@ vi.mock("./index", () => ({
     setSetting: vi.fn(),
     createPersona: vi.fn(),
     createPipelineTemplate: vi.fn(),
+    listPersonas: vi.fn(() => []), // Mock returns empty array initially
   },
 }));
 
@@ -56,9 +57,18 @@ describe("seedDefaults", () => {
     );
   });
 
-  it("does nothing when already seeded", () => {
-    (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockReturnValue("true");
+  it("does not re-seed if both v1 and v2 keys are set", () => {
+    const getSetting = vi.fn((key: string) => {
+      if (key === "defaults_seeded" || key === "defaults_seeded_v2")
+        return "true";
+      return undefined;
+    });
+    (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockImplementation(
+      getSetting,
+    );
+    const countBefore = ConvStore.listPersonas().length;
     seedDefaults();
+    expect(ConvStore.listPersonas().length).toBe(countBefore);
     expect(ConvStore.createPersona).not.toHaveBeenCalled();
     expect(ConvStore.createPipelineTemplate).not.toHaveBeenCalled();
     expect(ConvStore.setSetting).not.toHaveBeenCalled();
@@ -92,8 +102,16 @@ describe("seedDefaults", () => {
   });
 
   it("does not re-seed if v2 key is already set", () => {
-    (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockReturnValue("true");
+    const getSetting = vi.fn((key: string) => {
+      if (key === "defaults_seeded_v2") return "true";
+      return undefined;
+    });
+    (ConvStore.getSetting as ReturnType<typeof vi.fn>).mockImplementation(
+      getSetting,
+    );
+    const countBefore = ConvStore.listPersonas().length;
     seedDefaults();
+    expect(ConvStore.listPersonas().length).toBe(countBefore);
     expect(ConvStore.createPersona).not.toHaveBeenCalled();
     expect(ConvStore.createPipelineTemplate).not.toHaveBeenCalled();
     expect(ConvStore.setSetting).not.toHaveBeenCalled();
