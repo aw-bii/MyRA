@@ -31,14 +31,30 @@ function App() {
   const [wizardDone, setWizardDone] = useState(false);
 
   useEffect(() => {
+    // Fast path: localStorage already confirmed wizard done
     if (localStorage.getItem("wizardDone") === "1") {
       setWizardDone(true);
       return;
     }
+    // DB check: wizard_done persists across reinstalls in userData
     getSetting("wizard_done").then((val) => {
       if (val === "1") {
-        localStorage.setItem("wizardDone", "1");
-        setWizardDone(true);
+        // Extra guard: if no backend is available (fresh machine), re-run wizard
+        import("./ipc/backend")
+          .then(({ listAvailableBackends }) => listAvailableBackends())
+          .then((backends) => {
+            const anyAvailable = backends.some((b) => b.available);
+            if (anyAvailable) {
+              localStorage.setItem("wizardDone", "1");
+              setWizardDone(true);
+            }
+            // else: wizard_done flag is stale; leave wizardDone = false to show wizard
+          })
+          .catch(() => {
+            // If backend listing fails, trust the DB flag
+            localStorage.setItem("wizardDone", "1");
+            setWizardDone(true);
+          });
       }
     });
   }, []);

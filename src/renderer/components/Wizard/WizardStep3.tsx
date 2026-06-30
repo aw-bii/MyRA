@@ -59,13 +59,24 @@ export function WizardStep3({ statuses: initial, onComplete, onBack }: Props) {
         )}
       </div>
       {needsAuth.length === 0 && (
-        <div className="flex items-center gap-2 text-sm font-medium text-text-base">
-          <CheckCircle
-            size={16}
-            weight="fill"
-            className="text-primary flex-shrink-0"
-          />
-          All tools are signed in
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 text-sm font-medium text-text-base">
+            <CheckCircle
+              size={16}
+              weight="fill"
+              className="text-primary flex-shrink-0"
+            />
+            All CLI tools are signed in
+          </div>
+          <div className="flex flex-col gap-1 pl-6">
+            {statuses
+              .filter((s) => s.available)
+              .map((s) => (
+                <span key={s.id} className="text-xs text-text-muted">
+                  {BACKEND_LABELS[s.id] ?? s.id}
+                </span>
+              ))}
+          </div>
         </div>
       )}
       {needsAuth.map((s) => (
@@ -102,7 +113,7 @@ export function WizardStep3({ statuses: initial, onComplete, onBack }: Props) {
         onClick={onComplete}
         className="btn-lg bg-primary text-on-primary hoverable:hover:bg-primary-dark"
       >
-        Finish Setup
+        Next
       </button>
       <button
         onClick={onBack}

@@ -8,7 +8,10 @@ export async function listBackends(): Promise<BackendInfo[]> {
 export async function probeBackend(
   backend: string,
 ): Promise<{ available: boolean; authenticated: boolean }> {
-  return ipcInvoke<any>(IPC.WIZARD_PROBE, { backend });
+  return ipcInvoke<{ available: boolean; authenticated: boolean }>(
+    IPC.WIZARD_PROBE,
+    { backend },
+  );
 }
 export async function installBackend(
   backend: string,
@@ -20,3 +23,4 @@ export async function installBackend(
 export async function markWizardDone(): Promise<void> {
   await ipcInvoke<void>(IPC.WIZARD_DONE);
 }
+export { listBackends as listAvailableBackends };

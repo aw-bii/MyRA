@@ -103,6 +103,18 @@ export function installBackend(
     if (cmd.shell === "pwsh") {
       binary = "powershell.exe";
       args = ["-Command", `irm ${cmd.url} | iex`];
+    } else if (isWin) {
+      // Windows has no `sh`; use PowerShell to download + run the shell script via WSL/Git Bash if available,
+      // otherwise show a manual install hint.
+      binary = "powershell.exe";
+      args = [
+        "-Command",
+        `$tmp = [System.IO.Path]::GetTempFileName() + '.sh'; ` +
+          `Invoke-WebRequest -Uri '${cmd.url}' -OutFile $tmp; ` +
+          `if (Get-Command bash -ErrorAction SilentlyContinue) { bash $tmp } ` +
+          `else { Write-Error 'bash not found. Install Git for Windows or WSL, then re-run.' }; ` +
+          `Remove-Item $tmp -Force`,
+      ];
     } else {
       binary = "sh";
       args = ["-c", `curl -fsSL ${cmd.url} | sh`];

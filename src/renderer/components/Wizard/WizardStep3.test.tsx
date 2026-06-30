@@ -89,4 +89,23 @@ describe("WizardStep3 all-signed-in state", () => {
     );
     expect(screen.getByText(/then click check/i)).toBeTruthy();
   });
+
+  it("lists available tools by name when no auth is needed", () => {
+    const statuses = [
+      { id: "claude", available: true, authenticated: true, loading: false },
+      { id: "gemini", available: true, authenticated: true, loading: false },
+      {
+        id: "opencode",
+        available: false,
+        authenticated: false,
+        loading: false,
+      },
+    ];
+    render(
+      <WizardStep3 statuses={statuses} onComplete={vi.fn()} onBack={vi.fn()} />,
+    );
+    expect(screen.getByText("Claude Code")).toBeInTheDocument();
+    expect(screen.getByText("Gemini CLI")).toBeInTheDocument();
+    expect(screen.queryByText("Opencode")).toBeNull(); // not available, don't show
+  });
 });

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { installBackend, probeBackend } from "../../ipc/backend";
+import { relaunchApp } from "../../ipc/app";
 import { IPC } from "../../../shared/ipc";
 
 const LABELS: Record<string, string> = {
@@ -28,6 +29,31 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
   const [done, setDone] = useState<Record<string, boolean>>({});
   const [verified, setVerified] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [filtered, setFiltered] = useState<string[]>(missing);
+  const [reprobing, setReprobing] = useState(true);
+  const [needsRestart, setNeedsRestart] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(
+      missing.map(async (id) => {
+        try {
+          const r = await probeBackend(id);
+          return r.available ? null : id;
+        } catch {
+          return id;
+        }
+      }),
+    ).then((results) => {
+      if (!cancelled) {
+        setFiltered(results.filter((x): x is string => x !== null));
+        setReprobing(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [missing]);
 
   const install = async (id: string) => {
     setErrors((prev) => {
@@ -57,6 +83,7 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
       if (probeResult.available) {
         setVerified((prev) => ({ ...prev, [id]: true }));
         setDone((prev) => ({ ...prev, [id]: true }));
+        setNeedsRestart(true);
       } else {
         setErrors((prev) => ({
           ...prev,
@@ -92,7 +119,25 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
     }
   };
 
-  if (missing.length === 0) {
+  if (reprobing) {
+    return (
+      <div className="flex flex-col gap-6">
+        <div>
+          <h2 className="text-sm font-semibold mb-1">
+            Checking installed tools…
+          </h2>
+          <p className="text-xs text-text-muted">
+            Re-checking which tools are already available.
+          </p>
+        </div>
+        <div className="flex justify-center py-6">
+          <div className="w-6 h-6 rounded-full border-2 border-border border-t-primary animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  if (filtered.length === 0) {
     return (
       <div className="flex flex-col gap-6">
         <div>
@@ -125,7 +170,7 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
           These are optional. You can skip and install them from Settings later.
         </p>
       </div>
-      {missing.map((id) => (
+      {filtered.map((id) => (
         <div
           key={id}
           className="flex flex-col gap-2 border border-border rounded-xl p-4"
@@ -182,10 +227,21 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
                   </button>
                 </div>
               </div>
-              {(logs[id] ?? []).length > 0 && (
-                <pre className="text-xs bg-gray-900 text-gray-300 rounded-lg p-2 max-h-24 overflow-y-auto">
-                  {logs[id].join("\n")}
-                </pre>
+              {installing[id] && (
+                <div
+                  className="flex items-center gap-2 text-xs text-text-muted"
+                  data-testid={`install-spinner-${id}`}
+                >
+                  <div className="w-4 h-4 rounded-full border-2 border-border border-t-primary animate-spin flex-shrink-0" />
+                  <span className="truncate">
+                    {logs[id]?.at(-1) ?? "Installing…"}
+                  </span>
+                </div>
+              )}
+              {!installing[id] && done[id] && verified[id] && (
+                <p className="text-xs text-primary">
+                  Installed and detected on PATH ✓
+                </p>
               )}
               {errors[id] && (
                 <p className="text-xs text-red-500">{errors[id]}</p>
@@ -194,6 +250,22 @@ export function WizardStep2({ missing, onNext, onBack }: Props) {
           )}
         </div>
       ))}
+      {needsRestart && (
+        <div
+          data-testid="path-restart-banner"
+          className="flex items-center justify-between gap-3 px-4 py-3 bg-bubble rounded-xl border border-border text-xs"
+        >
+          <span className="text-text-muted">
+            Restart the app so new tools are detected on PATH.
+          </span>
+          <button
+            onClick={() => relaunchApp()}
+            className="btn-sm bg-primary text-on-primary hoverable:hover:bg-primary-dark flex-shrink-0"
+          >
+            Restart now
+          </button>
+        </div>
+      )}
       <button
         onClick={onNext}
         className="btn-lg bg-primary text-on-primary hoverable:hover:bg-primary-dark"

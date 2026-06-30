@@ -242,6 +242,11 @@ export function registerIpcHandlers(win: BrowserWindow): void {
 
   ipcMain.handle(IPC.APP_VERSION, () => app.getVersion());
 
+  ipcMain.handle(IPC.APP_RELAUNCH, () => {
+    app.relaunch();
+    app.exit(0);
+  });
+
   ipcMain.handle(IPC.SETTING_GET, (_event, { key }) =>
     ConvStore.getSetting(key),
   );
