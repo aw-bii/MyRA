@@ -24,9 +24,15 @@ export function DangerZone() {
     setSubmitting(true);
     setError("");
     try {
+      // On success the main process calls app.exit(0) before this ever resolves.
       await uninstallApp();
     } catch (err) {
-      setError((err as Error).message);
+      const raw = (err as Error).message;
+      const cleaned = raw.replace(
+        /^Error invoking remote method '[^']*':\s*(Error:\s*)?/,
+        "",
+      );
+      setError(cleaned);
       setSubmitting(false);
     }
   };

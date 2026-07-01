@@ -60,4 +60,36 @@ describe("DangerZone", () => {
 
     expect(screen.queryByRole("dialog")).toBeNull();
   });
+
+  it("strips the Electron IPC wrapper prefix from the error message", async () => {
+    vi.mocked(uninstallApp).mockRejectedValue(
+      new Error(
+        "Error invoking remote method 'app:uninstall': Error: Uninstall isn't available in development mode.",
+      ),
+    );
+    render(<DangerZone />);
+    await userEvent.click(screen.getByText("Uninstall MyRA"));
+    await userEvent.type(screen.getByRole("textbox"), "DELETE");
+    await userEvent.click(screen.getByRole("button", { name: "Uninstall" }));
+
+    await vi.waitFor(() => {
+      expect(
+        screen.getByText("Uninstall isn't available in development mode."),
+      ).toBeTruthy();
+    });
+    expect(screen.queryByText(/Error invoking remote method/)).toBeNull();
+  });
+
+  it("disables Cancel and keeps the dialog open while an uninstall attempt is in flight", async () => {
+    vi.mocked(uninstallApp).mockImplementation(() => new Promise(() => {}));
+    render(<DangerZone />);
+    await userEvent.click(screen.getByText("Uninstall MyRA"));
+    await userEvent.type(screen.getByRole("textbox"), "DELETE");
+    await userEvent.click(screen.getByRole("button", { name: "Uninstall" }));
+
+    await vi.waitFor(() => {
+      expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+    });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
 });
