@@ -7,6 +7,7 @@ import { installBackend } from "./wizard/install";
 import { pipelineRunner } from "./pipeline/runner";
 import { AttachmentService } from "./attachments/service";
 import { downloadUpdate, quitAndInstall } from "./updater";
+import { performUninstall } from "./uninstall";
 import { CronStore } from "./scheduler/cron-store";
 import { CronEngine } from "./scheduler/cron-engine";
 import { McpClientManager } from "./mcp/mcp-client-manager";
@@ -253,6 +254,8 @@ export function registerIpcHandlers(win: BrowserWindow): void {
     app.relaunch();
     app.exit(0);
   });
+
+  ipcMain.handle(IPC.APP_UNINSTALL, () => performUninstall());
 
   ipcMain.handle(IPC.SETTING_GET, (_event, { key }) =>
     ConvStore.getSetting(key),
