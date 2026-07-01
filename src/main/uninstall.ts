@@ -12,7 +12,7 @@ export function findWindowsUninstaller(installDir: string): string | null {
     return null;
   }
   const match = entries.find((f) => /^uninstall.*\.exe$/i.test(f));
-  return match ? path.join(installDir, match) : null;
+  return match ? `${installDir}\\${match}` : null;
 }
 
 export function findMacAppBundle(execPath: string): string | null {
@@ -36,7 +36,7 @@ export async function performUninstall(): Promise<void> {
   }
 
   if (process.platform === "win32") {
-    const installDir = path.dirname(process.execPath);
+    const installDir = path.win32.dirname(process.execPath);
     const uninstallerPath = findWindowsUninstaller(installDir);
     if (!uninstallerPath) {
       throw new Error("Could not find the Windows uninstaller.");
